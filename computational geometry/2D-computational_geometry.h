@@ -86,7 +86,7 @@ Point middle(Point const &A, Point const &B) {
     return 0.5 * (A + B);
 }
 
-double point_line_distance(const Point &P, const Point &A, const Point &B) {
+double point_line_distance(Point const &P,  Point const &A, Point const &B) {
     Vector v1 = B - A, v2 = P - A;
     return fabs(det(v1, v2) / v1.len());
 }
@@ -115,7 +115,7 @@ Point symmetry(Point const &P, Point const &A, Point const &B) {
     return 2 * projection(P, A, B) - P;
 }
 
-int intersection(const Point &A, const Point &B, const Point &C, const Point &D, Point &O) {
+int intersection(Point const&A,  Point const &B, Point const &C, Point const &D, Point &O) {
     if (dcmp(det(B - A, D - C)) == 0)
         return 0;
     double s1 = det(D - A, C - A);
