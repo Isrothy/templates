@@ -12,8 +12,14 @@ struct Cp {
     inline Cp operator*(Cp const &_) const {
         return {Re * _.Re - Im * _.Im, Re * _.Im + Im * _.Re};
     }
+
+    inline Cp operator*(double _) const {
+        return {Re * _, Im * _};
+    }
 };
-void DFT(Cp *a, int n) {
+
+
+void DFT(Cp *a, int n, int p) {
     static Cp w[M];
     for (int i = 0, j = 0; i < n; ++i) {
         if (i < j)
@@ -36,24 +42,29 @@ void DFT(Cp *a, int n) {
             }
         }
     }
+    if (0 < p)
+        return;
+    int inv = 1.0 / n;
+    for (int i = 0; i < n; ++i)
+        a[i] = a[i] * inv;
 }
 
-void multiply(int *A, int *B, int *C, int n, int m，int mod) {
+void multiply(int *A, int *B, int *C, int n, int m, int mod) {
     static Cp a[M], b[M], c[M], d[M], w[M];
     for (int i = 0; i < n; ++i)
         a[i] = {(double) (A[i] & 32767), (double) (A[i] >> 15)};
     for (int i = 0; i < m; ++i)
         b[i] = {(double) (B[i] & 32767), (double) (B[i] >> 15)};
     int l = get_length(m + n - 1);
-    DFT(a, l);
-    DFT(b, l);
+    DFT(a, l, 1);
+    DFT(b, l, 1);
     for (int i = 0; i < l; ++i) {
         int j = (l - 1) & (l - i);
         c[j] = (Cp) {0.5 * (a[i].Re + a[j].Re), 0.5 * (a[i].Im - a[j].Im)} * b[i];
         d[j] = (Cp) {0.5 * (a[j].Im + a[i].Im), 0.5 * (a[j].Re - a[i].Re)} * b[i];
     }
-    DFT(c, l);
-    DFT(d, l);
+    DFT(c, l, 1);
+    DFT(d, l, 1);
     double inv = 1.0 / l;
     for (int i = 0; i < n + m - 1; ++i) {
         long long u = c[i].Re * inv + 0.5, v = c[i].Im * inv + 0.5;
