@@ -22,5 +22,5 @@ int Minkowski_sum(Point *A, Point *B, Point *C, int n, int m) {
         ++j;
         ++k;
     }
-    return Andrew(C, k - 1);
+    return k - 1;
 }
