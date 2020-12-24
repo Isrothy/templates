@@ -1,3 +1,15 @@
+long long power(long long x, int k) {
+    long long res = 1;
+    while (k != 0) {
+        if ((k & 1) == 1) {
+            res = res * x % mod;
+        }
+        x = x * x % mod;
+        k >>= 1;
+    }
+    return res;
+}
+
 int get_length(int n) {
     int m = 1;
     while (m < n)
@@ -14,8 +26,8 @@ void DFT(int *a, int n, int p) {
     }
     w[0] = 1;
     for (int i = 1; i < n; i <<= 1) {
-        long long wn = Pow(3, mod - 1 + p * (mod - 1) / (i << 1));
-        for (int j = i - 2; 0 <= j ; j -= 2) {
+        long long wn = power(3, mod - 1 + p * (mod - 1) / (i << 1));
+        for (int j = i - 2; 0 <= j; j -= 2) {
             w[j] = w[j >> 1];
             w[j + 1] = w[j] * wn % mod;
         }
@@ -29,8 +41,9 @@ void DFT(int *a, int n, int p) {
         }
     }
     if (0 < p) return;
+    long long inv = power(n, mod - 2);
     for (int i = 0; i < n; ++i)
-        a[i] = (long long) a[i] * Inv[n] % mod;
+        a[i] = a[i] * inv % mod;
 }
 
 void multiply(int *A, int *B, int *C, int n, int m) {
@@ -55,7 +68,7 @@ void multiply(int *A, int *B, int *C, int n, int m) {
 void inverse(int *A, int *B, int m) {
     static int a[M], b[M];
     int n = get_length(m);
-    b[0] = Pow(A[0], mod - 2);
+    b[0] = power(A[0], mod - 2);
     for (int i = 2; i <= n; i <<= 1) {
         for (int j = 0; j < i; ++j)
             a[j] = j < m ? A[j] : 0;
@@ -122,4 +135,35 @@ void power(int *A, int *B, int m, int k) {
     exponential(a, a, m);
     for (int i = 0; i < m; ++i)
         B[i] = a[i];
+}
+
+void division(int *A, int *B, int *C, int n, int m) {
+    static int a[M], b[M];
+    int l = get_length(n << 1);
+    for (int i = 0; i < n; ++i)
+        a[i] = A[n - i - 1];
+    for (int i = 0; i < m; ++i)
+        b[i] = B[m - i - 1];
+    inverse(b, b, n - m + 1);
+    DFT(a, l, 1);
+    DFT(b, l, 1);
+    for (int i = 0; i < l; ++i)
+        a[i] = (long long) a[i] * b[i] % mod;
+    DFT(a, l, -1);
+    for (int i = 0; i <= n - m; ++i)
+        C[i] = a[n - m - i];
+    for (int i = 0; i < l; ++i)
+        a[i] = b[i] = 0;
+}
+
+
+void modular(int *A, int *B, int *C, int *D, int n, int m) {
+    static int a[M];
+    division(A, B, C, n, m);
+    multiply(B, C, a, n, n - m + 1);
+    for (int i = 0; i < m - 1; ++i)
+        D[i] = (A[i] - a[i]) % mod;
+    int l = get_length(n + 1);
+    for (int i = 0; i < l; ++i)
+        a[i] = 0;
 }
