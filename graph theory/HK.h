@@ -17,8 +17,7 @@ namespace HK {
         }
         while (head < tail) {
             int u = Q[head++];
-            for (int i = 0; i < (int) E[u].size(); ++i) {
-                int v = E[u][i];
+            for (auto v : E[u]) {
                 if (dy[v] == 0) {
                     dy[v] = dx[u] + 1;
                     if (T[v] != 0) {
@@ -33,8 +32,7 @@ namespace HK {
     }
 
     bool DFS(int u) {
-        for (int i = 0; i < (int) E[u].size(); ++i) {
-            int v = E[u][i];
+        for (auto v : E[u]) {
             if (dy[v] == dx[u] + 1) {
                 dy[v] = 0;
                 if (T[v] == 0 || DFS(T[v])) {
