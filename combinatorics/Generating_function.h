@@ -127,6 +127,29 @@ void exponential(int *A, int *B, int m) {
         a[i] = b[i] = c[i] = 0;
 }
 
+void square_root(int *A, int *B, int m) {
+    static int a[M], b[M], c[M];
+    int n = get_length(m);
+    b[0] = quadratic_residue(A[0], mod);
+    for (int i = 2; i <= n; i <<= 1) {
+        for (int j = 0; j < i; ++j)
+            a[j] = j < m ? A[j] : 0;
+        inverse(b, c, i);
+        DFT(a, i << 1, 1);
+        DFT(b, i << 1, 1);
+        DFT(c, i << 1, 1);
+        for (int j = 0; j < i << 1; ++j)
+            b[j] = Inv[2] * (b[j] + (long long) a[j] * c[j] % mod) % mod;
+        DFT(b, i << 1, -1);
+        for (int j = 0; j < i; ++j)
+            b[i + j] = 0;
+    }
+    for (int i = 0; i < m; ++i)
+        B[i] = b[i];
+    for (int i = 0; i < n << 1; ++i)
+        a[i] = b[i] = 0;
+}
+
 void power(int *A, int *B, int m, int k) {
     static int a[M], b[M];
     logarithm(A, a, m);
