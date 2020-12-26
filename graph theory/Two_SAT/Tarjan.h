@@ -14,8 +14,7 @@ namespace Two_SAT {
     void Tarjan(int u) {
         dfn[u] = low[u] = ++dfs_clock;
         stk[top++] = u;
-        for (int i = 0; i < (int) E[u].size(); ++i) {
-            int v = E[u][i];
+        for (auto v : E[u]) {
             if (dfn[v] == 0) {
                 Tarjan(v);
                 low[u] = min(low[u], low[v]);
@@ -49,8 +48,7 @@ namespace Two_SAT {
                 return false;
         }
         for (int u = 0; u < 2 * n; ++u) {
-            for (int i = 0; i < (int) E[u].size(); ++i) {
-                int v = E[u][i];
+            for (auto v : E[u]) {
                 if (sccno[u] != sccno[v]) {
                     S[sccno[u]].push_back(sccno[v]);
                     ++deg[sccno[v]];
@@ -66,8 +64,7 @@ namespace Two_SAT {
         }
         while (head < tail) {
             int u = Q[head++];
-            for (int i = 0; i < (int) S[u].size(); ++i) {
-                int v = S[u][i];
+            for (auto v : S[u]) {
                 if (--deg[v] == 0) {
                     Q[tail++] = v;
                     topono[v] = tail;
