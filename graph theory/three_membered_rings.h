@@ -9,7 +9,7 @@ int three_membered_rings(vector<int> *E, int n) {
     }
     for (int u = 1; u <= n; ++u) {
         for (auto v : E[u]) {
-            if (Rank[v] < Rank[u])
+            if (Rank[u] < Rank[v])
                 F[u].push_back(v);
         }
     }
