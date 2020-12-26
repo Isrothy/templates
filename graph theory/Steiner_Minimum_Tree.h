@@ -23,10 +23,10 @@ int Steiner_Minimum_Tree(int *s, int k) {
             int u = p.second;
             if (p.first != dp[S][u])
                 continue;
-            for (int i = 0; i < (int) E[u].size(); ++i) {
-                int v = E[u][i].first;
-                if (p.first + E[u][i].second < dp[S][v]) {
-                    dp[S][v] = p.first + E[u][i].second;
+            for (auto e : E[u]) {
+                int v = e.first;
+                if (p.first + e.second < dp[S][v]) {
+                    dp[S][v] = p.first + e.second;
                     Q.push(make_pair(dp[S][v], v));
                 }
             }
