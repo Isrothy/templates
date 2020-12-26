@@ -18,8 +18,8 @@ namespace Two_SAT {
             return true;
         mark[x] = true;
         stk[top++] = x;
-        for (int i = 0; i < (int) E[x].size(); ++i) {
-            if (!dfs(E[x][i]))
+        for (auto y : E[x]) {
+            if (!dfs(y))
                 return false;
         }
         return true;
