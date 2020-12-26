@@ -1,7 +1,6 @@
 void dfs(int u) {
     len[u] = 1;
-    for (int i = 0; i < (int) E[u].size(); ++i) {
-        int v = E[u][i];
+    for (auto v : E[u]) {
         if (v == par[u])
             continue;
         anc[v][0] = par[v] = u;
@@ -23,8 +22,7 @@ void re_dfs(int u) {
     if (son[u] != 0) {
         re_dfs(son[u]);
     }
-    for (int i = 0; i < (int) E[u].size(); ++i) {
-        int v = E[u][i];
+    for (auto v : E[u]) {
         if (v == par[u] || v == son[u])
             continue;
         int tmp = ladder_sz;
