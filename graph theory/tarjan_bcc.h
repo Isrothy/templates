@@ -5,8 +5,7 @@ int n, m, bcc_cnt, dfs_clock, top;
 void Tarjan(int u, int fa) {
     dfn[u] = low[u] = ++dfs_clock;
     stk[top++] = u;
-    for (int i = 0; i < (int) E[u].size(); ++i) {
-        int v = E[u][i];
+    for (auto v : E[u]) {
         if (v == fa)
             continue;
         if (dfn[v] == 0) {
