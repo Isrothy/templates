@@ -26,7 +26,7 @@ void DFT(int *a, int n, int p) {
     }
     w[0] = 1;
     for (int i = 1; i < n; i <<= 1) {
-        long long wn = power(3, mod - 1 + p * (mod - 1) / (i << 1));
+        long long wn = power(g, mod - 1 + p * (mod - 1) / (i << 1));
         for (int j = i - 2; 0 <= j; j -= 2) {
             w[j] = w[j >> 1];
             w[j + 1] = w[j] * wn % mod;
@@ -40,10 +40,12 @@ void DFT(int *a, int n, int p) {
             }
         }
     }
-    if (0 < p) return;
+    if (0 < p)
+        return;
     long long inv = power(n, mod - 2);
-    for (int i = 0; i < n; ++i)
-        a[i] = a[i] * inv % mod;
+    for (int i = 0; i < n; ++i) {
+        a[i] = (long long) a[i] * inv % mod;
+    }
 }
 
 void multiply(int *A, int *B, int *C, int n, int m) {
