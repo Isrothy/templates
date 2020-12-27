@@ -8,6 +8,7 @@ namespace Dinic {
     int dis[N], Q[N], cur[N];
     bool vis[N];
     int edge_cnt;
+    
     void add_edge(int u, int v, int c) {
         edges[edge_cnt] = (edge) {u, v, c, 0};
         E[u].push_back(edge_cnt++);
@@ -61,5 +62,4 @@ namespace Dinic {
         }
         return flow;
     }
-
 }
