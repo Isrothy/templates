@@ -1,24 +1,31 @@
 namespace Dinic {
-    const int INF = INT_MAX;
     struct edge {
         int from, to, cap, flow;
     };
-    edge edges[M * 2];
-    vector<int> E[N];
-    int dis[N], Q[N], cur[N];
+    edge edges[2 * M];
+    vector<int> E[M];
+    int dis[N], Q[N], cur[M];
     bool vis[N];
     int edge_cnt;
     
     void add_edge(int u, int v, int c) {
         edges[edge_cnt] = (edge) {u, v, c, 0};
         E[u].push_back(edge_cnt++);
-        edges[edge_cnt] = (edge) {v, u, 0, 0};
+        edges[edge_cnt] = (edge) {v, u, c, 0};
         E[v].push_back(edge_cnt++);
     }
-
-    bool BFS(int S, int T) {
+    
+    void clear() {
+        for (int i = 0; i < edge_cnt; ++i) {
+            edges[i].flow = 0;
+        }
+    }
+    
+    bool BFS(int S, int T, int n) {
         int head = 0, tail = 0;
-        memset(vis, 0, sizeof vis);
+        for (int i = 1; i <= n; ++i) {
+            vis[i] = false;
+        }
         dis[T] = 0;
         vis[T] = true;
         Q[tail++] = T;
@@ -35,7 +42,7 @@ namespace Dinic {
         }
         return vis[S];
     }
-
+    
     int DFS(int u, int T, int a) {
         if (u == T)
             return a;
@@ -48,16 +55,18 @@ namespace Dinic {
                 edges[E[u][i] ^ 1].flow -= f;
                 a -= f;
                 if (a == 0)
-                    return m;
+                    break;
             }
         }
         return m - a;
     }
-
-    long long max_flow(int S, int T) {
+    
+    long long max_flow(int S, int T, int n) {
         long long flow = 0;
-        while (BFS(S, T)) {
-            memset(cur, 0, sizeof cur);
+        while (BFS(S, T, n)) {
+            for (int i = 1; i <= n; ++i) {
+                cur[i] = 0;
+            }
             flow += DFS(S, T, INF);
         }
         return flow;
