@@ -74,11 +74,11 @@ Point operator*(double p, Point const &_) {
     return (Point) {p * _.x, p * _.y};
 }
 
-double dot(Point const &A, Point const &B) {
+double dot(Vector const &A, Vector const &B) {
     return A.x * B.x + A.y * B.y;
 }
 
-double det(Point const &A, Point const &B) {
+double det(Vector const &A, Vector const &B) {
     return A.x * B.y - A.y * B.x;
 }
 
