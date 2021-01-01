@@ -1,6 +1,8 @@
 struct treap {
-    int val, pri, sz;
+    int val, sz;
+    unsigned pri;
     treap *ch[2];
+    
     void push_up() {
         sz = 1;
         if (ch[0] != nullptr)
@@ -9,9 +11,12 @@ struct treap {
             sz += ch[1]->sz;
     }
 };
-typedef pair<treap*,treap*> ptt;
+
+typedef pair<treap *, treap *> ptt;
+
 treap pool[M], *allc = pool;
-int n;
+
+mt19937 mt_rand(time(NULL));
 
 int Sz(treap *p) {
     return p == nullptr ? 0 : p->sz;
@@ -28,7 +33,7 @@ void rotate(treap *&p, bool f) {
 void insert(treap *&p, int x) {
     if (p == nullptr) {
         p = allc++;
-        *p = (treap) {x, rand(), 1, {nullptr, nullptr}};
+        *p = (treap) {x, 1, mt_rand(), {nullptr, nullptr}};
         return;
     }
     bool f = p->val < x;
@@ -101,7 +106,8 @@ int nxt(treap *p, int x) {
     }
     return res;
 }
-treap* merge(treap *p, treap *q) {
+
+treap *merge(treap *p, treap *q) {
     if (p == nullptr)
         return q;
     if (q == nullptr)
@@ -134,4 +140,34 @@ ptt split(treap *p, int k) {
         p->push_up();
         return make_pair(p, o.second);
     }
+}
+
+ptt split_by_value(treap *p, int v) {
+    if (p == nullptr)
+        return make_pair(nullptr, nullptr);
+    if (v < p->val) {
+        ptt o = split_by_value(p->ch[0], v);
+        p->ch[0] = o.second;
+        p->push_up();
+        return make_pair(o.first, p);
+    } else {
+        ptt o = split_by_value(p->ch[1], v);
+        p->ch[1] = o.first;
+        p->push_up();
+        return make_pair(p, o.second);
+    }
+}
+
+treap *heuristic_merge(treap *p, treap *q) {
+    if (p == nullptr)
+        return q;
+    if (q == nullptr)
+        return p;
+    if (p->pri < q->pri)
+        swap(p, q);
+    ptt o = split_by_value(p, q->val);
+    q->ch[0] = heuristic_merge(q->ch[0], o.first);
+    q->ch[1] = heuristic_merge(q->ch[1], o.second);
+    q->push_up();
+    return q;
 }
