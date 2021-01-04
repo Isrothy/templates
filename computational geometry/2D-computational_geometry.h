@@ -1,5 +1,3 @@
-const double pi = acos(-1);
-
 int dcmp(double x) {
     if (x < -EPS)
         return -1;
@@ -18,52 +16,56 @@ int dcmp(double x, double y) {
 
 struct Point {
     double x, y;
-
+    
     double len2() const {
         return x * x + y * y;
     }
-
+    
     double len() const {
         return sqrt(len2());
     }
-
+    
     Point operator+(Point const &_) const {
         return (Point) {x + _.x, y + _.y};
     }
-
+    
     Point operator-(Point const &_) const {
         return (Point) {x - _.x, y - _.y};
     }
-
+    
     Point operator*(double p) const {
         return (Point) {x * p, y * p};
     }
-
+    
     Point operator/(double p) const {
         return (Point) {x / p, y / p};
     }
-
+    
     bool operator==(Point const &_) const {
         return dcmp(x, _.x) == 0 && dcmp(y, _.y) == 0;
     }
-
+    
     Point unit() const {
         return *this / len();
     }
-
+    
     double angle() const {
         return atan2(y, x);
     }
-
+    
     Point normal() const {
         return (Point) {-y, x};
     }
-
+    
     void read() {
         scanf("%lf%lf", &x, &y);
     }
-
+    
     void write() const {
+        printf("%lf %lf ", x, y);
+    }
+    
+    void writeln() const {
         printf("%lf %lf\n", x, y);
     }
 };
@@ -86,7 +88,7 @@ Point middle(Point const &A, Point const &B) {
     return 0.5 * (A + B);
 }
 
-double point_line_distance(Point const &P,  Point const &A, Point const &B) {
+double point_line_distance(Point const &P, Point const &A, Point const &B) {
     Vector v1 = B - A, v2 = P - A;
     return fabs(det(v1, v2) / v1.len());
 }
@@ -115,7 +117,7 @@ Point symmetry(Point const &P, Point const &A, Point const &B) {
     return 2 * projection(P, A, B) - P;
 }
 
-int intersection(Point const&A,  Point const &B, Point const &C, Point const &D, Point &O) {
+int intersection(Point const &A, Point const &B, Point const &C, Point const &D, Point &O) {
     if (dcmp(det(B - A, D - C)) == 0)
         return 0;
     double s1 = det(D - A, C - A);
@@ -140,9 +142,9 @@ int circle_line_intersection(Point const &O, double r, Point const &A, Point con
     Point H = projection(O, A, B);
     double tmp = r * r - (H - O).len2();
     int tmp1 = dcmp(tmp);
-    if (tmp1 == -1)
+    if (tmp1 == -1) {
         return 0;
-    else if (tmp1 == 0) {
+    } else if (tmp1 == 0) {
         P1 = H;
         return 1;
     } else {
@@ -174,9 +176,9 @@ int circle_circle_intersection(Point const &O1, double r1, Point const &O2, doub
     double tmp1 = ((O2 - O1).len2() + r1 * r1 - r2 * r2) / (2 * (O2 - O1).len());
     double tmp2 = r1 * r1 - tmp1 * tmp1;
     int tmp3 = dcmp(tmp2);
-    if (tmp3 == -1)
+    if (tmp3 == -1) {
         return 0;
-    else if (tmp3 == 0) {
+    } else if (tmp3 == 0) {
         P1 = O1 + (O2 - O1).unit() * tmp1;
         return 1;
     } else {
@@ -195,9 +197,9 @@ double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1,
     Point H = O + (A - O) * (r * r / tmp);
     tmp = r * r - (H - O).len2();
     int tmp1 = dcmp(tmp);
-    if (tmp1 == -1)
+    if (tmp1 == -1) {
         return -1;
-    else if (tmp1 == 0) {
+    } else if (tmp1 == 0) {
         P1 = H;
         return 0;
     } else {
@@ -208,16 +210,17 @@ double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1,
     }
 }
 
-double circumscribed_circle(Point const &A, Point const &B, Point const &C, Point &O) {
-    if (intersection(middle(A, B), middle(A, B) + (A - B).normal(), middle(B, C), middle(B, C) + (B - C).normal(), O) ==
-        0)
-        return -1;
-    return (A - O).len();
+double external_co_tangent(Point const &O1, double r1, Point const &O2, double r2, Point &P1, Point &P2, Point &P3, Point &P4) {
+    if (r1 < r2)
+        return external_co_tangent(O2, r2, O1, r1, P3, P4, P1, P2);
+    double res = circle_point_tangent(O1, r1 - r2, O2, P1, P2);
+    if (res <= 0)
+        return res;
+    Vector v1 = (P1 - O1).unit() * r2;
+    Vector v2 = (P2 - O1).unit() * r2;
+    P1 = P1 + v1;
+    P2 = P2 + v2;
+    P3 = O2 + v2;
+    P4 = O2 + v1;
+    return res;
 }
-
-double inscribed_circle(Point const &A, Point const &B, Point const &C, Point &I) {
-    double a = (B - C).len(), b = (C - A).len(), c = (A - B).len();
-    I = (A * a + B * b + C * c) / (a + b + c);
-    return point_line_distance(I, A, B);
-}
-
