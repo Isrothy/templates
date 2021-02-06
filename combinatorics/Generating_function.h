@@ -182,10 +182,8 @@ void division(int *A, int *B, int *C, int n, int m) {
         return;
     }
     int l = get_length(n << 1);
-    copy(A, A + n, a);
-    reverse(a, a + n);
-    copy(B, B + m, b);
-    reverse(b, b + m);
+    reverse_copy(A, A + n, a);
+    reverse_copy(B, B + m, b);
     inverse(b, b, n - m + 1);
     DFT(a, l, 1);
     DFT(b, l, 1);
@@ -193,9 +191,7 @@ void division(int *A, int *B, int *C, int n, int m) {
         a[i] = (long long) a[i] * b[i] % mod;
     }
     DFT(a, l, -1);
-    for (int i = 0; i <= n - m; ++i) {
-        C[i] = a[n - m - i];
-    }
+    reverse_copy(a, a + n - m + 1, C);
     for (int i = 0; i < l; ++i) {
         a[i] = b[i] = 0;
     }
