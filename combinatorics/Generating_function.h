@@ -52,12 +52,8 @@ void DFT(int *a, int n, int p) {
 
 void multiply(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
-    for (int i = 0; i < n; ++i) {
-        a[i] = A[i];
-    }
-    for (int i = 0; i < m; ++i) {
-        b[i] = B[i];
-    }
+    copy(A, A + n, a);
+    copy(B, B + m, b);
     m += n - 1;
     n = get_length(m);
     DFT(a, n, 1);
@@ -66,9 +62,7 @@ void multiply(int *A, int *B, int *C, int n, int m) {
         a[i] = (long long) a[i] * b[i] % mod;
     }
     DFT(a, n, -1);
-    for (int i = 0; i < m; ++i) {
-        C[i] = a[i];
-    }
+    copy(a, a + m, C);
     for (int i = 0; i < n; ++i) {
         a[i] = b[i] = 0;
     }
@@ -91,9 +85,7 @@ void inverse(int *A, int *B, int m) {
             b[j + i] = 0;
         }
     }
-    for (int i = 0; i < m; ++i) {
-        B[i] = b[i];
-    }
+    copy(b, b + m, B);
     for (int i = 0; i < n << 1; ++i) {
         a[i] = b[i] = 0;
     }
@@ -141,9 +133,7 @@ void exponential(int *A, int *B, int m) {
             b[i + j] = 0;
         }
     }
-    for (int i = 0; i < m; ++i) {
-        B[i] = b[i];
-    }
+    copy(b, b + m, B);
     for (int i = 0; i < n << 1; ++i) {
         a[i] = b[i] = c[i] = 0;
     }
@@ -169,9 +159,7 @@ void square_root(int *A, int *B, int m) {
             b[i + j] = 0;
         }
     }
-    for (int i = 0; i < m; ++i) {
-        B[i] = b[i];
-    }
+    copy(b, b + m, B);
     for (int i = 0; i < n << 1; ++i) {
         a[i] = b[i] = 0;
     }
@@ -184,20 +172,16 @@ void power(int *A, int *B, int m, int k) {
         a[i] = (long long) a[i] * k % mod;
     }
     exponential(a, a, m);
-    for (int i = 0; i < m; ++i) {
-        B[i] = a[i];
-    }
+    copy(a, a + m, B);
 }
 
 void division(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
     int l = get_length(n << 1);
-    for (int i = 0; i < n; ++i) {
-        a[i] = A[n - i - 1];
-    }
-    for (int i = 0; i < m; ++i) {
-        b[i] = B[m - i - 1];
-    }
+    copy(A, A + n, a);
+    reverse(a, a + n);
+    copy(B, B + m, b);
+    reverse(b, b + m);
     inverse(b, b, n - m + 1);
     DFT(a, l, 1);
     DFT(b, l, 1);
@@ -212,7 +196,6 @@ void division(int *A, int *B, int *C, int n, int m) {
         a[i] = b[i] = 0;
     }
 }
-
 
 void modular(int *A, int *B, int *C, int *D, int n, int m) {
     static int a[M];
