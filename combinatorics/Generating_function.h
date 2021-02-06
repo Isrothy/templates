@@ -209,7 +209,7 @@ void modular(int *A, int *B, int *C, int *D, int n, int m) {
         return;
     }
     division(A, B, C, n, m);
-    multiply(B, C, a, n, n - m + 1);
+    multiply(B, C, a, m, n - m + 1);
     for (int i = 0; i < m - 1; ++i) {
         D[i] = (A[i] - a[i]) % mod;
     }
@@ -226,7 +226,7 @@ void modular(int *A, int *B, int *D, int n, int m) {
         return;
     }
     division(A, B, c, n, m);
-    multiply(B, c, a, n, n - m + 1);
+    multiply(B, c, a, m, n - m + 1);
     for (int i = 0; i < m - 1; ++i) {
         D[i] = (A[i] - a[i]) % mod;
     }
