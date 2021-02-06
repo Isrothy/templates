@@ -178,10 +178,12 @@ void power(int *A, int *B, int m, int k) {
 void division(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
     int l = get_length(n << 1);
-    copy(A, A + n, a);
-    reverse(a, a + n);
-    copy(B, B + m, b);
-    reverse(b, b + m);
+    for (int i = 0; i < n; ++i) {
+        a[i] = A[n - i - 1];
+    }
+    for (int i = 0; i < m; ++i) {
+        b[i] = B[m - i - 1];
+    }
     inverse(b, b, n - m + 1);
     DFT(a, l, 1);
     DFT(b, l, 1);
