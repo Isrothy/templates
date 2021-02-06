@@ -177,13 +177,15 @@ void power(int *A, int *B, int m, int k) {
 
 void division(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
+    if (n < m) {
+        C[0] = 0;
+        return;
+    }
     int l = get_length(n << 1);
-    for (int i = 0; i < n; ++i) {
-        a[i] = A[n - i - 1];
-    }
-    for (int i = 0; i < m; ++i) {
-        b[i] = B[m - i - 1];
-    }
+    copy(A, A + n, a);
+    reverse(a, a + n);
+    copy(B, B + m, b);
+    reverse(b, b + m);
     inverse(b, b, n - m + 1);
     DFT(a, l, 1);
     DFT(b, l, 1);
@@ -201,6 +203,11 @@ void division(int *A, int *B, int *C, int n, int m) {
 
 void modular(int *A, int *B, int *C, int *D, int n, int m) {
     static int a[M];
+    if (n < m) {
+        C[0] = 0;
+        copy(A, A + n, D);
+        return;
+    }
     division(A, B, C, n, m);
     multiply(B, C, a, n, n - m + 1);
     for (int i = 0; i < m - 1; ++i) {
@@ -214,6 +221,10 @@ void modular(int *A, int *B, int *C, int *D, int n, int m) {
 
 void modular(int *A, int *B, int *D, int n, int m) {
     static int a[M], c[M];
+    if (n < m) {
+        copy(A, A + n, D);
+        return;
+    }
     division(A, B, c, n, m);
     multiply(B, c, a, n, n - m + 1);
     for (int i = 0; i < m - 1; ++i) {
