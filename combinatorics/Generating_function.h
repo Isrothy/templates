@@ -12,16 +12,18 @@ long long power(long long x, int k) {
 
 int get_length(int n) {
     int m = 1;
-    while (m < n)
+    while (m < n) {
         m <<= 1;
+    }
     return m;
 }
 
 void DFT(int *a, int n, int p) {
     static int w[M];
     for (int i = 0, j = 0; i < n; ++i) {
-        if (i < j)
+        if (i < j) {
             swap(a[i], a[j]);
+        }
         for (int k = n >> 1; (j ^= k) < k; k >>= 1);
     }
     w[0] = 1;
@@ -50,21 +52,26 @@ void DFT(int *a, int n, int p) {
 
 void multiply(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) {
         a[i] = A[i];
-    for (int i = 0; i < m; ++i)
+    }
+    for (int i = 0; i < m; ++i) {
         b[i] = B[i];
+    }
     m += n - 1;
     n = get_length(m);
     DFT(a, n, 1);
     DFT(b, n, 1);
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) {
         a[i] = (long long) a[i] * b[i] % mod;
+    }
     DFT(a, n, -1);
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) {
         C[i] = a[i];
-    for (int i = 0; i < n; ++i)
+    }
+    for (int i = 0; i < n; ++i) {
         a[i] = b[i] = 0;
+    }
 }
 
 void inverse(int *A, int *B, int m) {
@@ -76,34 +83,42 @@ void inverse(int *A, int *B, int m) {
             a[j] = j < m ? A[j] : 0;
         DFT(a, i << 1, 1);
         DFT(b, i << 1, 1);
-        for (int j = 0; j < i << 1; ++j)
+        for (int j = 0; j < i << 1; ++j){
             b[j] = b[j] * (2 - (long long) b[j] * a[j] % mod) % mod;
+        }
         DFT(b, i << 1, -1);
-        for (int j = 0; j < i; ++j)
+        for (int j = 0; j < i; ++j) {
             b[j + i] = 0;
+        }
     }
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) {
         B[i] = b[i];
-    for (int i = 0; i < n << 1; ++i)
+    }
+    for (int i = 0; i < n << 1; ++i) {
         a[i] = b[i] = 0;
+    }
 }
 
 void logarithm(int *A, int *B, int m) {
     static int a[M], b[M];
     int n = get_length(m * 2);
-    for (int i = 1; i < n; ++i)
+    for (int i = 1; i < n; ++i) {
         a[i - 1] = (long long) i * A[i] % mod;
+    }
     inverse(A, b, m);
     DFT(a, n, 1);
     DFT(b, n, 1);
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) {
         a[i] = (long long) a[i] * b[i] % mod;
+    }
     DFT(a, n, -1);
     B[0] = 0;
-    for (int i = 1; i < m; ++i)
+    for (int i = 1; i < m; ++i) {
         B[i] = (long long) Inv[i] * a[i - 1] % mod;
-    for (int i = 0; i < n; ++i)
+    }
+    for (int i = 0; i < n; ++i) {
         a[i] = b[i] = 0;
+    }
 }
 
 void exponential(int *A, int *B, int m) {
@@ -112,21 +127,26 @@ void exponential(int *A, int *B, int m) {
     b[0] = 1;
     for (int i = 2; i <= n; i <<= 1) {
         logarithm(b, c, i);
-        for (int j = 0; j < i; ++j)
+        for (int j = 0; j < i; ++j) {
             a[j] = j < m ? A[j] : 0;
+        }
         DFT(a, i << 1, 1);
         DFT(b, i << 1, 1);
         DFT(c, i << 1, 1);
-        for (int j = 0; j < i << 1; ++j)
+        for (int j = 0; j < i << 1; ++j) {
             b[j] = (long long) b[j] * (1 + a[j] - c[j]) % mod;
+        }
         DFT(b, i << 1, -1);
-        for (int j = 0; j < i; ++j)
+        for (int j = 0; j < i; ++j) {
             b[i + j] = 0;
+        }
     }
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) {
         B[i] = b[i];
-    for (int i = 0; i < n << 1; ++i)
+    }
+    for (int i = 0; i < n << 1; ++i) {
         a[i] = b[i] = c[i] = 0;
+    }
 }
 
 void square_root(int *A, int *B, int m) {
@@ -134,51 +154,63 @@ void square_root(int *A, int *B, int m) {
     int n = get_length(m);
     b[0] = quadratic_residue(A[0], mod);
     for (int i = 2; i <= n; i <<= 1) {
-        for (int j = 0; j < i; ++j)
+        for (int j = 0; j < i; ++j) {
             a[j] = j < m ? A[j] : 0;
+        }
         inverse(b, c, i);
         DFT(a, i << 1, 1);
         DFT(b, i << 1, 1);
         DFT(c, i << 1, 1);
-        for (int j = 0; j < i << 1; ++j)
+        for (int j = 0; j < i << 1; ++j) {
             b[j] = Inv[2] * (b[j] + (long long) a[j] * c[j] % mod) % mod;
+        }
         DFT(b, i << 1, -1);
-        for (int j = 0; j < i; ++j)
+        for (int j = 0; j < i; ++j) {
             b[i + j] = 0;
+        }
     }
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) {
         B[i] = b[i];
-    for (int i = 0; i < n << 1; ++i)
+    }
+    for (int i = 0; i < n << 1; ++i) {
         a[i] = b[i] = 0;
+    }
 }
 
 void power(int *A, int *B, int m, int k) {
     static int a[M], b[M];
     logarithm(A, a, m);
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) {
         a[i] = (long long) a[i] * k % mod;
+    }
     exponential(a, a, m);
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < m; ++i) {
         B[i] = a[i];
+    }
 }
 
 void division(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
     int l = get_length(n << 1);
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) {
         a[i] = A[n - i - 1];
-    for (int i = 0; i < m; ++i)
+    }
+    for (int i = 0; i < m; ++i) {
         b[i] = B[m - i - 1];
+    }
     inverse(b, b, n - m + 1);
     DFT(a, l, 1);
     DFT(b, l, 1);
-    for (int i = 0; i < l; ++i)
+    for (int i = 0; i < l; ++i) {
         a[i] = (long long) a[i] * b[i] % mod;
+    }
     DFT(a, l, -1);
-    for (int i = 0; i <= n - m; ++i)
+    for (int i = 0; i <= n - m; ++i) {
         C[i] = a[n - m - i];
-    for (int i = 0; i < l; ++i)
+    }
+    for (int i = 0; i < l; ++i) {
         a[i] = b[i] = 0;
+    }
 }
 
 
@@ -186,11 +218,13 @@ void modular(int *A, int *B, int *C, int *D, int n, int m) {
     static int a[M];
     division(A, B, C, n, m);
     multiply(B, C, a, n, n - m + 1);
-    for (int i = 0; i < m - 1; ++i)
+    for (int i = 0; i < m - 1; ++i) {
         D[i] = (A[i] - a[i]) % mod;
+    }
     int l = get_length(n + 1);
-    for (int i = 0; i < l; ++i)
+    for (int i = 0; i < l; ++i) {
         a[i] = 0;
+    }
 }
 
 void modular(int *A, int *B, int *D, int n, int m) {
