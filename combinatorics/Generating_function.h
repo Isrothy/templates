@@ -192,3 +192,16 @@ void modular(int *A, int *B, int *C, int *D, int n, int m) {
     for (int i = 0; i < l; ++i)
         a[i] = 0;
 }
+
+void modular(int *A, int *B, int *D, int n, int m) {
+    static int a[M], c[M];
+    division(A, B, c, n, m);
+    multiply(B, c, a, n, n - m + 1);
+    for (int i = 0; i < m - 1; ++i) {
+        D[i] = (A[i] - a[i]) % mod;
+    }
+    int l = get_length(n + 1);
+    for (int i = 0; i < l; ++i) {
+        a[i] = 0;
+    }
+}
