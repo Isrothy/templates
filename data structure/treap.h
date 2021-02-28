@@ -1,14 +1,20 @@
 struct treap {
-    int val, sz;
-    unsigned pri;
+    int val, size;
+    unsigned long long pri;
     treap *ch[2];
     
     void push_up() {
-        sz = 1;
-        if (ch[0] != nullptr)
-            sz += ch[0]->sz;
-        if (ch[1] != nullptr)
-            sz += ch[1]->sz;
+        size = 1;
+        
+        if (ch[0] != nullptr) {
+            size += ch[0]->size;
+        }
+        if (ch[1] != nullptr) {
+            size += ch[1]->size;
+        }
+    }
+    
+    void push_down() {
     }
 };
 
@@ -16,52 +22,55 @@ typedef pair<treap *, treap *> ptt;
 
 treap pool[M], *allc = pool;
 
-mt19937 mt_rand(time(NULL));
+mt19937_64 mt_rand(time(NULL));
 
-int Sz(treap *p) {
-    return p == nullptr ? 0 : p->sz;
+int Size(treap *p) {
+    return p == nullptr ? 0 : p->size;
 }
 
-void rotate(treap *&p, bool f) {
+treap *rotate(treap *p, bool f) {
     treap *q = p->ch[f];
     p->ch[f] = q->ch[!f];
     q->ch[!f] = p;
     p->push_up();
-    p = q;
+    return q;
 }
 
-void insert(treap *&p, int x) {
+treap *insert(treap *p, int x) {
     if (p == nullptr) {
-        p = allc++;
-        *p = (treap) {x, 1, mt_rand(), {nullptr, nullptr}};
-        return;
+        *allc = (treap) {x, 1, mt_rand(), {nullptr, nullptr}};
+        return allc++;
     }
     bool f = p->val < x;
-    insert(p->ch[f], x);
-    if (p->ch[f]->pri < p->pri)
-        rotate(p, f);
+    p->ch[f] = insert(p->ch[f], x);
+    if (p->ch[f]->pri < p->pri) {
+        p = rotate(p, f);
+    }
     p->push_up();
+    return p;
 }
 
-void remove(treap *&p, int x) {
+treap *erase(treap *p, int x) {
     if (x == p->val) {
         if (p->ch[0] == nullptr || p->ch[1] == nullptr) {
-            p = p->ch[p->ch[0] == nullptr];
-            return;
+            return p->ch[p->ch[0] == nullptr];
         }
         bool f = p->ch[1]->pri < p->ch[0]->pri;
-        rotate(p, f);
-        remove(p->ch[!f], x);
-    } else
-        remove(p->ch[p->val < x], x);
+        p = rotate(p, f);
+        p->ch[!f] = erase(p->ch[!f], x);
+    } else {
+        bool f = p->val < x;
+        p->ch[f] = erase(p->ch[f], x);
+    }
     p->push_up();
+    return p;
 }
 
 int index(treap *p, int x) {
     int res = 1;
     while (p != nullptr) {
         if (p->val < x) {
-            res += Sz(p->ch[0]) + 1;
+            res += Size(p->ch[0]) + 1;
             p = p->ch[1];
         } else
             p = p->ch[0];
@@ -71,7 +80,7 @@ int index(treap *p, int x) {
 
 int kth(treap *p, int k) {
     for (;;) {
-        int s = Sz(p->ch[0]);
+        int s = Size(p->ch[0]);
         if (s + 1 == k)
             return p->val;
         if (k <= s)
@@ -129,13 +138,13 @@ ptt split(treap *p, int k) {
     if (p == nullptr)
         return make_pair(nullptr, nullptr);
     p->push_down();
-    if (k <= Sz(p->ch[0])) {
+    if (k <= Size(p->ch[0])) {
         ptt o = split(p->ch[0], k);
         p->ch[0] = o.second;
         p->push_up();
         return make_pair(o.first, p);
     } else {
-        ptt o = split(p->ch[1], k - Sz(p->ch[0]) - 1);
+        ptt o = split(p->ch[1], k - Size(p->ch[0]) - 1);
         p->ch[1] = o.first;
         p->push_up();
         return make_pair(p, o.second);
