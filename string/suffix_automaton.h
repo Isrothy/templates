@@ -1,4 +1,4 @@
-struct SAM {
+struct suffix_automaton {
     static const int M = 500005;
     static const int C = 26;
     int trans[2 * M][C], mxlen[2 * M], slink[2 * M], deg[2 * M], Q[2 * M];
