@@ -1,3 +1,13 @@
+void free_segment_tree(int p, int l, int r, int **f) {
+    delete f[p];
+    if (l == r) {
+        return;
+    }
+    int mid = (l + r) >> 1;
+    free_segment_tree(p << 1, l, mid, f);
+    free_segment_tree(p << 1 | 1, mid + 1, r, f);
+}
+
 void evaluation_build(int p, int l, int r, int *B, int **f) {
     f[p] = new int[r - l + 2];
     if (l == r) {
@@ -12,10 +22,9 @@ void evaluation_build(int p, int l, int r, int *B, int **f) {
 }
 
 void evaluation_work(int p, int l, int r, int *a, int *C, int **f) {
-    static int b[M];
+    static int b[M], c[M];
     if (l == r) {
         C[l] = a[0];
-        delete f[p];
         return;
     }
     int mid = (l + r) >> 1;
@@ -23,14 +32,13 @@ void evaluation_work(int p, int l, int r, int *a, int *C, int **f) {
     int *al = new int[lenl];
     int *ar = new int[lenr];
     multiply(a, f[p << 1 | 1], b, len, lenr);
+    multiply(a, f[p << 1], c, len, lenl);
     copy(b + lenr - 1, b + len, al);
-    multiply(a, f[p << 1], b, len, lenl);
-    copy(b + lenl - 1, b + len, ar);
+    copy(c + lenl - 1, c + len, ar);
     evaluation_work(p << 1, l, mid, al, C, f);
     evaluation_work(p << 1 | 1, mid + 1, r, ar, C, f);
     delete[] al;
     delete[] ar;
-    delete[] f[p];
 }
 
 void evaluation(int *A, int *B, int *C, int n, int m) {
@@ -49,4 +57,5 @@ void evaluation(int *A, int *B, int *C, int n, int m) {
     for (int i = 0; i < m; ++i) {
         C[i] = ((long long) C[i] * B[i] + A[0]) % mod;
     }
+    free_segment_tree(1, 0, l - 1, f);
 }
