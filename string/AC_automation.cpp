@@ -1,4 +1,4 @@
-struct AC_ automaton {
+struct AC_automaton {
 
     static const int M = 100005;
     static const int C = 26;
