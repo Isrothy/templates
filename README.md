@@ -3415,9 +3415,9 @@ int Stoer_Wagner(int d[M][M], int n) {
 }
 ```
 
-## Tarjan
+### Tarjan
 
-### BCC
+#### BCC
 
 ```cpp
 vector<int> E[M];
@@ -3449,7 +3449,7 @@ void Tarjan(int u, int fa) {
 }
 ```
 
-### EBC
+#### EBC
 
 ```cpp
 vector<pair<int, int>> E[M];
@@ -3485,7 +3485,7 @@ void dfs(int u) {
 }
 ```
 
-### SCC
+#### SCC
 
 ```cpp
 vector<int> E[M];
