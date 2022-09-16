@@ -4299,7 +4299,7 @@ void suffix_sort(char *S, int n) {
     for (int i = n; 1 <= i; --i) {
         sa[cnt[Rank[i]]--] = i;
     }
-    for (int k = 1; k < n; k <<= 1) {
+    for (int k = 1; k <= n; k <<= 1) {
         int p = 0;
         for (int i = n - k + 1; i <= n; ++i) {
             tmp[++p] = i;
@@ -4338,7 +4338,8 @@ void suffix_sort(char *S, int n) {
         if (h != 0) {
             --h;
         }
-        while (S[i + h] == S[sa[Rank[i] - 1] + h]) {
+        int j = sa[Rank[i] - 1];
+        while (S[i + h] == S[j + h]) {
             ++h;
         }
         height[Rank[i]] = h;

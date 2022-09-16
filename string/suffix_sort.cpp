@@ -54,6 +54,6 @@ void suffix_sort(char *S, int n) {
         while (S[i + h] == S[sa[Rank[i] - 1] + h]) {
             ++h;
         }
-        height[Rank[i]] = h;
+        height[Rank[i] - 1] = h;
     }
 }
