@@ -12,13 +12,15 @@ namespace Two_SAT {
     }
 
     bool dfs(int x) {
-        if (mark[x ^ 1])
+        if (mark[x ^ 1]) {
             return false;
-        if (mark[x])
+        }
+        if (mark[x]) {
             return true;
+        }
         mark[x] = true;
         stk[top++] = x;
-        for (auto y : E[x]) {
+        for (auto y: E[x]) {
             if (!dfs(y))
                 return false;
         }
@@ -33,11 +35,12 @@ namespace Two_SAT {
                     while (top != 0) {
                         mark[stk[--top]] = false;
                     }
-                    if (!dfs(i ^ 1))
+                    if (!dfs(i ^ 1)) {
                         return false;
+                    }
                 }
             }
         }
         return true;
     }
-}
+}// namespace Two_SAT

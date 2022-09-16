@@ -27,10 +27,11 @@ namespace Two_SAT {
             for (;;) {
                 int v = stk[--top];
                 sccno[v] = scc_cnt;
-                if (v == u)
+                if (v == u) {
                     break;
+                }
             }
-        }W
+        }
     }
     
     bool query(int u) {
@@ -44,8 +45,9 @@ namespace Two_SAT {
             }
         }
         for (int u = 0; u < n; ++u) {
-            if (sccno[u << 1] == sccno[u << 1 | 1])
+            if (sccno[u << 1] == sccno[u << 1 | 1]) {
                 return false;
+            }
         }
         for (int u = 0; u < 2 * n; ++u) {
             for (auto v : E[u]) {
