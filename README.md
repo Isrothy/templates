@@ -4,7 +4,7 @@
 
 ### polynomials
 
-```c++
+```cpp
 int get_length(int n) {
     int m = 1;
     while (m < n) {
@@ -174,7 +174,7 @@ void power(int *A, int *B, int m, int k) {
 
 ### MTT
 
-```c++
+```cpp
 struct Cp {
     double Re, Im;
 
@@ -259,7 +259,7 @@ void multiply(int *A, int *B, int *C, int n, int m, int mod) {
 
 ### Modular
 
-```c++	
+```cpp
 void division(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
     if (n < m) {
@@ -305,7 +305,7 @@ void modular(int *A, int *B, int *D, int n, int m) {
 
 ### FWT
 
-```c++
+```cpp
 void FWT_or(int *a, int n) {
     for (int i = 1; i < 1 << n; i <<= 1) {
         for (int j = 0; j < 1 << n; j += i << 1) {
@@ -380,7 +380,7 @@ void IFWT_xor(int *a, int n) {
 
 ### evaluation
 
-```c++	
+```cpp
 void free_segment_tree(int p, int l, int r, int **f) {
     delete f[p];
     if (l == r) {
@@ -446,7 +446,7 @@ void evaluation(int *A, int *B, int *C, int n, int m) {
 
 ### interpolation
 
-```c++	
+```cpp
 void interpolation_work(int p, int l, int r, int *v, int **f, int **g) {
     static int a[M], b[M];
     g[p] = new int[r - l + 1];
@@ -489,8 +489,9 @@ void interpolation(int *X, int *Y, int *A, int n) {
 
 ### Euclidean like
 
-```c++	
-tuple<long long, long long, long long> Euclidean_like(long long n, long long a, long long b, long long c) {
+```cpp
+tuple<long long, long long, long long> 
+Euclidean_like(long long n, long long a, long long b, long long c) {
     long long x = a / c % mod, y = b / c % mod;
     long long s0 = (n + 1) % mod;
     long long s1 = n * (n + 1) % mod * inv[2] % mod;
@@ -505,7 +506,8 @@ tuple<long long, long long, long long> Euclidean_like(long long n, long long a, 
         tie(_f, _g, _h) = Euclidean_like(n, a % c, b % c, c);
         f = (_f + x * s1 + y * s0) % mod;
         g = (_g + x * s2 + y * s1) % mod;
-        h = (_h + 2 * y * _f % mod + 2 * x * _g % mod + x * x % mod * s2 % mod + 2 * x * y % mod * s1 % mod + y * y % mod * s0 % mod) % mod;
+        h = (_h + 2 * y * _f % mod + 2 * x * _g % mod + x * x % mod * s2 % mod 
+               + 2 * x * y % mod * s1 % mod + y * y % mod * s0 % mod) % mod;
     } else {
         tie(_f, _g, _h) = Euclidean_like(m - 1, c, c - b - 1, a);
         f = (m * n - _f) % mod;
@@ -516,7 +518,7 @@ tuple<long long, long long, long long> Euclidean_like(long long n, long long a, 
 }
 ```
 
-```c++
+```cpp
 long long power_sum(int m, long long n) {
     n %= mod;
     long long sum = 0, x = n;
@@ -552,7 +554,8 @@ void initialize() {
     }
 }
 
-vector<vector<long long>> Euclidean_like(long long n, long long a, long long b, long long c, int K) {
+vector<vector<long long>> 
+Euclidean_like(long long n, long long a, long long b, long long c, int K) {
     vector<vector<long long>> res;
     long long s[K + 1], power_x[K + 1], power_y[K + 1], power_m[K + 1];
     long long x = a / c % mod, y = b / c % mod;
@@ -621,13 +624,11 @@ vector<vector<long long>> Euclidean_like(long long n, long long a, long long b, 
 }
 ```
 
-
-
 ## computational geometry
 
 ### 2D basic
 
-```c++	
+```cpp
 int dcmp(double x) {
     if (x < -EPS) {
         return -1;
@@ -877,7 +878,7 @@ double external_co_tangent(Point const &O1, double r1, Point const &O2, double r
 
 ### Andrew
 
-```c++	
+```cpp
 int Andrew(Point *a, int n) {
     static Point b[M];
     sort(a, a + n, [](Point const &A, Point const &B) {
@@ -907,7 +908,7 @@ int Andrew(Point *a, int n) {
 
 ### closest pair of points
 
-```c++	
+```cpp
 bool cmp_x(Point const &A, Point const &B) {
     return A.x == B.x ? A.y < B.y : A.x < B.x;
 }
@@ -954,7 +955,7 @@ double closest_pair_of_points(Point *A, int n) {
 
 ### dynamic convex hull
 
-```c++
+```cpp
 struct dynamic_convex_hull {
 
     struct cmp1 {
@@ -1023,7 +1024,7 @@ struct dynamic_convex_hull {
 
 ### half planes intersection
 
-```c++
+```cpp
 int half_planes_intersection(pair<Point, Point> *A, Point *B, int n) {
     static Point t[M];
     static pair<Point, Point> Q[M];
@@ -1060,7 +1061,7 @@ int half_planes_intersection(pair<Point, Point> *A, Point *B, int n) {
 
 ### Minkowski sum
 
-```c++	
+```cpp
 int Minkowski_sum(Point *A, Point *B, Point *C, int n, int m) {
     int i = 0, j = 0, k = 0;
     C[k++] = A[0] + B[0];
@@ -1091,11 +1092,12 @@ int Minkowski_sum(Point *A, Point *B, Point *C, int n, int m) {
 
 ### rotate calipers
 
-```c++	
+```cpp
 double rotate_calipers(Point *A, int n) {
     double ans = 0;
     for (int i = 0, j = 1; i < n; ++i) {
-        while (det(A[i] - A[j], A[(i + 1) % n] - A[j]) < det(A[i] - A[(j + 1) % n], A[(i + 1) % n] - A[(j + 1) % n]))
+        while (det(A[i] - A[j], A[(i + 1) % n] - A[j]) 
+            < det(A[i] - A[(j + 1) % n], A[(i + 1) % n] - A[(j + 1) % n]))
             j = (j + 1) % n;
         ans = max(ans, (A[i] - A[j]).len());
     }
@@ -1105,7 +1107,7 @@ double rotate_calipers(Point *A, int n) {
 
 ### smallest_circle
 
-```c++	
+```cpp
 double smallest_circle(Point *a, int n, Point &O) {
     random_shuffle(a, a + n);
     O = a[0];
@@ -1133,7 +1135,7 @@ double smallest_circle(Point *a, int n, Point &O) {
 
 ### Adaptive Simpson integral
 
-```c++	
+```cpp
 double Simpson(double l, double r) {
     double mid = (l + r) / 2;
     return (r - l) * (F(l) + 4 * F(mid) + F(r)) / 6;
@@ -1151,7 +1153,7 @@ double ASR(double l, double r, double tmp) {
 
 ### 3D basic
 
-```c++	
+```cpp
 struct Point {
     double x, y, z;
 
@@ -1375,7 +1377,7 @@ double triangle_triangle_distrance(Point *T1, Point *T2) {
 
 ### Treap
 
-```c++	
+```cpp
 struct treap {
     int val, size;
     unsigned long long pri;
@@ -1417,7 +1419,7 @@ treap *rotate(treap *p, bool f) {
 treap *insert(treap *p, int x) {
     if (p == nullptr) {
         *allc = (treap) {x, 1, mt_rand(), {nullptr, nullptr}};
-        return allc++;
+        return allcpp;
     }
     bool f = p->val < x;
     p->ch[f] = insert(p->ch[f], x);
@@ -1574,7 +1576,7 @@ treap *heuristic_merge(treap *p, treap *q) {
 
 ### AVL
 
-```c++	
+```cpp
 struct avl {
     int val, size, height;
     avl *ch[2];
@@ -1633,7 +1635,7 @@ avl *maintain(avl *p) {
 avl *insert(avl *p, int x) {
     if (p == nullptr) {
         *allc = (avl) {x, 1, 1, {nullptr, nullptr}};
-        return allc++;
+        return allcpp;
     }
     bool f = p->val < x;
     p->ch[f] = insert(p->ch[f], x);
@@ -1664,7 +1666,7 @@ avl *erase(avl *p, int x) {
 
 ### BIT
 
-```c++	
+```cpp
 struct binary_indexed_tree {
     long long b0[M], b1[M];
     int n;
@@ -1710,7 +1712,7 @@ struct binary_indexed_tree {
 
 ### KD Tree
 
-```c++	
+```cpp
 const double alpha = 0.7;
 
 struct kd_tree {
@@ -1791,7 +1793,7 @@ kd_tree *rebuild(kd_tree *p, int D) {
 
 void insert(kd_tree *&p, int x, int y, int a, int D = 1) {
     if (p == nullptr) {
-        p = allc++;
+        p = allcpp;
         *p = (kd_tree){x, y, a, a, 1, x, x, y, y, {nullptr, nullptr}};
         return;
     }
@@ -1816,7 +1818,7 @@ void insert(kd_tree *&p, int x, int y, int a, int D = 1) {
 
 ### Li Chao segment tree
 
-```c++	
+```cpp
 struct segment {
     long long x1, y1, x2, y2;
     int id;
@@ -1882,7 +1884,7 @@ segment query(int p, int l, int r, long long x) {
 
 ### Link Cut Tree
 
-```c++	
+```cpp
 struct LCT {
     static const int M = 300005;
 
@@ -2003,7 +2005,7 @@ struct LCT {
 
 ### segment tree beats
 
-```c++	
+```cpp
 int mx[4 * M], mi[4 * M], second_max[4 * M], second_min[4 * M], cnt_max[4 * M], cnt_min[4 * M],
     len[4 * M];
 int lazy_min[4 * M], lazy_max[4 * M], lazy_add[4 * M];
@@ -2225,7 +2227,7 @@ int query_min(int p, int l, int r, int a, int b) {
 
 ### Sparse Table
 
-```c++	
+```cpp
 struct Sparse_Table {
     int ST[K][M];
     int Log2[M];
@@ -2257,7 +2259,7 @@ struct Sparse_Table {
 
 #### directed
 
-```c++	
+```cpp
 pair<int, int> stk[N];
 int cur[M];
 bool vis[N];
@@ -2288,7 +2290,7 @@ bool Euler(int S, int* ans, int m) {
 
 #### undirected
 
-```c++	
+```cpp
 bool Euler(int S, int* ans, int m) {
     memset(cur, 0, sizeof cur);
     memset(vis, 0, sizeof vis);
@@ -2316,7 +2318,7 @@ bool Euler(int S, int* ans, int m) {
 
 ### 2-SAt
 
-```c++	
+```cpp
 namespace Two_SAT {
     vector<int> E[2 * M];
     int stk[M];
@@ -2365,7 +2367,7 @@ namespace Two_SAT {
 }// namespace Two_SAT
 ```
 
-```c++	
+```cpp
 namespace Two_SAT {
     vector<int> E[2 * M], S[2 * M];
     int dfn[2 * M], low[2 * M], sccno[2 * M], stk[2 * M];
@@ -2448,7 +2450,7 @@ namespace Two_SAT {
 
 ### Bipartite graph matching
 
-```c++	
+```cpp
 namespace HK {
     vector<int> E[M];
     int dx[M], dy[M], S[M], T[M], Q[M];
@@ -2510,7 +2512,7 @@ namespace HK {
 
 ```
 
-```c++	
+```cpp
 namespace KM {
     int d[M][M], Q[M], S[M], T[M], lx[M], ly[M], slack[M], pre[M];
     bool visx[M], visy[M];
@@ -2600,7 +2602,7 @@ namespace KM {
 
 ### Blossom
 
-```c++	
+```cpp
 namespace Blossom{
     vector<int> E[M];
     int mate[M], link[M], label[M], fa[M], Q[M];
@@ -2693,7 +2695,7 @@ namespace Blossom{
 
 ### Dinic
 
-```c++	
+```cpp
 namespace Dinic {
     struct edge {
         int from, to, cap, flow;
@@ -2774,7 +2776,7 @@ namespace Dinic {
 
 ### SSP
 
-```c++	
+```cpp
 namespace SSP {
     struct edge {
         int from, to, cap, cost, flow;
@@ -2854,7 +2856,7 @@ namespace SSP {
 
 ### Johnson
 
-```c++	
+```cpp
 bool Johnson(int n, vector<pair<int, int>> *E, long long dis[M][M]) {
     queue<int> Q;
     static int h[M], cnt[M];
@@ -2919,7 +2921,7 @@ bool Johnson(int n, vector<pair<int, int>> *E, long long dis[M][M]) {
 
 ### kth shortest path
 
-```c++	
+```cpp
 namespace Kth_SSP {
     struct heap {
         int val, to, dis;
@@ -2960,7 +2962,7 @@ namespace Kth_SSP {
         if (q->val < p->val) {
             swap(p, q);
         }
-        heap *r = allc++;
+        heap *r = allcpp;
         *r = *p;
         r->ch[1] = merge(r->ch[1], q);
         if (r->ch[0] == nullptr || r->ch[0]->dis < r->ch[1]->dis) {
@@ -3012,7 +3014,7 @@ namespace Kth_SSP {
             int u = A[i], sz = 0;
             for (auto e: E[u]) {
                 if (dis[e.to] < INF && e.id != tree_edge[u]) {
-                    tmp[++sz] = allc++;
+                    tmp[++sz] = allcpp;
                     *tmp[sz] = (heap){dis[e.to] + e.cost - dis[u], e.to, 1, {nullptr, nullptr}};
                 }
             }
@@ -3062,7 +3064,7 @@ namespace Kth_SSP {
 
 ### DMST
 
-```c++
+```cpp
 namespace Edmonds {
     struct heap {
         int from, c, lazy;
@@ -3170,7 +3172,7 @@ namespace Edmonds {
 
 ### Domination tree
 
-```c++	
+```cpp
 vector<int> E[M], R[M], Q[M];
 int par[M], dfn[M], vertices[M], Fa[M], idom[M], sdom[M], val[M];
 int dfs_clock;
@@ -3238,7 +3240,7 @@ void Lengauer_Tarjan(int root) {
 
 ### Circle-square tree
 
-```c++	
+```cpp
 vector<int> E[M], R[2 * M];
 int dfn[M], low[M], stk[M], bccno[M], A[M];
 int n, m, bcc_cnt, dfs_clock, top;
@@ -3272,7 +3274,7 @@ void Tarjan(int u, int fa) {
 
 ### 3-membered rings
 
-```c++	
+```cpp
 int three_membered_rings(vector<int> *E, int n) {
     static long long Rank[M];
     static int vis_time[M];
@@ -3309,7 +3311,7 @@ int three_membered_rings(vector<int> *E, int n) {
 
 ### 4-membered ring
 
-```c++	
+```cpp
 int four_membered_rings(vector<int> *E, int n) {
     static long long Rank[M];
     static int vis_time[M], cnt[M];
@@ -3347,7 +3349,7 @@ int four_membered_rings(vector<int> *E, int n) {
 
 ### Gomory Hu Tree
 
-```c++
+```cpp
 void Gomory_Hu_Tree(int *p, int l, int r, int n) {
     if (l == r) {
         return;
@@ -3375,7 +3377,7 @@ void Gomory_Hu_Tree(int *p, int l, int r, int n) {
 
 ### Stoer Wagner
 
-```c++
+```cpp
 int Stoer_Wagner(int d[M][M], int n) {
     static int w[M];
     static bool vis[M], del[M];
@@ -3418,9 +3420,9 @@ int Stoer_Wagner(int d[M][M], int n) {
 
 ## Tarjan
 
-#### BCC
+### BCC
 
-```c++	
+```cpp
 vector<int> E[M];
 int dfn[M], low[M], stk[M], bccno[M];
 int n, m, bcc_cnt, dfs_clock, top;
@@ -3450,9 +3452,9 @@ void Tarjan(int u, int fa) {
 }
 ```
 
-#### EBC
+### EBC
 
-```c++	
+```cpp
 vector<pair<int, int>> E[M];
 int dfn[M], low[M], ebcno[M];
 bool is_bridge[M];
@@ -3486,9 +3488,9 @@ void dfs(int u) {
 }
 ```
 
-#### SCC
+### SCC
 
-```c++
+```cpp
 vector<int> E[M];
 int dfn[M], low[M], sccno[M], stk[M];
 int dfs_clock, scc_cnt, top;
@@ -3519,7 +3521,7 @@ void Tarjan(int u) {
 
 ### Steiner Minimum Tree
 
-```c++	
+```cpp
 int Steiner_Minimum_Tree(int *s, int k) {
     for (int S = 0; S < 1 << k; ++S) {
         for (int u = 1; u <= n; ++u) {
@@ -3568,7 +3570,7 @@ int Steiner_Minimum_Tree(int *s, int k) {
 
 ### Linear bases
 
-```c++	
+```cpp
 struct Bases {
     unsigned long long A[K];
 
@@ -3597,7 +3599,7 @@ struct Bases {
 
 ### determinant
 
-```c++	
+```cpp
 int determinant(int A[M][M], int n, int mod) {
     long long res = 1;
     for (int i = 0; i < n; ++i) {
@@ -3619,7 +3621,7 @@ int determinant(int A[M][M], int n, int mod) {
 
 ### matrix inverse
 
-```c++	
+```cpp
 bool inverse_matrix(int A[M][M], int B[M][M], int n) {
     static int tmp[M][M];
     for (int i = 0; i < n; ++i) {
@@ -3672,7 +3674,7 @@ bool inverse_matrix(int A[M][M], int B[M][M], int n) {
 
 ### homogeneous linear recursion with constant coefficients
 
-```c++	
+```cpp
 int homogeneous_linear_recursion_with_constant_coefficients(int *A, int *f, int k, int n) {
     static int a[M], b[M], c[M];
     for (int i = 0; i < k; ++i) {
@@ -3700,7 +3702,7 @@ int homogeneous_linear_recursion_with_constant_coefficients(int *A, int *f, int 
 
 ### Berlekamp Massey
 
-```c++	
+```cpp
 int Berlekamp_Massey(int *A, int *f, int n) {
     static int g[M], tmp[M];
     int k = 0, last_k = 0, last_delta, last = -1;
@@ -3742,9 +3744,9 @@ int Berlekamp_Massey(int *A, int *f, int n) {
 
 ## number theory
 
-#### ex_gcd
+### ex_gcd
 
-```c++
+```cpp
 long long ex_gcd(long long a, long long b, long long &x, long long &y) {
     if (b == 0) {
         x = 1;
@@ -3759,7 +3761,7 @@ long long ex_gcd(long long a, long long b, long long &x, long long &y) {
 
 ### CRT
 
-```c++	
+```cpp
 void initialize(long long *A, int n) {
     m = 1;
     for (int i = 0; i < n; ++i) {
@@ -3783,7 +3785,7 @@ long long query(long long *B, int n) {
 
 ### Ex-CTR
 
-```c++
+```cpp
 void ex_crt(long long a1, long long b1, long long a2, long long b2, long long &a, long long &b) {
     long long x, y;
     long long d = ex_gcd(a2, a1, x, y);
@@ -3797,7 +3799,7 @@ void ex_crt(long long a1, long long b1, long long a2, long long b2, long long &a
 
 ### BSGS
 
-```c++	
+```cpp
 int BSGS(long long a, long long b, int mod) {
     if (mod == 1) {
         return 0;
@@ -3823,7 +3825,7 @@ int BSGS(long long a, long long b, int mod) {
 
 ### Ex-BSGS
 
-```c++	
+```cpp
 int ex_BSGS(long long A, long long B, long long mod) {
     A %= mod;
     B %= mod;
@@ -3845,7 +3847,7 @@ int ex_BSGS(long long A, long long B, long long mod) {
 
 ### ex-Lucas
 
-```c++
+```cpp
 namespace ex_Lucas {
     long long S[K][M], P[K], Pk[K], Mt[K];
     int t;
@@ -3916,7 +3918,7 @@ namespace ex_Lucas {
 
 ### Miller-Rabin
 
-```c++
+```cpp
 bool witness(long long a, int s, long long d, long long n) {
     long long x = power(a, d, n);
     if (x == 1 || x == n - 1) {
@@ -3953,7 +3955,7 @@ bool Miller_Rabin(long long n) {
 
 ### Pollard-rho
 
-```c++
+```cpp
 long long f(long long x, long long c, long long n) {
     return ((__int128) x * x + c) % n;
 }
@@ -3985,7 +3987,7 @@ long long Pollard_Rho(long long n) {
 
 ### primitive root
 
-```c++
+```cpp
 vector<int> prime_factors(int n) {
     vector<int> res;
     for (int i = 1; prime[i] * prime[i] <= n; ++i) {
@@ -4045,7 +4047,7 @@ int primitive_root(int n) {
 
 ### sieve of Euler
 
-```c++
+```cpp
 void sieve_of_Euler(int n) {
     for (int i = 2; i <= n; ++i) {
         if (!is_composite[i]) {
@@ -4064,7 +4066,7 @@ void sieve_of_Euler(int n) {
 
 ### sieve of Min_25
 
-```c++	
+```cpp
 namespace Min_25 {
     long long w[M], h0[M], h1[M], h[M];
     int s, m;
@@ -4150,7 +4152,7 @@ namespace Min_25 {
 
 ### AC automaton
 
-```c++
+```cpp
 struct AC_ automaton {
 
     static const int M = 100005;
@@ -4203,7 +4205,7 @@ struct AC_ automaton {
 
 ### minimal representation
 
-```c++
+```cpp
 int minimal_representation(char *S, int n) {
     int i = 0, j = 1, k = 0;
     while (i < n && j < n && k < n) {
@@ -4227,7 +4229,7 @@ int minimal_representation(char *S, int n) {
 
 ### Manacher
 
-```c++	
+```cpp
 void Manacher(char *S, int *p, int n) {
     static char T[2 * M];
     T[1] = '#';
@@ -4251,7 +4253,7 @@ void Manacher(char *S, int *p, int n) {
 
 ### palindromic automation
 
-```c++
+```cpp
 struct palindromic_automaton {
     int Next[M][C], fail[M], len[M], cnt[M];
     int tot;
@@ -4286,7 +4288,7 @@ struct palindromic_automaton {
 
 ### suffix sort
 
-```c++	
+```cpp
 int sa[M], cnt[M], tmp[M], Rank[M], height[M];
 
 void suffix_sort(char *S, int n) {
@@ -4351,7 +4353,7 @@ void suffix_sort(char *S, int n) {
 
 ### suffix balanced tree
 
-```c++
+```cpp
 mt19937_64 mt_rand(0);
 
 struct treap {
@@ -4412,7 +4414,7 @@ void re_tag(treap *p, double l, double r) {
 void insert(treap *&p, int i, double l, double r) {
     double mid = (l + r) * 0.5;
     if (p == nullptr) {
-        p = allc++;
+        p = allcpp;
         tag[i] = mid;
         *p = (treap){mid, i, 1, mt_rand(), {nullptr, nullptr}};
         return;
@@ -4464,7 +4466,7 @@ void remove(treap *&p, int i, double l, double r) {
 
 ### suffix automaton
 
-```c++
+```cpp
 struct suffix_automaton {
     static const int M = 500005;
     static const int C = 26;
@@ -4518,7 +4520,7 @@ struct suffix_automaton {
 
 ### general suffix automaton
 
-```c++
+```cpp
 struct general_suffix_automaton {
     static const int M = 1000005;
     static const int C = 26;
@@ -4592,26 +4594,25 @@ struct general_suffix_automaton {
 
 ### Lyndon decomposition
 
-```c++
+```cpp
 vector<string> duval(string const& s) {
-  	int n = s.size(), i = 0;
-  	vector<string> decomposition;
-  	while (i < n) {
-    	int j = i + 1, k = i;
-    	while (j < n && s[k] <= s[j]) {
-      		if (s[k] < s[j]) {
-        		k = i;
+    int n = s.size(), i = 0;
+    vector<string> decomposition;
+    while (i < n) {
+        int j = i + 1, k = i;
+        while (j < n && s[k] <= s[j]) {
+            if (s[k] < s[j]) {
+                k = i;
             } else {
                 ++k;
             }
-      	j++;
+            j++;
+        }
+        while (i <= k) {
+            decomposition.push_back(s.substr(i, j - k));
+            i += j - k;
+        }
     }
-    while (i <= k) {
-      	decomposition.push_back(s.substr(i, j - k));
-      	i += j - k;
-    }
-  }
   return decomposition;
 }
 ```
-
