@@ -490,7 +490,7 @@ void interpolation(int *X, int *Y, int *A, int n) {
 ### Euclidean like
 
 ```cpp
-tuple<long long, long long, long long> 
+tuple<long long, long long, long long>
 Euclidean_like(long long n, long long a, long long b, long long c) {
     long long x = a / c % mod, y = b / c % mod;
     long long s0 = (n + 1) % mod;
@@ -506,7 +506,7 @@ Euclidean_like(long long n, long long a, long long b, long long c) {
         tie(_f, _g, _h) = Euclidean_like(n, a % c, b % c, c);
         f = (_f + x * s1 + y * s0) % mod;
         g = (_g + x * s2 + y * s1) % mod;
-        h = (_h + 2 * y * _f % mod + 2 * x * _g % mod + x * x % mod * s2 % mod 
+        h = (_h + 2 * y * _f % mod + 2 * x * _g % mod + x * x % mod * s2 % mod
                + 2 * x * y % mod * s1 % mod + y * y % mod * s0 % mod) % mod;
     } else {
         tie(_f, _g, _h) = Euclidean_like(m - 1, c, c - b - 1, a);
@@ -554,7 +554,7 @@ void initialize() {
     }
 }
 
-vector<vector<long long>> 
+vector<vector<long long>>
 Euclidean_like(long long n, long long a, long long b, long long c, int K) {
     vector<vector<long long>> res;
     long long s[K + 1], power_x[K + 1], power_y[K + 1], power_m[K + 1];
@@ -1096,7 +1096,7 @@ int Minkowski_sum(Point *A, Point *B, Point *C, int n, int m) {
 double rotate_calipers(Point *A, int n) {
     double ans = 0;
     for (int i = 0, j = 1; i < n; ++i) {
-        while (det(A[i] - A[j], A[(i + 1) % n] - A[j]) 
+        while (det(A[i] - A[j], A[(i + 1) % n] - A[j])
             < det(A[i] - A[(j + 1) % n], A[(i + 1) % n] - A[(j + 1) % n]))
             j = (j + 1) % n;
         ans = max(ans, (A[i] - A[j]).len());
@@ -1382,10 +1382,9 @@ struct treap {
     int val, size;
     unsigned long long pri;
     treap *ch[2];
-    
+
     void push_up() {
         size = 1;
-        
         if (ch[0] != nullptr) {
             size += ch[0]->size;
         }
@@ -1393,9 +1392,7 @@ struct treap {
             size += ch[1]->size;
         }
     }
-    
-    void push_down() {
-    }
+    void push_down() {}
 };
 
 typedef pair<treap *, treap *> ptt;
@@ -1580,7 +1577,7 @@ treap *heuristic_merge(treap *p, treap *q) {
 struct avl {
     int val, size, height;
     avl *ch[2];
-    
+
     void push_up() {
         size = height = 1;
         if (ch[0] != nullptr) {
@@ -1670,7 +1667,7 @@ avl *erase(avl *p, int x) {
 struct binary_indexed_tree {
     long long b0[M], b1[M];
     int n;
-    
+
     void update(int l, int r, int x) {
         for (int i = l; i <= n; i += i & -i) {
             b0[i] -= (long long) (l - 1) * x;
@@ -1681,7 +1678,7 @@ struct binary_indexed_tree {
             b1[i] -= x;
         }
     }
-    
+
     long long query(int i) {
         long long x = 0, y = 0;
         for (int j = i; j != 0; j -= j & -j) {
@@ -1690,11 +1687,11 @@ struct binary_indexed_tree {
         }
         return x + y * i;
     }
-    
+
     long long query(int l, int r) {
         return query(r) - query(l - 1);
     }
-    
+
     void build(int *A, int n) {
         this->n = n;
         for (int i = 1; i <= n; ++i) {
@@ -2231,7 +2228,7 @@ int query_min(int p, int l, int r, int a, int b) {
 struct Sparse_Table {
     int ST[K][M];
     int Log2[M];
-    
+
     void init(int *a, int n) {
         for (int i = 2; i <= n; ++i) {
             Log2[i] = Log2[i >> 1] + 1;
@@ -2245,7 +2242,7 @@ struct Sparse_Table {
             }
         }
     }
-    
+
     int query(int l, int r) {
         int k = Log2[r - l + 1];
         return max(ST[k][l], ST[k][r - (1 << k) + 1]);
@@ -2373,14 +2370,14 @@ namespace Two_SAT {
     int dfn[2 * M], low[2 * M], sccno[2 * M], stk[2 * M];
     int deg[2 * M], topono[2 * M], Q[2 * M];
     int dfs_clock, scc_cnt, top;
-    
+
     void add_clause(int u, bool f1, int v, bool f2) {
         u = u << 1 | f1;
         v = v << 1 | f2;
         E[u ^ 1].push_back(v);
         E[v ^ 1].push_back(u);
     }
-    
+
     void Tarjan(int u) {
         dfn[u] = low[u] = ++dfs_clock;
         stk[top++] = u;
@@ -2403,11 +2400,11 @@ namespace Two_SAT {
             }
         }
     }
-    
+
     bool query(int u) {
         return topono[sccno[u << 1]] < topono[sccno[u << 1 | 1]];
     }
-    
+
     bool check(int n) {
         for (int u = 0; u < 2 * n; ++u) {
             if (dfn[u] == 0) {
@@ -2607,7 +2604,7 @@ namespace Blossom{
     vector<int> E[M];
     int mate[M], link[M], label[M], fa[M], Q[M];
     int head, tail;
-    
+
     int find(int x) {
         if (x == fa[x]) {
             return x;
@@ -2631,7 +2628,7 @@ namespace Blossom{
         }
         return u;
     }
-    
+
     void blossom(int u, int v, int w) {
         while (find(u) != w) {
             link[u] = v;
@@ -2644,7 +2641,7 @@ namespace Blossom{
             u = link[v];
         }
     }
-    
+
     bool BFS(int S, int n) {
         head = tail = 0;
         for (int i = 1; i <= n; ++i) {
@@ -2680,7 +2677,7 @@ namespace Blossom{
         }
         return false;
     }
-    
+
     int maximum_matching(int n) {
         int res = 0;
         for (int u = 1; u <= n; ++u) {
@@ -3069,7 +3066,7 @@ namespace Edmonds {
     struct heap {
         int from, c, lazy;
         heap *ch[2];
-        
+
         void push_down() {
             if (lazy != 0) {
                 if (ch[0] != nullptr) {
@@ -3084,10 +3081,10 @@ namespace Edmonds {
             lazy = 0;
         }
     };
-    
+
     heap pool[M], *allc = pool, *H[M];
     int fa[M], mark[M];
-    
+
     heap *merge(heap *p, heap *q) {
         if (p == nullptr) {
             return q;
@@ -3103,12 +3100,12 @@ namespace Edmonds {
         swap(p->ch[0], p->ch[1]);
         return p;
     }
-    
+
     void pop(heap *&p) {
         p->push_down();
         p = merge(p->ch[0], p->ch[1]);
     }
-    
+
     void add_edge(int u, int v, int c) {
         if (u == v) {
             return;
@@ -3117,7 +3114,7 @@ namespace Edmonds {
         H[v] = merge(H[v], allc);
         ++allc;
     }
-    
+
     int find(int u) {
         if (fa[u] == u) {
             return u;
@@ -3125,7 +3122,7 @@ namespace Edmonds {
         fa[u] = find(fa[u]);
         return fa[u];
     }
-    
+
     int DMST(int n, int root) {
         for (int i = 1; i <= n; ++i) {
             fa[i] = i;
@@ -3851,7 +3848,7 @@ int ex_BSGS(long long A, long long B, long long mod) {
 namespace ex_Lucas {
     long long S[K][M], P[K], Pk[K], Mt[K];
     int t;
-    
+
     void initialize(long long mod) {
         t = 0;
         long long m = mod;
@@ -3881,7 +3878,7 @@ namespace ex_Lucas {
             ++t;
         }
     }
-    
+
     long long f(long long n, long long p, long long mod, long long *S) {
         long long res = 1;
         while (n != 0) {
@@ -3890,7 +3887,7 @@ namespace ex_Lucas {
         }
         return res;
     }
-    
+
     long long g(long long n, long long p) {
         long long res = 0;
         while (n != 0) {
@@ -3899,7 +3896,7 @@ namespace ex_Lucas {
         }
         return res;
     }
-    
+
     long long combination(long long n, long long m) {
         long long res = 0;
         for (int i = 0; i < t; ++i) {
@@ -4281,7 +4278,6 @@ struct palindromic_automaton {
             p = Next[q][S[i] - 'a'];
         }
     }
-    
 };
 
 ```
@@ -4526,16 +4522,16 @@ struct general_suffix_automaton {
     static const int C = 26;
     int trans[2 * M][C], mxlen[2 * M], slink[2 * M], deg[2 * M], Q[2 * M];
     int tot;
-    
+
     void initialize() {
         tot = 1;
         memset(trans[1], 0, sizeof trans[1]);
     }
-    
+
     general_suffix_automaton() {
         initialize();
     }
-    
+
     int extend(int p, int c) {
         if (trans[p][c] != 0) {
             int r = trans[p][c];
@@ -4552,7 +4548,6 @@ struct general_suffix_automaton {
             }
             slink[r] = o;
             return o;
-            
         }
         int q = ++tot;
         mxlen[q] = mxlen[p] + 1;
@@ -4581,7 +4576,7 @@ struct general_suffix_automaton {
         }
         return q;
     }
-    
+
     void insert(char *S, int n) {
         int p = 1;
         for (int i = 1; i <= n; ++i) {
