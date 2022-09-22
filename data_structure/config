@@ -1,0 +1,8 @@
+<AVL> <avl.cpp>
+<Binary Indexed Tree> <binary_indexed_tree.cpp>
+<K-d Tree> <kd_tree.cpp>
+<Link-Cut Tree> <link_cut_tree.cpp>
+<Li Chao Segment Tree> <Li_Chao_segment_tree.cpp>
+<Segment Tree Beats> <segment_tree_beats.cpp>
+<Sparse Table> <Sparse_Table.cpp>
+<Treap> <treap.cpp>

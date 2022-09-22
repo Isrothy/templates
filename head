@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[Glenn]{fncychap}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{multicol}
+
+\title{University of Hong Kong}
+\author{jasison @ PolyU}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=c++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+\begin{document}
+\begin{titlepage}
+	\begin{center}
+		\vspace{3cm}
+		\includegraphics[width=3cm]{hku.pdf}\\
+		{\fontsize{25}{30}\selectfont University of Hong Kong\\}
+		{\fontsize{60}{60}\selectfont Team Name DDL Today\\}
+		\vspace{0.5cm}
+		{\huge Zhiheng Lyu, Baicheng Liu, Mingtian Yang\\}
+		\vfill
+		{\fontsize{21}{25}\selectfont The 2021 ICPC Asia Shanghai Regional Contest}\\
+		\vspace{0.5cm}
+		{\huge 2021-11-28}\\
+		\vspace{1cm}
+	\end{center}
+\thispagestyle{empty}
+\pagebreak
+\pagestyle{plain}
+\columnseprule=1pt
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+\end{titlepage}
+\begin{multicols}{2}

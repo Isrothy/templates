@@ -1,0 +1,5 @@
+<Bases> <Bases.cpp>
+<Berlekamp-Massey> <Berlekamp_Massey.cpp>
+<Determinant> <determinant.cpp>
+<Homogeneous Linear Recursion with Constant Coefficients> <homogeneous_linear_recursion_with_constant_coefficients.cpp>
+<Inverse Matrix> <inverse_matrix.cpp>
