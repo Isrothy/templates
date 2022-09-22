@@ -1,3 +1,7 @@
+#include <cmath>
+#include <iostream>
+const double EPS = 1e-10;
+
 int dcmp(double x) {
     if (x < -EPS) {
         return -1;
@@ -134,8 +138,9 @@ int intersection(Point const &A, Point const &B, Point const &C, Point const &D,
     return 1;
 }
 
-int line_segment_line_segment_intersection(Point const &A, Point const &B, Point const &C,
-                                           Point const &D, Point &O) {
+int line_segment_line_segment_intersection(
+    Point const &A, Point const &B, Point const &C, Point const &D, Point &O
+) {
     if (!intersection(A, B, C, D, O))
         return 0;
     return (int) (point_on_line_segment(O, A, B) == 1 && point_on_line_segment(O, C, D) == 1);
@@ -147,8 +152,9 @@ int point_in_triangle(Point const &P, Point const &A, Point const &B, Point cons
     return (int) (dcmp(s1, s2) == 0);
 }
 
-int circle_line_intersection(Point const &O, double r, Point const &A, Point const &B, Point &P1,
-                             Point &P2) {
+int circle_line_intersection(
+    Point const &O, double r, Point const &A, Point const &B, Point &P1, Point &P2
+) {
     Point H = projection(O, A, B);
     double tmp = r * r - (H - O).len2();
     int tmp1 = dcmp(tmp);
@@ -165,8 +171,9 @@ int circle_line_intersection(Point const &O, double r, Point const &A, Point con
     }
 }
 
-int circle_line_segment_intersection(Point const &O, double r, Point const &A, Point const &B,
-                                     Point &P1, Point &P2) {
+int circle_line_segment_intersection(
+    Point const &O, double r, Point const &A, Point const &B, Point &P1, Point &P2
+) {
     int tmp = circle_line_intersection(O, r, A, B, P1, P2);
     bool o1 = tmp >= 1 && dcmp(dot(P1 - A, P1 - B)) <= 0;
     bool o2 = tmp == 2 && dcmp(dot(P2 - A, P2 - B)) <= 0;
@@ -183,8 +190,9 @@ int circle_line_segment_intersection(Point const &O, double r, Point const &A, P
     return 0;
 }
 
-int circle_circle_intersection(Point const &O1, double r1, Point const &O2, double r2, Point &P1,
-                               Point &P2) {
+int circle_circle_intersection(
+    Point const &O1, double r1, Point const &O2, double r2, Point &P1, Point &P2
+) {
     if (O2 == O1) {
         return 0;
     }
@@ -207,7 +215,7 @@ int circle_circle_intersection(Point const &O1, double r1, Point const &O2, doub
 
 double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1, Point &P2) {
     double tmp = (O - A).len2();
-    if (dcmp(tmp, r * r) == -1){
+    if (dcmp(tmp, r * r) == -1) {
         return -1;
     }
     Point H = O + (A - O) * (r * r / tmp);
@@ -226,13 +234,21 @@ double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1,
     }
 }
 
-double external_co_tangent(Point const &O1, double r1, Point const &O2, double r2, Point &P1,
-                           Point &P2, Point &P3, Point &P4) {
-    if (r1 < r2){
+double external_co_tangent(
+    Point const &O1,
+    double r1,
+    Point const &O2,
+    double r2,
+    Point &P1,
+    Point &P2,
+    Point &P3,
+    Point &P4
+) {
+    if (r1 < r2) {
         return external_co_tangent(O2, r2, O1, r1, P3, P4, P1, P2);
     }
     double res = circle_point_tangent(O1, r1 - r2, O2, P1, P2);
-    if (res <= 0){
+    if (res <= 0) {
         return res;
     }
     Vector v1 = (P1 - O1).unit() * r2;

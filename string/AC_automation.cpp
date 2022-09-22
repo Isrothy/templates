@@ -1,5 +1,6 @@
-struct AC_automaton {
+#include <cstring>
 
+struct AC_automaton {
     static const int M = 100005;
     static const int C = 26;
 
@@ -11,9 +12,10 @@ struct AC_automaton {
         memset(Next[0], 0, sizeof Next[0]);
     }
 
-    int insert(char *S, int l) {
+    int insert(char *S) {
         int p = 0;
-        for (int i = 1; i <= l; ++i) {
+        int n = strlen(S);
+        for (int i = 0; i < n; ++i) {
             int &q = Next[p][S[i] - 'a'];
             if (q == 0) {
                 q = ++tot;

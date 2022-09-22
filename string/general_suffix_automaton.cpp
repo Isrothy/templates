@@ -1,18 +1,20 @@
+#include <cstring>
+
 struct general_suffix_automaton {
     static const int M = 1000005;
     static const int C = 26;
     int trans[2 * M][C], mxlen[2 * M], slink[2 * M], deg[2 * M], Q[2 * M];
     int tot;
-    
+
     void initialize() {
         tot = 1;
         memset(trans[1], 0, sizeof trans[1]);
     }
-    
+
     general_suffix_automaton() {
         initialize();
     }
-    
+
     int extend(int p, int c) {
         if (trans[p][c] != 0) {
             int r = trans[p][c];
@@ -29,7 +31,6 @@ struct general_suffix_automaton {
             }
             slink[r] = o;
             return o;
-            
         }
         int q = ++tot;
         mxlen[q] = mxlen[p] + 1;
@@ -58,10 +59,10 @@ struct general_suffix_automaton {
         }
         return q;
     }
-    
-    void insert(char *S, int n) {
-        int p = 1;
-        for (int i = 1; i <= n; ++i) {
+
+    void insert(char *S) {
+        int p = 1, n = strlen(S);
+        for (int i = 0; i < n; ++i) {
             p = extend(p, S[i] - 'a');
         }
     }

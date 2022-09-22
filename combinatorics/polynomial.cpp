@@ -5,32 +5,41 @@ int get_length(int n) {
     }
     return m;
 }
-
-void DFT(int *a, int n, int p) {
+void DFT(int *a, int n, int k) {
     static int w[M];
     for (int i = 0, j = 0; i < n; ++i) {
         if (i < j) {
             swap(a[i], a[j]);
         }
-        for (int k = n >> 1; (j ^= k) < k; k >>= 1);
+        int k = n >> 1;
+        while (true) {
+            j ^= k;
+            if (j >= k) {
+                break;
+            }
+            k >>= 1;
+        }
     }
     w[0] = 1;
     for (int i = 1; i < n; i <<= 1) {
-        long long wn = power(g, mod - 1 + p * (mod - 1) / (i << 1));
+        long long wn = power(g, mod - 1 + k * (mod - 1) / (i << 1));
         for (int j = i - 2; 0 <= j; j -= 2) {
             w[j] = w[j >> 1];
             w[j + 1] = w[j] * wn % mod;
         }
         for (int j = 0; j < n; j += i << 1) {
-            int *p = a + j, *q = a + i + j;
+            int *p = a + j, *q = a + i + j, *r = w;
             for (int k = 0; k < i; ++k) {
-                long long x = (long long) w[k] * q[k];
-                q[k] = (p[k] - x) % mod;
-                p[k] = (p[k] + x) % mod;
+                long long x = (long long) (*r) * (*q);
+                *q = (*p - x) % mod;
+                *p = (*p + x) % mod;
+                ++p;
+                ++q;
+                ++r;
             }
         }
     }
-    if (0 < p) {
+    if (0 < k) {
         return;
     }
     long long inv = power(n, mod - 2);

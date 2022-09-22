@@ -1,3 +1,5 @@
+#include <cstring>
+
 struct suffix_automaton {
     static const int M = 500005;
     static const int C = 26;
@@ -38,10 +40,11 @@ struct suffix_automaton {
         return q;
     }
 
-    void build(char *S, int n) {
-        int p = 1, l = 0, r = 0;
+    void build(char *S) {
+        int p = 1;
+        int n = strlen(S);
         tot = 1;
-        for (int i = 1; i <= n; ++i) {
+        for (int i = 0; i < n; ++i) {
             p = extend(p, S[i] - 'a');
         }
     }

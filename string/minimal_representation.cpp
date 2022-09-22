@@ -1,4 +1,8 @@
-int minimal_representation(char *S, int n) {
+#include <algorithm>
+#include <cstring>
+
+int minimal_representation(char *S) {
+    int n = strlen(S);
     int i = 0, j = 1, k = 0;
     while (i < n && j < n && k < n) {
         if (S[(i + k) % n] == S[(j + k) % n]) {
@@ -9,11 +13,11 @@ int minimal_representation(char *S, int n) {
             } else {
                 i += k + 1;
             }
-            if (i == j){
+            if (i == j) {
                 ++i;
             }
             k = 0;
         }
     }
-    return min(i, j);
+    return std::min(i, j);
 }
