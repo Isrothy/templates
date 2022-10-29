@@ -1,24 +1,13 @@
 int get_length(int n) {
     int m = 1;
-    while (m < n) {
-        m <<= 1;
-    }
+    while (m < n) { m <<= 1; }
     return m;
 }
 void DFT(int *a, int n, int k) {
     static int w[M];
     for (int i = 0, j = 0; i < n; ++i) {
-        if (i < j) {
-            swap(a[i], a[j]);
-        }
-        int k = n >> 1;
-        while (true) {
-            j ^= k;
-            if (j >= k) {
-                break;
-            }
-            k >>= 1;
-        }
+        if (i < j) { swap(a[i], a[j]); }
+        for (int k = n >> 1; (j ^= k) < k; k >>= 1);
     }
     w[0] = 1;
     for (int i = 1; i < n; i <<= 1) {
@@ -33,19 +22,13 @@ void DFT(int *a, int n, int k) {
                 long long x = (long long) (*r) * (*q);
                 *q = (*p - x) % mod;
                 *p = (*p + x) % mod;
-                ++p;
-                ++q;
-                ++r;
+                ++p; ++q; ++r;
             }
         }
     }
-    if (0 < k) {
-        return;
-    }
+    if (0 < k) { return; }
     long long inv = power(n, mod - 2);
-    for (int i = 0; i < n; ++i) {
-        a[i] = (long long) a[i] * inv % mod;
-    }
+    for (int i = 0; i < n; ++i) { a[i] = (long long) a[i] * inv % mod; }
 }
 void multiply(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
@@ -55,9 +38,7 @@ void multiply(int *A, int *B, int *C, int n, int m) {
     n = get_length(m);
     DFT(a, n, 1);
     DFT(b, n, 1);
-    for (int i = 0; i < n; ++i) {
-        a[i] = (long long) a[i] * b[i] % mod;
-    }
+    for (int i = 0; i < n; ++i) { a[i] = (long long) a[i] * b[i] % mod; }
     DFT(a, n, -1);
     copy(a, a + m, C);
     fill(a, a + n, 0);
@@ -68,14 +49,10 @@ void inverse(int *A, int *B, int m) {
     int n = get_length(m);
     b[0] = power(A[0], mod - 2);
     for (int i = 2; i <= n; i <<= 1) {
-        for (int j = 0; j < i; ++j) {
-            a[j] = j < m ? A[j] : 0;
-        }
+        for (int j = 0; j < i; ++j) { a[j] = j < m ? A[j] : 0; }
         DFT(a, i << 1, 1);
         DFT(b, i << 1, 1);
-        for (int j = 0; j < i << 1; ++j) {
-            b[j] = b[j] * (2 - (long long) b[j] * a[j] % mod) % mod;
-        }
+        for (int j = 0; j < i << 1; ++j) { b[j] = b[j] * (2 - (long long) b[j] * a[j] % mod) % mod; }
         DFT(b, i << 1, -1);
         fill(b + i, b + i + i, 0);
     }
@@ -90,9 +67,7 @@ void logarithm(int *A, int *B, int m) {
     inverse(A, b, m);
     DFT(a, n, 1);
     DFT(b, n, 1);
-    for (int i = 0; i < n; ++i) {
-        a[i] = (long long) a[i] * b[i] % mod;
-    }
+    for (int i = 0; i < n; ++i) { a[i] = (long long) a[i] * b[i] % mod; }
     DFT(a, n, -1);
     B[0] = 0;
     integral(a, B, m - 1);
@@ -105,15 +80,11 @@ void exponential(int *A, int *B, int m) {
     b[0] = 1;
     for (int i = 2; i <= n; i <<= 1) {
         logarithm(b, c, i);
-        for (int j = 0; j < i; ++j) {
-            a[j] = j < m ? A[j] : 0;
-        }
+        for (int j = 0; j < i; ++j) { a[j] = j < m ? A[j] : 0; }
         DFT(a, i << 1, 1);
         DFT(b, i << 1, 1);
         DFT(c, i << 1, 1);
-        for (int j = 0; j < i << 1; ++j) {
-            b[j] = (long long) b[j] * (1 + a[j] - c[j]) % mod;
-        }
+        for (int j = 0; j < i << 1; ++j) { b[j] = (long long) b[j] * (1 + a[j] - c[j]) % mod; }
         DFT(b, i << 1, -1);
         fill(b + i, b + i + i, 0);
     }
@@ -127,16 +98,12 @@ void square_root(int *A, int *B, int m) {
     int n = get_length(m);
     b[0] = quadratic_residue(A[0], mod);
     for (int i = 2; i <= n; i <<= 1) {
-        for (int j = 0; j < i; ++j) {
-            a[j] = j < m ? A[j] : 0;
-        }
+        for (int j = 0; j < i; ++j) { a[j] = j < m ? A[j] : 0; }
         inverse(b, c, i);
         DFT(a, i << 1, 1);
         DFT(b, i << 1, 1);
         DFT(c, i << 1, 1);
-        for (int j = 0; j < i << 1; ++j) {
-            b[j] = Inv[2] * (b[j] + (long long) a[j] * c[j] % mod) % mod;
-        }
+        for (int j = 0; j < i << 1; ++j) { b[j] = Inv[2] * (b[j] + (long long) a[j] * c[j] % mod) % mod; }
         DFT(b, i << 1, -1);
         fill(b + i, b + i + i, 0);
     }
@@ -147,9 +114,7 @@ void square_root(int *A, int *B, int m) {
 void power(int *A, int *B, int m, int k) {
     static int a[M];
     logarithm(A, a, m);
-    for (int i = 0; i < m; ++i) {
-        a[i] = (long long) a[i] * k % mod;
-    }
+    for (int i = 0; i < m; ++i) { a[i] = (long long) a[i] * k % mod; }
     exponential(a, a, m);
     copy(a, a + m, B);
 }

@@ -1,30 +1,16 @@
 struct Cp {
     double Re, Im;
-
-    inline Cp operator+(Cp const &_) const {
-        return {Re + _.Re, Im + _.Im};
-    }
-
-    inline Cp operator-(Cp const &_) const {
-        return {Re - _.Re, Im - _.Im};
-    }
-
-    inline Cp operator*(Cp const &_) const {
-        return {Re * _.Re - Im * _.Im, Re * _.Im + Im * _.Re};
-    }
-
-    inline Cp operator*(double _) const {
+    Cp operator+(Cp const &_) const { return {Re + _.Re, Im + _.Im}; }
+    Cp operator-(Cp const &_) const { return {Re - _.Re, Im - _.Im}; }
+    Cp operator*(Cp const &_) const { return {Re * _.Re - Im * _.Im, Re * _.Im + Im * _.Re}; }
+    Cp operator*(double _) const {
         return {Re * _, Im * _};
     }
 };
-
-
 void DFT(Cp *a, int n, int p) {
     static Cp w[M];
     for (int i = 0, j = 0; i < n; ++i) {
-        if (i < j) {
-            swap(a[i], a[j]);
-        }
+        if (i < j) { swap(a[i], a[j]); }
         for (int k = n >> 1; (j ^= k) < k; k >>= 1);
     }
     w[0] = {1, 0};
@@ -43,13 +29,9 @@ void DFT(Cp *a, int n, int p) {
             }
         }
     }
-    if (0 < p) {
-        return;
-    }
+    if (0 < p) { return; }
     int inv = 1.0 / n;
-    for (int i = 0; i < n; ++i){
-        a[i] = a[i] * inv;
-    }
+    for (int i = 0; i < n; ++i){ a[i] = a[i] * inv; }
 }
 
 void multiply(int *A, int *B, int *C, int n, int m, int mod) {

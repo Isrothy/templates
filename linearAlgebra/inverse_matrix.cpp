@@ -9,14 +9,9 @@ bool inverse_matrix(int A[M][M], int B[M][M], int n) {
     for (int i = 0; i < n; ++i) {
         int p = -1;
         for (int j = i; j < n; ++j) {
-            if (tmp[j][i] != 0) {
-                p = j;
-                break;
-            }
+            if (tmp[j][i] != 0) { p = j; break; }
         }
-        if (p == -1) {
-            return false;
-        }
+        if (p == -1) { return false; }
         for (int j = i; j < n; ++j) {
             swap(tmp[i][j], tmp[p][j]);
             swap(B[i][j], B[p][j]);

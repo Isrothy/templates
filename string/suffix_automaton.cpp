@@ -1,16 +1,10 @@
-#include <cstring>
-
 struct suffix_automaton {
-    static const int M = 500005;
-    static const int C = 26;
     int trans[2 * M][C], mxlen[2 * M], slink[2 * M], deg[2 * M], Q[2 * M];
     int tot;
-
     void clear() {
         tot = 1;
         memset(trans[1], 0, sizeof trans[1]);
     }
-
     int extend(int p, int c) {
         int q = ++tot;
         mxlen[q] = mxlen[p] + 1;
@@ -39,13 +33,10 @@ struct suffix_automaton {
         }
         return q;
     }
-
     void build(char *S) {
         int p = 1;
         int n = strlen(S);
         tot = 1;
-        for (int i = 0; i < n; ++i) {
-            p = extend(p, S[i] - 'a');
-        }
+        for (int i = 0; i < n; ++i) { p = extend(p, S[i] - 'a'); }
     }
 };

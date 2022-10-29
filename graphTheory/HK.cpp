@@ -1,19 +1,14 @@
 namespace HK {
     vector<int> E[M];
     int dx[M], dy[M], S[M], T[M], Q[M];
-
-    void add_edge(int u, int v) {
-        E[u].push_back(v);
-    }
-
+    void add_edge(int u, int v) { E[u].push_back(v); }
     bool BFS(int nl, int nr) {
         memset(dx, 0, sizeof(dx));
         memset(dy, 0, sizeof(dy));
         int head = 0, tail = 0;
         bool res = false;
         for (int u = 1; u <= nl; ++u) {
-            if (S[u] == 0)
-                Q[tail++] = u;
+            if (S[u] == 0) Q[tail++] = u;
         }
         while (head < tail) {
             int u = Q[head++];
@@ -23,8 +18,7 @@ namespace HK {
                     if (T[v] != 0) {
                         dx[T[v]] = dy[v];
                         Q[tail++] = T[v];
-                    } else
-                        res = true;
+                    } else res = true;
                 }
             }
         }
@@ -44,14 +38,10 @@ namespace HK {
         }
         return false;
     }
-
     int maximum_matching(int nl, int nr) {
         int res = 0;
         while (BFS(nl, nr)) {
-            for (int u = 1; u <= nl; ++u) {
-                if (S[u] == 0 && DFS(u))
-                    ++res;
-            }
+            for (int u = 1; u <= nl; ++u) { if (S[u] == 0 && DFS(u)) ++res; }
         }
         return res;
     }

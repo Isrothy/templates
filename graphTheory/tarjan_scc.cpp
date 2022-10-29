@@ -1,7 +1,6 @@
 vector<int> E[M];
 int dfn[M], low[M], sccno[M], stk[M];
 int dfs_clock, scc_cnt, top;
-
 void Tarjan(int u) {
     dfn[u] = low[u] = ++dfs_clock;
     stk[top++] = u;
@@ -18,9 +17,7 @@ void Tarjan(int u) {
         for (;;) {
             int v = stk[--top];
             sccno[v] = scc_cnt;
-            if (v == u) {
-                break;
-            }
+            if (v == u) { break; }
         }
     }
 }

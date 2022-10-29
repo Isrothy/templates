@@ -6,14 +6,11 @@ namespace Kth_SSP {
     struct node {
         heap *h;
         int val;
-
         bool operator>(node const &_) const {
             return val > _.val;
         }
     };
-    struct edge {
-        int to, id, cost;
-    };
+    struct edge { int to, id, cost; };
     heap pool[17 * M], *allc, *H[N], *tmp[N];
     vector<edge> E[N], R[N];
     int A[N], dis[N], pre[N], deg[N], tree_edge[N];
@@ -24,21 +21,12 @@ namespace Kth_SSP {
         R[v].push_back((edge){u, edge_cnt, c});
     }
     heap *merge(heap *p, heap *q) {
-        if (p == nullptr) {
-            return q;
-        }
-        if (q == nullptr) {
-            return p;
-        }
-        if (q->val < p->val) {
-            swap(p, q);
-        }
-        heap *r = allc++;
-        *r = *p;
+        if (p == nullptr) { return q; }
+        if (q == nullptr) { return p; }
+        if (q->val < p->val) { swap(p, q); }
+        heap *r = new heap(*p);
         r->ch[1] = merge(r->ch[1], q);
-        if (r->ch[0] == nullptr || r->ch[0]->dis < r->ch[1]->dis) {
-            swap(r->ch[0], r->ch[1]);
-        }
+        if (r->ch[0] == nullptr || r->ch[0]->dis < r->ch[1]->dis) { swap(r->ch[0], r->ch[1]); }
         r->dis = r->ch[0]->dis + 1;
         return r;
     }
@@ -55,8 +43,7 @@ namespace Kth_SSP {
             pair<double, int> p = Q.top();
             Q.pop();
             int u = p.second;
-            if (dis[u] != p.first)
-                continue;
+            if (dis[u] != p.first) continue;
             A[sz++] = u;
             for (auto e: R[u]) {
                 int v = e.to, d = p.first + e.cost;
@@ -72,12 +59,8 @@ namespace Kth_SSP {
     }
     int calc(int S, int T, int n, int k) {
         int m = Dijkstra(S, T, n);
-        if (dis[S] == INF) {
-            return -1;
-        }
-        if (S != T && --k == 0) {
-            return dis[S];
-        }
+        if (dis[S] == INF) { return -1; }
+        if (S != T && --k == 0) { return dis[S]; }
         allc = pool;
         for (int i = 0; i < m; ++i) {
             int u = A[i], sz = 0;
@@ -91,29 +74,19 @@ namespace Kth_SSP {
                 return p->val > q->val;
             });
             for (int j = sz; 0 < j; --j) {
-                if ((j << 1) <= sz) {
-                    tmp[j]->ch[0] = tmp[j << 1];
-                }
-                if ((j << 1 | 1) <= sz) {
-                    tmp[j]->ch[1] = tmp[j << 1 | 1];
-                }
+                if ((j << 1) <= sz) { tmp[j]->ch[0] = tmp[j << 1]; }
+                if ((j << 1 | 1) <= sz) { tmp[j]->ch[1] = tmp[j << 1 | 1]; }
                 tmp[j]->dis = tmp[j]->ch[0] == nullptr ? 1 : tmp[j]->ch[0]->dis + 1;
             }
             H[u] = sz == 0 ? nullptr : tmp[1];
-            if (pre[u] != 0) {
-                H[u] = merge(H[u], H[pre[u]]);
-            }
+            if (pre[u] != 0) { H[u] = merge(H[u], H[pre[u]]); }
         }
         priority_queue<node, vector<node>, greater<node>> Q;
-        if (H[S] != nullptr) {
-            Q.push((node){H[S], dis[S] + H[S]->val});
-        }
+        if (H[S] != nullptr) { Q.push((node){H[S], dis[S] + H[S]->val}); }
         while (!Q.empty()) {
             node p = Q.top();
             Q.pop();
-            if (--k == 0) {
-                return p.val;
-            }
+            if (--k == 0) { return p.val; }
             if (p.h->ch[0] != nullptr) {
                 Q.push((node){p.h->ch[0], p.val - p.h->val + p.h->ch[0]->val});
             }

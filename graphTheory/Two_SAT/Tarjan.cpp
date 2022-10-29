@@ -3,14 +3,12 @@ namespace Two_SAT {
     int dfn[2 * M], low[2 * M], sccno[2 * M], stk[2 * M];
     int deg[2 * M], topono[2 * M], Q[2 * M];
     int dfs_clock, scc_cnt, top;
-    
     void add_clause(int u, bool f1, int v, bool f2) {
         u = u << 1 | f1;
         v = v << 1 | f2;
         E[u ^ 1].push_back(v);
         E[v ^ 1].push_back(u);
     }
-    
     void Tarjan(int u) {
         dfn[u] = low[u] = ++dfs_clock;
         stk[top++] = u;
@@ -33,21 +31,15 @@ namespace Two_SAT {
             }
         }
     }
-    
     bool query(int u) {
         return topono[sccno[u << 1]] < topono[sccno[u << 1 | 1]];
     }
-    
     bool check(int n) {
         for (int u = 0; u < 2 * n; ++u) {
-            if (dfn[u] == 0) {
-                Tarjan(u);
-            }
+            if (dfn[u] == 0) { Tarjan(u); }
         }
         for (int u = 0; u < n; ++u) {
-            if (sccno[u << 1] == sccno[u << 1 | 1]) {
-                return false;
-            }
+            if (sccno[u << 1] == sccno[u << 1 | 1]) { return false; }
         }
         for (int u = 0; u < 2 * n; ++u) {
             for (auto v : E[u]) {

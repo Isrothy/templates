@@ -1,11 +1,9 @@
 bool cmp_x(Point const &A, Point const &B) {
     return A.x == B.x ? A.y < B.y : A.x < B.x;
 }
-
 bool cmp_y(Point const &A, Point const &B) {
     return A.y == B.y ? A.x < B.x : A.y < B.y;
 }
-
 void divide_and_conquer(Point *A, int l, int r, double &res) {
     if (r - l < 3) {
         for (int i = l; i < r; ++i) {
@@ -33,7 +31,6 @@ void divide_and_conquer(Point *A, int l, int r, double &res) {
         B[k++] = A[i];
     }
 }
-
 double closest_pair_of_points(Point *A, int n) {
     sort(A, A + n, cmp_x);
     double res = 1e30;

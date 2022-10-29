@@ -2,20 +2,17 @@ namespace SSP {
     struct edge {
         int from, to, cap, cost, flow;
     };
-
     edge edges[2 * M];
     vector<int> E[N];
     int Q[N], dis[N], cur[N];
     bool in_queue[N], vis[N];
     int edge_cnt;
-
     void add_edge(int u, int v, int cap, int cost) {
         edges[edge_cnt] = (edge){u, v, cap, cost, 0};
         E[u].push_back(edge_cnt++);
         edges[edge_cnt] = (edge){v, u, 0, -cost, 0};
         E[v].push_back(edge_cnt++);
     }
-
     bool SPFA(int S, int T) {
         int head = 0, tail = 0;
         memset(in_queue, 0, sizeof in_queue);
@@ -39,11 +36,8 @@ namespace SSP {
         }
         return dis[S] != INF;
     }
-
     int DFS(int u, int T, int a) {
-        if (u == T) {
-            return a;
-        }
+        if (u == T) { return a; }
         vis[u] = true;
         int m = a;
         for (int i = 0; i < (int) E[u].size(); ++i) {
@@ -53,14 +47,11 @@ namespace SSP {
                 e.flow += f;
                 edges[E[u][i] ^ 1].flow -= f;
                 a -= f;
-                if (a == 0) {
-                    return m;
-                }
+                if (a == 0) { return m; }
             }
         }
         return m - a;
     }
-
     pair<int, int> minimum_cost_flow(int S, int T) {
         int flow = 0, cost = 0;
         while (SPFA(S, T)) {

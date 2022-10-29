@@ -1,4 +1,5 @@
-<FWT> <FWT.cpp>
-<MTT> <MTT.cpp>
 <polynomial> <polynomial.cpp>
 <modular> <modular.cpp>
+<Euclidean like> <Euclidean_like.cpp>
+<MTT> <MTT.cpp>
+<FWT> <FWT.cpp>

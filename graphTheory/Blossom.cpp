@@ -2,11 +2,8 @@ namespace Blossom{
     vector<int> E[M];
     int mate[M], link[M], label[M], fa[M], Q[M];
     int head, tail;
-    
     int find(int x) {
-        if (x == fa[x]) {
-            return x;
-        }
+        if (x == fa[x]) { return x; }
         fa[x] = find(fa[x]);
         return fa[x];
     }
@@ -26,7 +23,6 @@ namespace Blossom{
         }
         return u;
     }
-    
     void blossom(int u, int v, int w) {
         while (find(u) != w) {
             link[u] = v;
@@ -39,7 +35,6 @@ namespace Blossom{
             u = link[v];
         }
     }
-    
     bool BFS(int S, int n) {
         head = tail = 0;
         for (int i = 1; i <= n; ++i) {
@@ -75,7 +70,6 @@ namespace Blossom{
         }
         return false;
     }
-    
     int maximum_matching(int n) {
         int res = 0;
         for (int u = 1; u <= n; ++u) {

@@ -1,10 +1,10 @@
-<BSGS> <BSGS.cpp>
 <CRT> <CRT.cpp>
-<ex-BSGS> <ex_BSGS.cpp>
 <ex-CRT> <ex_crt.cpp>
+<BSGS> <BSGS.cpp>
+<ex-BSGS> <ex_BSGS.cpp>
 <ex-Lucas> <ex_Lucas.cpp>
+<Primitive root> <primitive_root.cpp>
 <Miller-Rabin> <Miller_Rabin.cpp>
 <Pollard's Rho> <Pollard_Rho.cpp>
-<Primitive Root> <primitive_root.cpp>
 <Sieve of Euler> <sieve_of_Euler.cpp>
 <Sieve of Min 25> <sieve_of_Min_25.cpp>

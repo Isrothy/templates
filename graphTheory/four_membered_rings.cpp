@@ -9,25 +9,17 @@ int four_membered_rings(vector<int> *E, int n) {
     }
     for (int u = 1; u <= n; ++u) {
         for (auto v: E[u]) {
-            if (Rank[u] < Rank[v]) {
-                F[u].push_back(v);
-            }
+            if (Rank[u] < Rank[v]) { F[u].push_back(v); }
         }
     }
     int res = 0;
-    for (int u = 1; u <= n; ++u) {
-        for (auto v: E[u]) {
-            for (auto w: F[v]) {
-                if (Rank[u] < Rank[w]) {
-                    if (vis_time[w] < u) {
-                        vis_time[w] = u;
-                        cnt[w] = 0;
-                    }
-                    res = (res + cnt[w]) % mod;
-                    ++cnt[w];
-                }
-            }
+    for (int u = 1; u <= n; ++u)  for (auto v: E[u]) for (auto w: F[v]) if (Rank[u] < Rank[w]) {
+        if (vis_time[w] < u) {
+            vis_time[w] = u;
+            cnt[w] = 0;
         }
+        res = (res + cnt[w]) % mod;
+        ++cnt[w];
     }
     return res;
 }

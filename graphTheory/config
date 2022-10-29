@@ -2,14 +2,14 @@
 <Dinic> <Dinic.cpp>
 <SSP> <SSP.cpp>
 <DMST> <DMST.cpp>
+<Steiner Minimum Tree> <Steiner_Minimum_Tree.cpp>
+<Gomory Hu Tree> <Gomory_Hu_Tree.cpp>
 <Four Membered Rings> <four_membered_rings.cpp>
 <Three Membered Rings> <three_membered_rings.cpp>
 <HK> <HK.cpp>
 <KM> <KM.cpp>
-<Johnson> <Johnson.cpp>
 <Kth Ancestor> <kth_ancestor.cpp>
 <Kth Shortest Path> <kth_shortest_path.cpp>
-<Steiner Minimum Tree> <Steiner_Minimum_Tree.cpp>
 <Tarjan's BCC> <tarjan_bcc.cpp>
 <Tarjan's EBC> <tarjan_ebc.cpp>
 <Tarjan's SCC> <tarjan_scc.cpp>
