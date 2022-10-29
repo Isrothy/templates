@@ -1,7 +1,6 @@
 #include <cmath>
 #include <iostream>
 const double EPS = 1e-10;
-
 int dcmp(double x) {
     if (x < -EPS) {
         return -1;
@@ -11,7 +10,6 @@ int dcmp(double x) {
     }
     return 0;
 }
-
 int dcmp(double x, double y) {
     if (x - y < -EPS) {
         return -1;
@@ -21,60 +19,37 @@ int dcmp(double x, double y) {
     }
     return 0;
 }
-
 struct Point {
     double x, y;
-
     double len2() const {
         return x * x + y * y;
     }
-
     double len() const {
         return sqrt(len2());
     }
-
     Point operator+(Point const &_) const {
         return (Point){x + _.x, y + _.y};
     }
-
     Point operator-(Point const &_) const {
         return (Point){x - _.x, y - _.y};
     }
-
     Point operator*(double p) const {
         return (Point){x * p, y * p};
     }
-
     Point operator/(double p) const {
         return (Point){x / p, y / p};
     }
-
     bool operator==(Point const &_) const {
         return dcmp(x, _.x) == 0 && dcmp(y, _.y) == 0;
     }
-
     Point unit() const {
         return *this / len();
     }
-
     double angle() const {
         return atan2(y, x);
     }
-
     Point normal() const {
         return (Point){-y, x};
-    }
-
-    void read() {
-        scanf("%lf%lf", &x, &y);
-    }
-
-    void write() const {
-        printf("%lf %lf ", x, y);
-    }
-
-    void writeln() const {
-        printf("%lf %lf\n", x, y);
     }
 };
 
@@ -83,28 +58,22 @@ typedef Point Vector;
 Point operator*(double p, Point const &_) {
     return (Point){p * _.x, p * _.y};
 }
-
 double dot(Vector const &A, Vector const &B) {
     return A.x * B.x + A.y * B.y;
 }
-
 double det(Vector const &A, Vector const &B) {
     return A.x * B.y - A.y * B.x;
 }
-
 Point middle(Point const &A, Point const &B) {
     return 0.5 * (A + B);
 }
-
 double point_line_distance(Point const &P, Point const &A, Point const &B) {
     Vector v1 = B - A, v2 = P - A;
     return fabs(det(v1, v2) / v1.len());
 }
-
 int point_on_line_segment(Point const &P, Point const &A, Point const &B) {
     return (int) (dcmp(det(A - P, B - P)) == 0 && dcmp(dot(A - P, B - P)) <= 0);
 }
-
 double point_line_segment_distance(Point const &P, Point const &A, Point const &B) {
     if (A == B) {
         return (P - A).len();
@@ -118,16 +87,13 @@ double point_line_segment_distance(Point const &P, Point const &A, Point const &
     }
     return det(v1, v2) / v1.len();
 }
-
 Point projection(Point const &P, Point const &A, Point const &B) {
     Vector v = B - A;
     return A + v * (dot(v, P - A) / v.len2());
 }
-
 Point symmetry(Point const &P, Point const &A, Point const &B) {
     return 2 * projection(P, A, B) - P;
 }
-
 int intersection(Point const &A, Point const &B, Point const &C, Point const &D, Point &O) {
     if (dcmp(det(B - A, D - C)) == 0) {
         return 0;
@@ -137,7 +103,6 @@ int intersection(Point const &A, Point const &B, Point const &C, Point const &D,
     O = A + (B - A) * (s1 / (s1 + s2));
     return 1;
 }
-
 int line_segment_line_segment_intersection(
     Point const &A, Point const &B, Point const &C, Point const &D, Point &O
 ) {
@@ -145,13 +110,11 @@ int line_segment_line_segment_intersection(
         return 0;
     return (int) (point_on_line_segment(O, A, B) == 1 && point_on_line_segment(O, C, D) == 1);
 }
-
 int point_in_triangle(Point const &P, Point const &A, Point const &B, Point const &C) {
     double s1 = det(A - P, B - P) + det(B - P, C - P) + det(C - P, A - P);
     double s2 = det(A - B, C - B);
     return (int) (dcmp(s1, s2) == 0);
 }
-
 int circle_line_intersection(
     Point const &O, double r, Point const &A, Point const &B, Point &P1, Point &P2
 ) {
@@ -170,7 +133,6 @@ int circle_line_intersection(
         return 2;
     }
 }
-
 int circle_line_segment_intersection(
     Point const &O, double r, Point const &A, Point const &B, Point &P1, Point &P2
 ) {
@@ -189,7 +151,6 @@ int circle_line_segment_intersection(
     }
     return 0;
 }
-
 int circle_circle_intersection(
     Point const &O1, double r1, Point const &O2, double r2, Point &P1, Point &P2
 ) {
@@ -212,7 +173,6 @@ int circle_circle_intersection(
         return 2;
     }
 }
-
 double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1, Point &P2) {
     double tmp = (O - A).len2();
     if (dcmp(tmp, r * r) == -1) {
@@ -233,7 +193,6 @@ double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1,
         return (A - P1).len();
     }
 }
-
 double external_co_tangent(
     Point const &O1,
     double r1,

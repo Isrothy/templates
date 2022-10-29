@@ -3,7 +3,6 @@ namespace Kth_SSP {
         int val, to, dis;
         heap *ch[2];
     };
-
     struct node {
         heap *h;
         int val;
@@ -12,22 +11,18 @@ namespace Kth_SSP {
             return val > _.val;
         }
     };
-
     struct edge {
         int to, id, cost;
     };
-
     heap pool[17 * M], *allc, *H[N], *tmp[N];
     vector<edge> E[N], R[N];
     int A[N], dis[N], pre[N], deg[N], tree_edge[N];
     int edge_cnt;
-
     void add_edge(int u, int v, int c) {
         ++edge_cnt;
         E[u].push_back((edge){v, edge_cnt, c});
         R[v].push_back((edge){u, edge_cnt, c});
     }
-
     heap *merge(heap *p, heap *q) {
         if (p == nullptr) {
             return q;
@@ -47,7 +42,6 @@ namespace Kth_SSP {
         r->dis = r->ch[0]->dis + 1;
         return r;
     }
-
     int Dijkstra(int S, int T, int n) {
         for (int u = 1; u <= n; ++u) {
             dis[u] = INF;
@@ -76,7 +70,6 @@ namespace Kth_SSP {
         }
         return sz;
     }
-
     int calc(int S, int T, int n, int k) {
         int m = Dijkstra(S, T, n);
         if (dis[S] == INF) {
@@ -134,4 +127,4 @@ namespace Kth_SSP {
         }
         return -1;
     }
-}// namespace Kth_SSP
+}

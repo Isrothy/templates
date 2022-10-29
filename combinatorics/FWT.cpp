@@ -8,7 +8,6 @@ void FWT_or(int *a, int n) {
         }
     }
 }
-
 void IFWT_or(int *a, int n) {
     for (int i = 1; i < 1 << n; i <<= 1) {
         for (int j = 0; j < 1 << n; j += i << 1) {
@@ -19,7 +18,6 @@ void IFWT_or(int *a, int n) {
         }
     }
 }
-
 void FWT_and(int *a, int n) {
     for (int i = 1; i < 1 << n; i <<= 1) {
         for (int j = 0; j < 1 << n; j += i << 1) {
@@ -30,7 +28,6 @@ void FWT_and(int *a, int n) {
         }
     }
 }
-
 void IFWT_and(int *a, int n) {
     for (int i = 1; i < 1 << n; i <<= 1) {
         for (int j = 0; j < 1 << n; j += i << 1) {
@@ -41,7 +38,6 @@ void IFWT_and(int *a, int n) {
         }
     }
 }
-
 void FWT_xor(int *a, int n) {
     for (int i = 1; i < 1 << n; i <<= 1) {
         for (int j = 0; j < 1 << n; j += i << 1) {
@@ -54,7 +50,6 @@ void FWT_xor(int *a, int n) {
         }
     }
 }
-
 void IFWT_xor(int *a, int n) {
     int w = (mod + 1) / 2;
     for (int i = 1; i < 1 << n; i <<= 1) {

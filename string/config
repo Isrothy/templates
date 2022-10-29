@@ -1,4 +1,4 @@
-<AC Automaton> <AC_ automaton.cpp>
+<AC Automaton> <AC_automaton.cpp>
 <Lyndon decomposition> <Lyndon_decomposition.cpp>
 <General Suffix Automaton> <general_suffix_automaton.cpp>
 <Manacher> <Manacher.cpp>

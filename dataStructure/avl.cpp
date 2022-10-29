@@ -1,7 +1,6 @@
 struct avl {
     int val, size, height;
     avl *ch[2];
-    
     void push_up() {
         size = height = 1;
         if (ch[0] != nullptr) {
@@ -14,17 +13,13 @@ struct avl {
         }
     }
 };
-
 avl pool[M], *allc = pool;
-
 int Size(avl *p) {
     return p == nullptr ? 0 : p->size;
 }
-
 int Height(avl *p) {
     return p == nullptr ? 0 : p->height;
 }
-
 avl *rotate(avl *p, bool f) {
     avl *q = p->ch[f];
     p->ch[f] = q->ch[!f];
@@ -32,7 +27,6 @@ avl *rotate(avl *p, bool f) {
     p->push_up();
     return q;
 }
-
 avl *maintain(avl *p) {
     if (Height(p->ch[0]) - Height(p->ch[1]) == 2) {
         if (Height(p->ch[0]->ch[0]) >= Height(p->ch[0]->ch[1])) {
@@ -52,7 +46,6 @@ avl *maintain(avl *p) {
     p->push_up();
     return p;
 }
-
 avl *insert(avl *p, int x) {
     if (p == nullptr) {
         *allc = (avl) {x, 1, 1, {nullptr, nullptr}};
@@ -63,7 +56,6 @@ avl *insert(avl *p, int x) {
     p->push_up();
     return maintain(p);
 }
-
 avl *erase(avl *p, int x) {
     if (p->val == x) {
         if (p->ch[0] == nullptr || p->ch[1] == nullptr) {

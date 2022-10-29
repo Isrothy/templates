@@ -2,10 +2,8 @@ struct treap {
     int val, size;
     unsigned long long pri;
     treap *ch[2];
-    
     void push_up() {
         size = 1;
-        
         if (ch[0] != nullptr) {
             size += ch[0]->size;
         }
@@ -13,21 +11,13 @@ struct treap {
             size += ch[1]->size;
         }
     }
-    
-    void push_down() {
-    }
 };
-
 typedef pair<treap *, treap *> ptt;
-
 treap pool[M], *allc = pool;
-
 mt19937_64 mt_rand(time(NULL));
-
 int Size(treap *p) {
     return p == nullptr ? 0 : p->size;
 }
-
 treap *rotate(treap *p, bool f) {
     treap *q = p->ch[f];
     p->ch[f] = q->ch[!f];
@@ -35,7 +25,6 @@ treap *rotate(treap *p, bool f) {
     p->push_up();
     return q;
 }
-
 treap *insert(treap *p, int x) {
     if (p == nullptr) {
         *allc = (treap) {x, 1, mt_rand(), {nullptr, nullptr}};
@@ -49,7 +38,6 @@ treap *insert(treap *p, int x) {
     p->push_up();
     return p;
 }
-
 treap *erase(treap *p, int x) {
     if (x == p->val) {
         if (p->ch[0] == nullptr || p->ch[1] == nullptr) {
@@ -65,7 +53,6 @@ treap *erase(treap *p, int x) {
     p->push_up();
     return p;
 }
-
 int index(treap *p, int x) {
     int res = 1;
     while (p != nullptr) {
@@ -78,7 +65,6 @@ int index(treap *p, int x) {
     }
     return res;
 }
-
 int kth(treap *p, int k) {
     for (;;) {
         int s = Size(p->ch[0]);
@@ -94,7 +80,6 @@ int kth(treap *p, int k) {
         }
     }
 }
-
 int pre(treap *p, int x) {
     int res = -1;
     while (p != nullptr) {
@@ -107,7 +92,6 @@ int pre(treap *p, int x) {
     }
     return res;
 }
-
 int nxt(treap *p, int x) {
     int res = -1;
     while (p != nullptr) {
@@ -120,7 +104,6 @@ int nxt(treap *p, int x) {
     }
     return res;
 }
-
 treap *merge(treap *p, treap *q) {
     if (p == nullptr) {
         return q;
@@ -140,7 +123,6 @@ treap *merge(treap *p, treap *q) {
         return q;
     }
 }
-
 ptt split(treap *p, int k) {
     if (p == nullptr) {
         return make_pair(nullptr, nullptr);
@@ -158,7 +140,6 @@ ptt split(treap *p, int k) {
         return make_pair(p, o.second);
     }
 }
-
 ptt split_by_value(treap *p, int v) {
     if (p == nullptr) {
         return make_pair(nullptr, nullptr);
@@ -175,7 +156,6 @@ ptt split_by_value(treap *p, int v) {
         return make_pair(p, o.second);
     }
 }
-
 treap *heuristic_merge(treap *p, treap *q) {
     if (p == nullptr) {
         return q;

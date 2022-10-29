@@ -4,7 +4,6 @@ struct kd_tree {
     int x, y, val, sum, sz;
     int x_max, x_min, y_max, y_min;
     kd_tree *ch[2];
-
     void push_up() {
         sz = 1;
         sum = val;
@@ -22,9 +21,7 @@ struct kd_tree {
         }
     }
 };
-
 kd_tree pool[M], *allc = pool;
-
 kd_tree *build(kd_tree **p, int l, int r, int D = 1) {
     if (r < l)
         return nullptr;
@@ -42,7 +39,6 @@ kd_tree *build(kd_tree **p, int l, int r, int D = 1) {
     root->push_up();
     return root;
 }
-
 int query(kd_tree *p, int x1, int y1, int x2, int y2) {
     if (p == nullptr) {
         return 0;
@@ -59,7 +55,6 @@ int query(kd_tree *p, int x1, int y1, int x2, int y2) {
     }
     return s + query(p->ch[0], x1, y1, x2, y2) + query(p->ch[1], x1, y1, x2, y2);
 }
-
 kd_tree *rebuild(kd_tree *p, int D) {
     static kd_tree *Q[M];
     int head = 0, tail = 0;
@@ -75,7 +70,6 @@ kd_tree *rebuild(kd_tree *p, int D) {
     }
     return build(Q, 0, tail - 1, D);
 }
-
 void insert(kd_tree *&p, int x, int y, int a, int D = 1) {
     if (p == nullptr) {
         p = allc++;

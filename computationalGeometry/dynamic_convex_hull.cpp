@@ -1,20 +1,16 @@
 struct dynamic_convex_hull {
-
     struct cmp1 {
         bool operator()(Point A, Point B) {
             return A.x == B.x ? A.y < B.y : A.x < B.x;
         }
     };
-
     struct cmp2 {
         bool operator()(Point const &A, Point const &B) {
             return A.x == B.x ? A.y > B.y : A.x > B.x;
         }
     };
-
     set<Point, cmp1> L;
     set<Point, cmp2> U;
-
     template<typename T>
     bool contain(T &S, Point const &P) {
         if (S.size() < 2) {
@@ -23,7 +19,6 @@ struct dynamic_convex_hull {
         typename T::iterator i = S.lower_bound(P);
         return *i == P || (i != S.end() && i != S.begin() && dcmp(det(*prev(i) - P, *i - P)) >= 0);
     }
-
     template<typename T>
     void insert(T &S, Point const &P) {
         if (contain(S, P)) {
@@ -52,11 +47,9 @@ struct dynamic_convex_hull {
             }
         }
     }
-
     bool contain(Point const &P) {
         return contain(L, P) && contain(U, P);
     }
-
     void insert(Point const &P) {
         insert(L, P);
         insert(U, P);

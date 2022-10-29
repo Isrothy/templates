@@ -1,8 +1,4 @@
-<Euclidean Like> <Euclidean-like.cpp>
-<Euclidean Like Pro> <Euclidean-like-pro.cpp>
-<Evaluation> <evaluation.cpp>
 <FWT> <FWT.cpp>
-<interpolation> <interpolation.cpp>
-<modular> <modular.cpp>
 <MTT> <MTT.cpp>
 <polynomial> <polynomial.cpp>
+<modular> <modular.cpp>

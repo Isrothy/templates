@@ -1,11 +1,9 @@
 vector<int> E[M], R[M], Q[M];
 int par[M], dfn[M], vertices[M], Fa[M], idom[M], sdom[M], val[M];
 int dfs_clock;
-
 bool cmp(int u, int v) {
     return dfn[u] < dfn[v];
 }
-
 int Find(int u) {
     if (u == Fa[u]) {
         return u;
@@ -19,7 +17,6 @@ int Find(int u) {
     }
     return Fa[u];
 }
-
 void dfs(int u) {
     dfn[u] = ++dfs_clock;
     vertices[dfs_clock] = u;
@@ -30,7 +27,6 @@ void dfs(int u) {
         }
     }
 }
-
 void Lengauer_Tarjan(int root) {
     dfs(root);
     for (int u = 1; u <= n; ++u) {

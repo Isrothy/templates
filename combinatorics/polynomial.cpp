@@ -47,7 +47,6 @@ void DFT(int *a, int n, int k) {
         a[i] = (long long) a[i] * inv % mod;
     }
 }
-
 void multiply(int *A, int *B, int *C, int n, int m) {
     static int a[M], b[M];
     copy(A, A + n, a);
@@ -64,20 +63,6 @@ void multiply(int *A, int *B, int *C, int n, int m) {
     fill(a, a + n, 0);
     fill(b, b + n, 0);
 }
-
-void derivative(int *A, int *B, int n) {
-    for (int i = 1; i < n; ++i) {
-        B[i - 1] = (long long) A[i] * i % mod;
-    }
-}
-
-void integral(int *A, int *B, int n) {
-    for (int i = n; i != 0; --i) {
-        B[i] = (long long) A[i - 1] * Inv[i] % mod;
-    }
-    B[0] = 0;
-}
-
 void inverse(int *A, int *B, int m) {
     static int a[M], b[M];
     int n = get_length(m);
@@ -98,7 +83,6 @@ void inverse(int *A, int *B, int m) {
     fill(a, a + (n << 1), 0);
     fill(b, b + (n << 1), 0);
 }
-
 void logarithm(int *A, int *B, int m) {
     static int a[M], b[M];
     int n = get_length(m * 2);
@@ -115,7 +99,6 @@ void logarithm(int *A, int *B, int m) {
     fill(a, a + n, 0);
     fill(b, b + n, 0);
 }
-
 void exponential(int *A, int *B, int m) {
     static int a[M], b[M], c[M];
     int n = get_length(m);
@@ -139,7 +122,6 @@ void exponential(int *A, int *B, int m) {
     fill(b, b + (n << 1), 0);
     fill(c, c + (n << 1), 0);
 }
-
 void square_root(int *A, int *B, int m) {
     static int a[M], b[M], c[M];
     int n = get_length(m);
@@ -162,7 +144,6 @@ void square_root(int *A, int *B, int m) {
     fill(a, a + (n << 1), 0);
     fill(b, b + (n << 1), 0);
 }
-
 void power(int *A, int *B, int m, int k) {
     static int a[M];
     logarithm(A, a, m);

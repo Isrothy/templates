@@ -1,23 +1,20 @@
 <Blossom> <Blossom.cpp>
 <Dinic> <Dinic.cpp>
+<SSP> <SSP.cpp>
 <DMST> <DMST.cpp>
-<Domination Tree> <Domination_tree.cpp>
-<Forest Data Structure> <forest_data_structure.cpp>
 <Four Membered Rings> <four_membered_rings.cpp>
-<Gomory-Hu Tree> <Gomory_Hu_Tree.cpp>
+<Three Membered Rings> <three_membered_rings.cpp>
 <HK> <HK.cpp>
-<Johnson> <Johnson.cpp>
 <KM> <KM.cpp>
+<Johnson> <Johnson.cpp>
 <Kth Ancestor> <kth_ancestor.cpp>
 <Kth Shortest Path> <kth_shortest_path.cpp>
-<SSP> <SSP.cpp>
 <Steiner Minimum Tree> <Steiner_Minimum_Tree.cpp>
-<Stoer Wagner> <Stoer_Wagner.cpp>
 <Tarjan's BCC> <tarjan_bcc.cpp>
 <Tarjan's EBC> <tarjan_ebc.cpp>
 <Tarjan's SCC> <tarjan_scc.cpp>
-<Three Membered Rings> <three_membered_rings.cpp>
-<Eulor Path (Directed)> <Eulor path/direct_path.cpp>
-<Eulor Path (Undirected)> <Eulor path/undirected_graph.cpp>
+<Circle Square Tree> <circle_square_tree.cpp>
+<Eulor Path (Directed)> <Eulor_path/directed_path.cpp>
+<Eulor Path (Undirected)> <Eulor_path/undirected_graph.cpp>
 <2-SAT (DFS)> <Two_SAT/DFS.cpp>
 <2-SAT (Tarjan)> <Two_SAT/Tarjan.cpp>
