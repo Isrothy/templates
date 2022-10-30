@@ -1,5 +1,6 @@
 <polynomial> <polynomial.cpp>
 <modular> <modular.cpp>
 <Euclidean like> <Euclidean_like.cpp>
+<Euclidean like pro> <Euclidean_like_pro.cpp>
 <MTT> <MTT.cpp>
 <FWT> <FWT.cpp>

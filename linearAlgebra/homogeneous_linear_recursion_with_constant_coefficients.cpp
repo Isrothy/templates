@@ -1,4 +1,6 @@
-int homogeneous_linear_recursion_with_constant_coefficients(int *A, int *f, int k, int n) {
+int homogeneous_linear_recursion_constant_coefficients(
+    int *A, int *f, int k, int n)
+{
     static int a[M], b[M], c[M];
     for (int i = 0; i < k; ++i) {
         a[i] = -f[k - i];

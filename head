@@ -1,57 +1,11 @@
-\documentclass[a4paper]{article}
-\usepackage[margin=0.1in]{geometry}
-\usepackage[Glenn]{fncychap}
-\usepackage{listings}
-\usepackage{color}
-\usepackage{verbatim}
-\usepackage{graphicx}
-\usepackage{multicol}
+\documentclass{hxie_template}
 
-\title{University of Hong Kong}
-\author{jasison @ PolyU}
-
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\lstset{frame=tb,
-  language=c++,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true
-  tabsize=3
-}
+\university{The University of Hong Kong}
+\team{Will Cyber college students fantasize about Cloud Classroom?}
+\participants{Jiahe Jiang, Baicheng Liu, Zhiheng Lyu}
+\ulogo{hku.pdf}
 
 \begin{document}
-\begin{titlepage}
-	\begin{center}
-		\vspace{3cm}
-		\includegraphics[width=3cm]{hku.pdf}\\
-		{\fontsize{25}{30}\selectfont University of Hong Kong\\}
-		% {\fontsize{60}{60}\selectfont \\}
-		\vspace{0.5cm}
-		{\huge Jiahe Jiang, Baicheng Liu, Zhiheng Lyu\\}
-		\vfill
-		{\fontsize{21}{25}\selectfont ICPC World final}\\
-		\vspace{0.5cm}
-		{\huge 2021-11-28}\\
-		\vspace{1cm}
-	\end{center}
-\thispagestyle{empty}
-\pagebreak
-\pagestyle{plain}
-\columnseprule=1pt
-\begin{multicols}{2}
-\tableofcontents
-\end{multicols}
-\end{titlepage}
+\makecover
+
 \begin{multicols}{2}
