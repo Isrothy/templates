@@ -42,6 +42,48 @@ treap *erase(treap *p, int x) {
     p->push_up();
     return p;
 }
+int index(treap *p, int x) {
+    int res = 1;
+    while (p != nullptr) {
+        if (p->val < x) { res += Size(p->ch[0]) + 1; p = p->ch[1];
+        } else { p = p->ch[0]; }
+    }
+    return res;
+}
+
+int kth(treap *p, int k) {
+    for (;;) {
+        int s = Size(p->ch[0]);
+        if (s + 1 == k) { return p->val; }
+        if (k <= s) { p = p->ch[0]; }
+        else {
+            k -= s + 1;
+            p = p->ch[1];
+        }
+    }
+}
+
+int pre(treap *p, int x) {
+    int res = -1;
+    while (p != nullptr) {
+        if (p->val < x) {
+            res = p->val;
+            p = p->ch[1];
+        } else { p = p->ch[0]; }
+    }
+    return res;
+}
+
+int nxt(treap *p, int x) {
+    int res = -1;
+    while (p != nullptr) {
+        if (x < p->val) {
+            res = p->val;
+            p = p->ch[0];
+        } else { p = p->ch[1]; }
+    }
+    return res;
+}
 treap *merge(treap *p, treap *q) {
     if (p == nullptr) { return q; }
     if (q == nullptr) { return p; }

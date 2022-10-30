@@ -4,4 +4,5 @@
 <KD-Tree> <kd_tree.cpp>
 <Li Chao Tree> <Li_Chao_segment_tree.cpp>
 <Sparse Table> <Sparse_Table.cpp>
+<AVL> <avl.cpp>
 <Treap> <treap.cpp>
