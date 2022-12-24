@@ -18,7 +18,7 @@ namespace Min_25 {
         for (int i = k + 1; (long long) prime[i] * prime[i] <= x; ++i) {
             long long p = prime[i], d = prime[i], g = p - 1;
             while (d * p <= x) {
-                res = (res + g * (dfs_phi(x / d, i, n) + p)) % mod;
+                res = (res + g * (dfs_phi(x / d, i, n)) + g * p)) % mod;
                 g = (g * p) % mod;
                 d *= p;
             }

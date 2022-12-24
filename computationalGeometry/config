@@ -1,10 +1,10 @@
 <2D Computational Geometry> <2D-computational_geometry.cpp>
 <3D Computational Geometry> <3D-computational_geometry.cpp>
-<Adaptive Simpson Integral> <Adaptive_Simpson_integral.cpp>
 <Andrew> <Andrew.cpp>
-<Closest Pair of Points> <closest_pair_of_points.cpp>
 <Dynamic Convex Set> <dynamic_convex_set.cpp>
+<Closest Pair of Points> <closest_pair_of_points.cpp>
 <Half Planes Intersection> <half_planes_intersection.cpp>
 <Minkowski Sum> <Minkowski_sum.cpp>
 <Rotate Calipers> <rotate_calipers.cpp>
 <Smallest Circle> <smallest_circle.cpp>
+<Adaptive Simpson Integral> <Adaptive_Simpson_integral.cpp>

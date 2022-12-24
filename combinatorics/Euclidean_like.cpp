@@ -1,4 +1,5 @@
 tuple<long long, long long, long long> Euclidean_like(long long n, long long a, long long b, long long c) {
+    //sum_{x=0}^n (ax + b)/c
     long long x = a / c % mod, y = b / c % mod;
     long long s0 = (n + 1) % mod;
     long long s1 = n * (n + 1) % mod * inv[2] % mod;

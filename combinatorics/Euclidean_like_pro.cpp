@@ -34,6 +34,7 @@ void initialize() {
 }
 
 vector<vector<long long>> Euclidean_like(long long n, long long a, long long b, long long c, int K) {
+    //sum_{x=0}^n x^k1((ax + b)/c)^k2
     vector<vector<long long>> res;
     long long s[K + 1], power_x[K + 1], power_y[K + 1], power_m[K + 1];
     long long x = a / c % mod, y = b / c % mod;

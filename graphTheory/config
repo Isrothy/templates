@@ -4,6 +4,7 @@
 <DMST> <DMST.cpp>
 <Steiner Minimum Tree> <Steiner_Minimum_Tree.cpp>
 <Gomory Hu Tree> <Gomory_Hu_Tree.cpp>
+<Stoer Wagner> <Stoer_Wagner.cpp>
 <Four Membered Rings> <four_membered_rings.cpp>
 <Three Membered Rings> <three_membered_rings.cpp>
 <HK> <HK.cpp>
