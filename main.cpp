@@ -49,6 +49,16 @@ void file(const char *filename) {
         fprintf(tex, temp);
     fclose(fp);
 }
+
+int endsWith(const char *str, const char *suffix) {
+    if (!str || !suffix)
+        return 0;
+    size_t lenstr = strlen(str);
+    size_t lensuffix = strlen(suffix);
+    if (lensuffix >  lenstr)
+        return 0;
+    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
 int main() {
     tex = fopen(tf, "w");
     file(head);
@@ -69,7 +79,17 @@ int main() {
             temp[strlen(temp) + 1] = 0;
             temp[strlen(temp)] = '/';
             strcat(temp, lb.file);
-            fprintf(tex, "\\lstinputlisting{%s}\n", temp);
+            char lang[10] = "";
+            if (endsWith(lb.file, "cpp")) {
+                strcpy(lang, "c++");
+            }
+            if (endsWith(lb.file, "java")) {
+                strcpy(lang, "java");
+            }
+            if (endsWith(lb.file, "tex")) {
+                strcpy(lang, "tex");
+            }
+            fprintf(tex, "\\lstinputlisting[language=%s]{%s}\n", lang, temp);
         }
         fclose(fp);
     }

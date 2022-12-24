@@ -1,9 +1,20 @@
 \documentclass{hxie_template}
 
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage[hang,flushmargin]{footmisc}
+
 \university{The University of Hong Kong}
 \team{Will Cyber college students fantasize about Cloud Classroom?}
 \participants{Jiahe Jiang, Baicheng Liu, Zhiheng Lyu}
 \ulogo{hku.pdf}
+
+\graphicspath{ {./images/} }
 
 \begin{document}
 \makecover

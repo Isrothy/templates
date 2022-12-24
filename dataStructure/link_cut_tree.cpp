@@ -1,83 +1,133 @@
-struct LCT {
-    static const int M = 300005;
-    int par[M], ch[M][2];
-    bool rev[M];
-    bool is_root(int p) { return ch[par[p]][0] != p && ch[par[p]][1] != p; }
-    bool dir(int p) { return ch[par[p]][1] == p; }
-    void update_rev(int p) {
-        rev[p] ^= true;
-        swap(ch[p][0], ch[p][1]);
-    }
-    void push_up(int p) {}
-    void push_down(int p) {
-        if (rev[p]) {
-            if (ch[p][0] != 0) { update_rev(ch[p][0]); }
-            if (ch[p][1] != 0) { update_rev(ch[p][1]); }
-            rev[p] = false;
+struct lct {
+    unsigned val;
+    unsigned sum;
+    bool rev;
+    lct *ch[2], *fa;
+    lct() = default;
+    explicit lct(unsigned val)
+        : val(val), sum(val), rev(false), ch{nullptr, nullptr}, fa(nullptr) {}
+    lct *push_up() {
+        sum = val;
+        if (ch[0] != nullptr) {
+            sum ^= ch[0]->sum;
         }
-    }
-    void rotate(int p) {
-        bool f = dir(p);
-        int q = par[p], r = ch[p][!f];
-        if (!is_root(q)) { ch[par[q]][dir(q)] = p; }
-        par[p] = par[q];
-        if (r != 0){ par[r] = q; }
-        ch[q][f] = r;
-        par[q] = p;
-        ch[p][!f] = q;
-        push_up(q);
-    }
-    void splay(int p) {
-        static int stk[M];
-        int top = 0;
-        for (int q = p; !is_root(q); q = par[q]){ stk[top++] = par[q]; }
-        while (top != 0){ push_down(stk[--top]); }
-        push_down(p);
-        while (!is_root(p)) {
-            int q = par[p];
-            if (!is_root(q)){ rotate(dir(p) == dir(q) ? q : p); }
-            rotate(p);
+        if (ch[1] != nullptr) {
+            sum ^= ch[1]->sum;
         }
-        push_up(p);
+        return this;
     }
-    void access(int p) {
-        int q = 0;
-        while (p != 0) {
-            splay(p);
-            ch[p][1] = q;
-            push_up(p);
-            q = p;
-            p = par[p];
+    bool dir() {
+        return fa->ch[1] == this;
+    }
+    bool is_root() {
+        return fa == nullptr || (fa->ch[0] != this && fa->ch[1] != this);
+    }
+    lct *update_rev() {
+        rev ^= 1;
+        std::swap(ch[0], ch[1]);
+        return this;
+    }
+    lct *push_down() {
+        if (rev) {
+            if (ch[0] != nullptr) {
+                ch[0]->update_rev();
+            }
+            if (ch[1] != nullptr) {
+                ch[1]->update_rev();
+            }
+            rev = false;
         }
+        return this;
     }
-    void make_root(int p) {
-        access(p);
-        splay(p);
-        update_rev(p);
-    }
-    void link(int p, int q) {
-        make_root(p);
-        par[p] = q;
-    }
-    void cut(int p, int q) {
-        make_root(p);
-        access(q);
-        splay(q);
-        par[ch[q][0]] = 0;
-        ch[q][0] = 0;
-        push_up(q);
-    }
-    int find_root(int p) {
-        access(p);
-        splay(p);
-        while (ch[p][0] != 0) {
-            push_down(p);
-            p = ch[p][0];
+    lct *rotate(bool f) {
+        lct *q = ch[f];
+        ch[f] = q->ch[!f];
+        if (ch[f] != nullptr) {
+            ch[f]->fa = this;
         }
-        splay(p);
-        return p;
+        q->fa = fa;
+        if (!is_root()) {
+            fa->ch[dir()] = q;
+        }
+        q->ch[!f] = this;
+        fa = q;
+        push_up();
+        return q;
     }
-    bool cotree(int p, int q) {
-        return find_root(p) == find_root(q);
+    lct *splay() {
+        std::stack<lct *> stk;
+        for (lct *q = this; !q->is_root(); q = q->fa) {
+            stk.push(q->fa);
+        }
+        while (!stk.empty()) {
+            stk.top()->push_down();
+            stk.pop();
+        }
+        push_down();
+        while (!is_root()) {
+            bool f = dir();
+            if (!fa->is_root()) {
+                (fa->dir() == f ? fa->fa : fa)->rotate(f);
+            }
+            fa->rotate(dir());
+        }
+        return push_up();
+    }
+    lct *access() {
+        lct *p = nullptr;
+        for (lct *q = this; q != nullptr; q = q->fa) {
+            q->splay();
+            q->ch[1] = p;
+            q->push_up();
+            p = q;
+        }
+        return this;
+    }
+    lct *make_root() {
+        return access()->splay()->update_rev();
+    }
+    lct *find_root() {
+        access()->splay();
+        lct *q = this;
+        while (q->ch[0] != nullptr) {
+            q = q->ch[0];
+        }
+        return q->splay();
     }
 };
+
+void link(lct *p, lct *q) {
+    if (p->find_root() != q->find_root()) {
+        p->make_root()->fa = q;
+    }
+}
+
+void cut(lct *p, lct *q) {
+    p->make_root();
+    q->access()->splay();
+    lct *r = q->ch[0];
+    if (r == nullptr) {
+        return;
+    }
+    while (r->ch[1] != nullptr) {
+        r = r->ch[1];
+    }
+    if (r == p) {
+        q->ch[0]->fa = nullptr;
+        q->ch[0] = nullptr;
+        q->push_up();
+    }
+    r->splay();
+}
+
+unsigned query(lct *p, lct *q) {
+    p->make_root();
+    q->access()->splay();
+    return q->sum;
+}
+
+void update(lct *p, unsigned val) {
+    p->make_root();
+    p->val = val;
+    p->push_up();
+}

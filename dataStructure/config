@@ -6,3 +6,4 @@
 <Sparse Table> <Sparse_Table.cpp>
 <AVL> <avl.cpp>
 <Treap> <treap.cpp>
+<Splay> <splay_tree.cpp>
