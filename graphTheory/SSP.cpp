@@ -1,35 +1,45 @@
-namespace SSP {
+struct Network {
+    static const int INF = 0x3f3f3f3f;
     struct edge {
         int from, to, cap, cost, flow;
+        edge(int from, int to, int cap, int cost)
+            : from(from), to(to), cap(cap), cost(cost), flow(0) {}
     };
-    edge edges[2 * M];
-    vector<int> E[N];
-    int Q[N], dis[N], cur[N];
-    bool in_queue[N], vis[N];
-    int edge_cnt;
+    std::vector<edge> edges;
+    std::vector<std::vector<size_t>> adj;
+    std::vector<int> dis;
+    std::vector<bool> vis, in_queue;
+    int n;
+    explicit Network(int n) : adj(n), dis(n), vis(n), in_queue(n), n(n) {}
     void add_edge(int u, int v, int cap, int cost) {
-        edges[edge_cnt] = (edge){u, v, cap, cost, 0};
-        E[u].push_back(edge_cnt++);
-        edges[edge_cnt] = (edge){v, u, 0, -cost, 0};
-        E[v].push_back(edge_cnt++);
+        adj[u].push_back(edges.size());
+        edges.emplace_back(u, v, cap, cost);
+        adj[v].push_back(edges.size());
+        edges.emplace_back(v, u, 0, -cost);
+    }
+    void clear() {
+        for (auto &e: edges) {
+            e.flow = 0;
+        }
     }
     bool SPFA(int S, int T) {
-        int head = 0, tail = 0;
-        memset(in_queue, 0, sizeof in_queue);
-        memset(dis, 0x3f, sizeof dis);
+        std::queue<int> q;
+        std::vector<bool> in_queue(n + 1, false);
+        fill(dis.begin(), dis.end(), INF);
         dis[T] = 0;
         in_queue[T] = true;
-        Q[tail++] = T;
-        while (head != tail) {
-            int u = Q[head++ % N];
+        q.push(T);
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
             in_queue[u] = false;
-            for (int i = 0; i < (int) E[u].size(); ++i) {
-                edge e = edges[E[u][i] ^ 1];
+            for (auto i: adj[u]) {
+                edge e = edges[i ^ 1];
                 if (e.flow != e.cap && dis[u] + e.cost < dis[e.from]) {
                     dis[e.from] = dis[u] + e.cost;
                     if (!in_queue[e.from]) {
                         in_queue[e.from] = true;
-                        Q[tail++ % N] = e.from;
+                        q.push(e.from);
                     }
                 }
             }
@@ -37,29 +47,38 @@ namespace SSP {
         return dis[S] != INF;
     }
     int DFS(int u, int T, int a) {
-        if (u == T) { return a; }
+        if (u == T) {
+            return a;
+        }
         vis[u] = true;
         int m = a;
-        for (int i = 0; i < (int) E[u].size(); ++i) {
-            edge &e = edges[E[u][i]];
+        for (auto i: adj[u]) {
+            edge &e = edges[i];
             if (e.flow < e.cap && !vis[e.to] && dis[e.to] == dis[u] - e.cost) {
-                int f = DFS(e.to, T, min(a, e.cap - e.flow));
+                int f = DFS(e.to, T, std::min(a, e.cap - e.flow));
                 e.flow += f;
-                edges[E[u][i] ^ 1].flow -= f;
+                edges[i ^ 1].flow -= f;
                 a -= f;
-                if (a == 0) { return m; }
+                if (a == 0) {
+                    return m;
+                }
             }
         }
         return m - a;
     }
-    pair<int, int> minimum_cost_flow(int S, int T) {
+    std::pair<int, int> minimum_cost_flow(int S, int T) {
         int flow = 0, cost = 0;
         while (SPFA(S, T)) {
-            memset(vis, 0, sizeof vis);
-            int f = DFS(S, T, INF);
-            flow += f;
-            cost += f * dis[S];
+            while (true) {
+                fill(vis.begin(), vis.end(), false);
+                int f = DFS(S, T, INF);
+                if (f == 0) {
+                    break;
+                }
+                flow += f;
+                cost += f * dis[S];
+            }
         }
-        return make_pair(flow, cost);
+        return std::make_pair(flow, cost);
     }
-}// namespace SSP
+};

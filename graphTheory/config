@@ -1,6 +1,7 @@
 <Blossom> <Blossom.cpp>
 <Dinic> <Dinic.cpp>
 <SSP> <SSP.cpp>
+<Primal Dual> <Primal_Dual.cpp>
 <DMST> <DMST.cpp>
 <Steiner Minimum Tree> <Steiner_Minimum_Tree.cpp>
 <Gomory Hu Tree> <Gomory_Hu_Tree.cpp>
