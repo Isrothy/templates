@@ -74,16 +74,3 @@ struct Network {
         return flow;
     }
 };
-
-int main() {
-    int n, m, S, T;
-    scanf("%d%d%d%d", &n, &m, &S, &T);
-    Network network(n + 1);
-    for (int i = 0; i < m; ++i) {
-        int u, v, c;
-        scanf("%d%d%d", &u, &v, &c);
-        network.add_edge(u, v, c);
-    }
-    printf("%lld\n", network.max_flow(S, T));
-    return 0;
-};

@@ -1,3 +1,4 @@
+#include <iostream>
 struct avl {
     int val, size, height;
     avl *ch[2];
@@ -5,22 +6,21 @@ struct avl {
         size = height = 1;
         if (ch[0] != nullptr) {
             size += ch[0]->size;
-            height = max(height, ch[0]->height + 1);
+            height = std::max(height, ch[0]->height + 1);
         }
         if (ch[1] != nullptr) {
             size += ch[1]->size;
-            height = max(height, ch[1]->height + 1);
+            height = std::max(height, ch[1]->height + 1);
         }
     }
 };
-avl pool[M], *allc = pool;
-int Size(avl *p) {
+int safe_size(avl *p) {
     return p == nullptr ? 0 : p->size;
 }
-int Height(avl *p) {
+int safe_height(avl *p) {
     return p == nullptr ? 0 : p->height;
 }
-avl *rotate(avl *p, bool f) {
+avl *rotate(avl *p, int f) {
     avl *q = p->ch[f];
     p->ch[f] = q->ch[!f];
     q->ch[!f] = p;
@@ -28,15 +28,15 @@ avl *rotate(avl *p, bool f) {
     return q;
 }
 avl *maintain(avl *p) {
-    if (Height(p->ch[0]) - Height(p->ch[1]) == 2) {
-        if (Height(p->ch[0]->ch[0]) >= Height(p->ch[0]->ch[1])) {
+    if (safe_height(p->ch[0]) - safe_height(p->ch[1]) == 2) {
+        if (safe_height(p->ch[0]->ch[0]) >= safe_height(p->ch[0]->ch[1])) {
             p = rotate(p, 0);
         } else {
             p->ch[0] = rotate(p->ch[0], 1);
             p = rotate(p, 0);
         }
-    } else if (Height(p->ch[1]) - Height(p->ch[0]) == 2) {
-        if (Height(p->ch[1]->ch[1]) >= Height(p->ch[1]->ch[0])) {
+    } else if (safe_height(p->ch[1]) - safe_height(p->ch[0]) == 2) {
+        if (safe_height(p->ch[1]->ch[1]) >= safe_height(p->ch[1]->ch[0])) {
             p = rotate(p, 1);
         } else {
             p->ch[1] = rotate(p->ch[1], 0);
@@ -48,8 +48,7 @@ avl *maintain(avl *p) {
 }
 avl *insert(avl *p, int x) {
     if (p == nullptr) {
-        *allc = (avl) {x, 1, 1, {nullptr, nullptr}};
-        return allc++;
+        return new avl{x, 1, 1, {nullptr, nullptr}};
     }
     bool f = p->val < x;
     p->ch[f] = insert(p->ch[f], x);

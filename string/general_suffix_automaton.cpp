@@ -11,7 +11,9 @@ struct general_suffix_automaton {
     int extend(int p, int c) {
         if (trans[p][c] != 0) {
             int r = trans[p][c];
-            if (mxlen[r] == mxlen[p] + 1) { return r; }
+            if (mxlen[r] == mxlen[p] + 1) {
+                return r;
+            }
             int o = ++tot;
             slink[o] = slink[r];
             mxlen[o] = mxlen[p] + 1;

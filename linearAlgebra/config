@@ -2,5 +2,5 @@
 <Binary Bases> <Bases.cpp>
 <determinant> <determinant.cpp>
 <inverse matrix> <inverse_matrix.cpp>
-<Homogeneous Linear Recursion with Constant Coefficients> <homogeneous_linear_recursion_with_constant_coefficients.cpp>
+<Homogeneous Linear Recurrence with Constant Coefficients> <linear_recurrence_with_constant_coefficients.cpp>
   

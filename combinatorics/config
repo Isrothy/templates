@@ -1,5 +1,4 @@
 <polynomial> <polynomial.cpp>
-<modular> <modular.cpp>
 <interpolation> <interpolation.cpp>
 <evaluation> <evaluation.cpp>
 <Euclidean like> <Euclidean_like.cpp>

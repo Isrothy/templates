@@ -1,42 +1,39 @@
-struct suffix_automaton {
-    int trans[2 * M][C], mxlen[2 * M], slink[2 * M], deg[2 * M], Q[2 * M];
-    int tot;
-    void clear() {
-        tot = 1;
-        memset(trans[1], 0, sizeof trans[1]);
-    }
-    int extend(int p, int c) {
-        int q = ++tot;
-        mxlen[q] = mxlen[p] + 1;
-        memset(trans[q], 0, sizeof trans[q]);
-        while (p != 0 && trans[p][c] == 0) {
-            trans[p][c] = q;
-            p = slink[p];
+#include <vector>
+struct SuffixAutomaton {
+    static const int OMEGA = 26;
+    struct Node {
+        int len, link, cnt;
+        std::vector<int> next;
+        Node(int len, int link) : len(len), link(link), cnt(0), next(OMEGA, -1) {}
+    };
+    std::vector<Node> nodes;
+    int last;
+    SuffixAutomaton() : nodes(1, Node(0, -1)), last(0) {}
+    void append(int c) {
+        int p = (int) nodes.size();
+        nodes.emplace_back(nodes[last].len + 1, -1);
+        int q = last;
+        while (q != -1 && nodes[q].next[c] == -1) {
+            nodes[q].next[c] = p;
+            q = nodes[q].link;
         }
-        if (p == 0) {
-            slink[q] = 1;
+        if (q == -1) {
+            nodes[p].link = 0;
         } else {
-            int r = trans[p][c];
-            if (mxlen[r] == mxlen[p] + 1) {
-                slink[q] = r;
+            int r = nodes[q].next[c];
+            if (nodes[q].len + 1 == nodes[r].len) {
+                nodes[p].link = r;
             } else {
-                int o = ++tot;
-                slink[o] = slink[r];
-                mxlen[o] = mxlen[p] + 1;
-                memcpy(trans[o], trans[r], sizeof trans[o]);
-                while (trans[p][c] == r) {
-                    trans[p][c] = o;
-                    p = slink[p];
+                int o = (int) nodes.size();
+                nodes.emplace_back(nodes[q].len + 1, nodes[r].link);
+                nodes[o].next = nodes[r].next;
+                while (q != -1 && nodes[q].next[c] == r) {
+                    nodes[q].next[c] = o;
+                    q = nodes[q].link;
                 }
-                slink[q] = slink[r] = o;
+                nodes[r].link = nodes[p].link = o;
             }
         }
-        return q;
-    }
-    void build(char *S) {
-        int p = 1;
-        int n = strlen(S);
-        tot = 1;
-        for (int i = 0; i < n; ++i) { p = extend(p, S[i] - 'a'); }
+        last = p;
     }
 };

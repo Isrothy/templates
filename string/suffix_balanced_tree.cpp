@@ -6,8 +6,12 @@ struct treap {
     treap *ch[2];
     void push_up() {
         size = 1;
-        if (ch[0] != nullptr) { size += ch[0]->size; }
-        if (ch[1] != nullptr) { size += ch[1]->size; }
+        if (ch[0] != nullptr) {
+            size += ch[0]->size;
+        }
+        if (ch[1] != nullptr) {
+            size += ch[1]->size;
+        }
     }
 };
 double tag[M];
@@ -19,16 +23,24 @@ void rotate(treap *&p, bool f) {
     p->push_up();
     p = q;
 }
-int Size(treap *p) { return p == nullptr ? 0 : p->size; }
-bool comp(int i, int j) { return S[i] == S[j] ? tag[i - 1] < tag[j - 1] : S[i] < S[j]; }
+int Size(treap *p) {
+    return p == nullptr ? 0 : p->size;
+}
+bool comp(int i, int j) {
+    return S[i] == S[j] ? tag[i - 1] < tag[j - 1] : S[i] < S[j];
+}
 bool comp(char *S, char *Q, int l1, int l2) {
     for (int i = 0; i < l1 && i < l2; ++i) {
-        if (S[l1 - i] != Q[l2 - i]) { return S[l1 - i] < Q[l2 - i]; }
+        if (S[l1 - i] != Q[l2 - i]) {
+            return S[l1 - i] < Q[l2 - i];
+        }
     }
     return l1 < l2;
 }
 void re_tag(treap *p, double l, double r) {
-    if (p == nullptr) { return; }
+    if (p == nullptr) {
+        return;
+    }
     double mid = (l + r) * 0.5;
     tag[p->pos] = p->tag = mid;
     re_tag(p->ch[0], l, mid);
@@ -42,8 +54,11 @@ void insert(treap *&p, int i, double l, double r) {
         return;
     }
     bool f = comp(p->pos, i);
-    if (f) { insert(p->ch[1], i, mid, r);
-    } else { insert(p->ch[0], i, l, mid); }
+    if (f) {
+        insert(p->ch[1], i, mid, r);
+    } else {
+        insert(p->ch[0], i, l, mid);
+    }
     if (p->ch[f]->pri < p->pri) {
         rotate(p, f);
         re_tag(p, l, r);
@@ -55,7 +70,9 @@ void remove(treap *&p, int i, double l, double r) {
     if (p->pos == i) {
         if (p->ch[0] == nullptr || p->ch[1] == nullptr) {
             p = p->ch[p->ch[0] == nullptr];
-            if (p != nullptr) { re_tag(p, l, r); }
+            if (p != nullptr) {
+                re_tag(p, l, r);
+            }
             return;
         }
         bool f = p->ch[1]->pri < p->ch[0]->pri;
@@ -70,8 +87,11 @@ void remove(treap *&p, int i, double l, double r) {
         tag[p->pos] = p->tag = mid;
     } else {
         bool f = comp(p->pos, i);
-        if (f) { remove(p->ch[f], i, mid, r);
-        } else { remove(p->ch[f], i, l, mid); }
+        if (f) {
+            remove(p->ch[f], i, mid, r);
+        } else {
+            remove(p->ch[f], i, l, mid);
+        }
     }
     p->push_up();
 }
