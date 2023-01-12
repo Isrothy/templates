@@ -1,3 +1,5 @@
+#include <cstring>
+
 struct general_suffix_automaton {
     int trans[2 * M][C], mxlen[2 * M], slink[2 * M], deg[2 * M], Q[2 * M];
     int tot;

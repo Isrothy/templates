@@ -1,4 +1,5 @@
-mt19937_64 mt_rand(0);
+#include <random>
+std::mt19937_64 mt_rand(0);
 struct treap {
     double tag;
     int pos, size;
@@ -50,7 +51,7 @@ void insert(treap *&p, int i, double l, double r) {
     double mid = (l + r) * 0.5;
     if (p == nullptr) {
         tag[i] = mid;
-        *p = new (treap){mid, i, 1, mt_rand(), {nullptr, nullptr}};
+        p = new (treap){mid, i, 1, mt_rand(), {nullptr, nullptr}};
         return;
     }
     bool f = comp(p->pos, i);
