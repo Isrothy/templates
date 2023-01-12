@@ -1,6 +1,4 @@
 <Berlekamp-Massey> <Berlekamp_Massey.cpp>
 <Binary Bases> <Bases.cpp>
-<determinant> <determinant.cpp>
-<inverse matrix> <inverse_matrix.cpp>
+<Matrix> <Matrix.cpp>
 <Homogeneous Linear Recurrence with Constant Coefficients> <linear_recurrence_with_constant_coefficients.cpp>
-  
