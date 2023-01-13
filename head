@@ -10,7 +10,8 @@
 \usepackage[hang,flushmargin]{footmisc}
 
 \university{The University of Hong Kong}
-\team{Will Cyber college students fantasize about Cloud Classroom?}
+\team{I'm not in danger. I am the danger}
+\participants{Anzhe Wang, Che Liu, Jiahe Jiang}
 \ulogo{hku.pdf}
 
 \graphicspath{ {./images/} }
