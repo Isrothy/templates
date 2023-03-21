@@ -1,7 +1,15 @@
+#include <algorithm>
+#include <stack>
+struct splay_node;
+size_t safe_size(splay_node *p);
+
 struct splay_node {
-    int val, size;
+    int val;
+    size_t size;
     bool rev;
     splay_node *ch[2], *fa;
+    explicit splay_node(int val)
+        : val(val), size(1), rev(false), ch{nullptr, nullptr}, fa(nullptr) {}
     bool dir() {
         return fa->ch[1] == this;
     }
@@ -11,13 +19,7 @@ struct splay_node {
         return this;
     }
     splay_node *push_up() {
-        size = 1;
-        if (ch[0] != nullptr) {
-            size += ch[0]->size;
-        }
-        if (ch[1] != nullptr) {
-            size += ch[1]->size;
-        }
+        size = 1 + safe_size(ch[0]) + safe_size(ch[1]);
         return this;
     }
     splay_node *push_down() {
@@ -67,3 +69,6 @@ struct splay_node {
         return push_up();
     }
 };
+size_t safe_size(splay_node *p) {
+    return p == nullptr ? 0 : p->size;
+}

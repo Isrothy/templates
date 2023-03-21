@@ -10,13 +10,7 @@ int sign(double x) {
     return 0;
 }
 int sign(double x, double y) {
-    if (x - y < -EPS) {
-        return -1;
-    }
-    if (EPS < x - y) {
-        return 1;
-    }
-    return 0;
+    return sign(x - y);
 }
 struct Point {
     double x, y;
@@ -97,6 +91,9 @@ Point symmetry(Point const &P, Point const &A, Point const &B) {
 }
 int intersection(Point const &A, Point const &B, Point const &C, Point const &D, Point &O) {
     if (sign(det(B - A, D - C)) == 0) {
+        if (sign(det(B - A, C - A)) == 0) {
+            return -1;
+        }
         return 0;
     }
     double s1 = det(D - A, C - A);
@@ -107,8 +104,10 @@ int intersection(Point const &A, Point const &B, Point const &C, Point const &D,
 int segment_segment_intersection(
     Point const &A, Point const &B, Point const &C, Point const &D, Point &O
 ) {
-    if (!intersection(A, B, C, D, O))
-        return 0;
+    int ret = intersection(A, B, C, D, O);
+    if (ret != 1) {
+        return ret;
+    }
     return (int) (point_on_segment(O, A, B) == 1 && point_on_segment(O, C, D) == 1);
 }
 int point_in_triangle(Point const &P, Point const &A, Point const &B, Point const &C) {
@@ -234,7 +233,7 @@ double circumscribed_circle(Point const &A, Point const &B, Point const &C, Poin
             middle(B, C) + (B - C).normal(),
             O
         )
-        == 0) {
+        <= 0) {
         return -1;
     }
     return (A - O).len();
@@ -306,7 +305,7 @@ double circle_segment_area(const Point &O, const double &r, const Point &A, cons
     if (i1 && i2) {
         return triangle_area(O, A, B);
     }
-    Point P, Q;
+    Point P{}, Q{};
     int tmp = circle_line_intersection(O, r, A, B, P, Q);
     if (tmp < 2) {
         return sector_area(O, r, A, B);

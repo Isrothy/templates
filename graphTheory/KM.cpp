@@ -1,4 +1,7 @@
-namespace KM {
+#include <cstring>
+
+template<size_t M> struct BipartiteGraph {
+    static const int INF = 0x3f3f3f3f;
     int d[M][M], Q[M], S[M], T[M], lx[M], ly[M], slack[M], pre[M];
     bool visx[M], visy[M];
     void add_edge(int u, int v, int c) {
@@ -18,27 +21,44 @@ namespace KM {
                 int x = Q[head++];
                 for (int v = 1; v <= n; ++v) {
                     int gap = lx[x] + ly[v] - d[x][v];
-                    if (slack[v] < gap or visy[v]) { continue; }
+                    if (slack[v] < gap or visy[v]) {
+                        continue;
+                    }
                     pre[v] = x;
                     if (gap == 0) {
-                        if (T[v] == 0) { return v; }
+                        if (T[v] == 0) {
+                            return v;
+                        }
                         visy[v] = visx[T[v]] = true;
                         Q[tail++] = T[v];
-                    } else { slack[v] = gap; }
+                    } else {
+                        slack[v] = gap;
+                    }
                 }
             }
             int gap = INF;
             for (int v = 1; v <= n; ++v) {
-                if (visy[v] == 0) { gap = min(gap, slack[v]); }
+                if (visy[v] == 0) {
+                    gap = min(gap, slack[v]);
+                }
             }
             for (int v = 1; v <= n; ++v) {
-                if (visx[v]) { lx[v] -= gap; }
-                if (visy[v]) { ly[v] += gap;
-                } else { slack[v] -= gap; }
+                if (visx[v]) {
+                    lx[v] -= gap;
+                }
+                if (visy[v]) {
+                    ly[v] += gap;
+                } else {
+                    slack[v] -= gap;
+                }
             }
             for (int v = 1; v <= n; ++v) {
-                if (visy[v] != 0 || slack[v] != 0) { continue; }
-                if (T[v] == 0) { return v; }
+                if (visy[v] != 0 || slack[v] != 0) {
+                    continue;
+                }
+                if (T[v] == 0) {
+                    return v;
+                }
                 visy[v] = visx[T[v]] = true;
                 Q[tail++] = T[v];
             }
@@ -46,7 +66,9 @@ namespace KM {
     }
     long long maximum_weight_matching(int n) {
         for (int i = 1; i <= n; ++i) {
-            if (S[i] != 0) { continue; }
+            if (S[i] != 0) {
+                continue;
+            }
             int u = BFS(i, n);
             while (u != 0) {
                 T[u] = pre[u];
@@ -54,7 +76,9 @@ namespace KM {
             }
         }
         long long res = 0;
-        for (int i = 1; i <= n; ++i) { res += d[i][S[i]]; }
+        for (int i = 1; i <= n; ++i) {
+            res += d[i][S[i]];
+        }
         return res;
     }
-}// namespace KM
+};

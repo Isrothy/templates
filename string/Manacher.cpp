@@ -1,7 +1,7 @@
 #include <cstring>
 #include <iostream>
 void Manacher(char *S, int *p) {
-    int n = strlen(S);
+    int n = (int) strlen(S);
     char *T = new char[2 * n + 3];
     T[0] = '#';
     for (int i = 0; i < n; ++i) {

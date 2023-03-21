@@ -1,5 +1,7 @@
+#include <cstring>
+#include <vector>
 std::vector<int> Lyndon_decomposition(char *S) {
-    int n = strlen(S);
+    int n = (int) strlen(S);
     int l = 0, r = 1, d = 1;
     std::vector<int> res;
     while (r <= n) {

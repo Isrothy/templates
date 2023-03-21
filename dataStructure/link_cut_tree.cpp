@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <stack>
 struct lct {
     unsigned val;
     unsigned sum;

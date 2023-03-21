@@ -1,5 +1,5 @@
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 constexpr static const double PHI
     = 1.6180339887498948482045868343656381177203091798057628621354486227052604628189024497072072041893911374;

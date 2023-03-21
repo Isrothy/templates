@@ -1,64 +1,61 @@
+#include <cassert>
 #include <iostream>
+
+struct avl;
+
+int safe_height(avl *p);
+size_t safe_size(avl *p);
+
 struct avl {
-    int val, size, height;
-    avl *ch[2];
-    void push_up() {
-        size = height = 1;
-        if (ch[0] != nullptr) {
-            size += ch[0]->size;
-            height = std::max(height, ch[0]->height + 1);
+    int val, height;
+    size_t size;
+    avl *ch[2]{};
+    explicit avl(int val) : val(val), height(1), size(1) {}
+    avl *push_up() {
+        size = 1 + safe_size(ch[0]) + safe_size(ch[1]);
+        height = 1 + std::max(safe_height(ch[0]), safe_height(ch[1]));
+        return this;
+    }
+    avl *rotate(int f) {
+        avl *q = ch[f];
+        ch[f] = q->ch[!f];
+        q->ch[!f] = this;
+        push_up();
+        q->push_up();
+        return q;
+    }
+    avl *maintain(int f) {
+        if (safe_height(ch[f]) - safe_height(ch[!f]) == 2) {
+            if (safe_height(ch[f]->ch[f]) < safe_height(ch[f]->ch[!f])) {
+                ch[f] = ch[f]->rotate(!f);
+            }
+            return rotate(f);
         }
-        if (ch[1] != nullptr) {
-            size += ch[1]->size;
-            height = std::max(height, ch[1]->height + 1);
-        }
+        return this;
     }
 };
-int safe_size(avl *p) {
+size_t safe_size(avl *p) {
     return p == nullptr ? 0 : p->size;
 }
 int safe_height(avl *p) {
     return p == nullptr ? 0 : p->height;
 }
-avl *rotate(avl *p, int f) {
-    avl *q = p->ch[f];
-    p->ch[f] = q->ch[!f];
-    q->ch[!f] = p;
-    p->push_up();
-    return q;
-}
-avl *maintain(avl *p) {
-    if (safe_height(p->ch[0]) - safe_height(p->ch[1]) == 2) {
-        if (safe_height(p->ch[0]->ch[0]) >= safe_height(p->ch[0]->ch[1])) {
-            p = rotate(p, 0);
-        } else {
-            p->ch[0] = rotate(p->ch[0], 1);
-            p = rotate(p, 0);
-        }
-    } else if (safe_height(p->ch[1]) - safe_height(p->ch[0]) == 2) {
-        if (safe_height(p->ch[1]->ch[1]) >= safe_height(p->ch[1]->ch[0])) {
-            p = rotate(p, 1);
-        } else {
-            p->ch[1] = rotate(p->ch[1], 0);
-            p = rotate(p, 1);
-        }
-    }
-    p->push_up();
-    return p;
-}
+
 avl *insert(avl *p, int x) {
     if (p == nullptr) {
-        return new avl{x, 1, 1, {nullptr, nullptr}};
+        return new avl(x);
     }
     bool f = p->val < x;
     p->ch[f] = insert(p->ch[f], x);
-    p->push_up();
-    return maintain(p);
+    return p->push_up()->maintain(f);
 }
+
 avl *erase(avl *p, int x) {
     if (p->val == x) {
         if (p->ch[0] == nullptr || p->ch[1] == nullptr) {
-            return p->ch[p->ch[0] == nullptr];
+            avl *ret = p->ch[p->ch[0] == nullptr];
+            delete p;
+            return ret;
         }
         avl *q = p->ch[1];
         while (q->ch[0] != nullptr) {
@@ -66,10 +63,10 @@ avl *erase(avl *p, int x) {
         }
         p->val = q->val;
         p->ch[1] = erase(p->ch[1], q->val);
+        return p->push_up()->maintain(0);
     } else {
         bool f = p->val < x;
         p->ch[f] = erase(p->ch[f], x);
+        return p->push_up()->maintain(!f);
     }
-    p->push_up();
-    return maintain(p);
 }

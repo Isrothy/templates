@@ -260,7 +260,8 @@ struct Polynomial : public std::vector<int> {
         size_t m = rhs.size();
         return (*this - *this / rhs * rhs).modXN(m - 1);
     }
-    static void eva_build(int p, int l, int r, const std::vector<int> &x, std::vector<Polynomial> &a) {
+    static void
+    eva_build(int p, int l, int r, const std::vector<int> &x, std::vector<Polynomial> &a) {
         if (l == r) {
             a[p] = {1, l < x.size() ? -x[l] : 0};
             return;
@@ -270,7 +271,9 @@ struct Polynomial : public std::vector<int> {
         eva_build(p << 1 | 1, mid + 1, r, x, a);
         a[p] = a[p << 1] * a[p << 1 | 1];
     }
-    static void eva_work(int p, int l, int r, const Polynomial &f, std::vector<Polynomial> &a, std::vector<int> &res) {
+    static void eva_work(
+        int p, int l, int r, const Polynomial &f, std::vector<Polynomial> &a, std::vector<int> &res
+    ) {
         if (l == r) {
             if (l < res.size()) {
                 res[l] = f[0];
@@ -306,7 +309,12 @@ struct Polynomial : public std::vector<int> {
     }
 
     static Polynomial interpolation_work(
-        int p, int l, int r, const std::vector<int> &y, std::vector<Polynomial> &a, const std::vector<int> &b
+        int p,
+        int l,
+        int r,
+        const std::vector<int> &y,
+        std::vector<Polynomial> &a,
+        const std::vector<int> &b
     ) {
         if (l == r) {
             return {(int) (y[l] * inv(b[l], MOD) % MOD)};

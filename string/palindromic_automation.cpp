@@ -1,4 +1,5 @@
-struct palindromic_automaton {
+#include <cstring>
+template<unsigned M, unsigned C> struct palindromic_automaton {
     int Next[M][C], fail[M], len[M], cnt[M];
     int tot;
     int get_fail(char *S, int i, int p) {
@@ -8,7 +9,7 @@ struct palindromic_automaton {
         return p;
     }
     void build(char *S) {
-        int n = strlen(S), p = 0;
+        int n = (int) strlen(S), p = 0;
         len[1] = -1;
         fail[0] = 1;
         tot = 1;

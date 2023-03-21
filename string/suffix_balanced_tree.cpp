@@ -1,98 +1,125 @@
+#include <cstring>
+#include <iostream>
 #include <random>
-std::mt19937_64 mt_rand(0);
+
+std::mt19937_64 mt_rand(time(nullptr));
+
+struct treap;
+
+size_t safe_size(treap *p);
+
 struct treap {
     double tag;
-    int pos, size;
+    int pos;
+    size_t size;
     unsigned long long pri;
-    treap *ch[2];
-    void push_up() {
-        size = 1;
-        if (ch[0] != nullptr) {
-            size += ch[0]->size;
-        }
-        if (ch[1] != nullptr) {
-            size += ch[1]->size;
-        }
+    treap *ch[2]{};
+    treap(double tag, int pos) : tag(tag), pos(pos), size(1), pri(mt_rand()) {
+        ch[0] = ch[1] = nullptr;
+    }
+    treap *push_up() {
+        size = safe_size(ch[0]) + safe_size(ch[1]) + 1;
+        return this;
+    }
+    treap *rotate(bool f) {
+        treap *q = ch[f];
+        ch[f] = q->ch[!f];
+        q->ch[!f] = this;
+        push_up();
+        return q;
     }
 };
-double tag[M];
-char S[M];
-void rotate(treap *&p, bool f) {
-    treap *q = p->ch[f];
-    p->ch[f] = q->ch[!f];
-    q->ch[!f] = p;
-    p->push_up();
-    p = q;
-}
-int Size(treap *p) {
+
+size_t safe_size(treap *p) {
     return p == nullptr ? 0 : p->size;
 }
-bool comp(int i, int j) {
-    return S[i] == S[j] ? tag[i - 1] < tag[j - 1] : S[i] < S[j];
+
+bool suffix_comp(const char *S, const double *tag, int i, int j) {
+    if (S[i] == S[j]) {
+        return (i == 0 ? 0 : tag[i - 1]) < (j == 0 ? 0 : tag[j - 1]);
+    } else {
+        return S[i] < S[j];
+    }
 }
-bool comp(char *S, char *Q, int l1, int l2) {
+
+bool reverse_comp(const char *S, const char *Q, int l1, int l2) {
     for (int i = 0; i < l1 && i < l2; ++i) {
-        if (S[l1 - i] != Q[l2 - i]) {
-            return S[l1 - i] < Q[l2 - i];
+        if (S[l1 - i - 1] != Q[l2 - i - 1]) {
+            return S[l1 - i - 1] < Q[l2 - i - 1];
         }
     }
     return l1 < l2;
 }
-void re_tag(treap *p, double l, double r) {
+
+void re_tag(double *tags, treap *p, double l, double r) {
     if (p == nullptr) {
         return;
     }
     double mid = (l + r) * 0.5;
-    tag[p->pos] = p->tag = mid;
-    re_tag(p->ch[0], l, mid);
-    re_tag(p->ch[1], mid, r);
+    tags[p->pos] = p->tag = mid;
+    re_tag(tags, p->ch[0], l, mid);
+    re_tag(tags, p->ch[1], mid, r);
 }
-void insert(treap *&p, int i, double l, double r) {
+
+treap *insert(char *S, double *tags, treap *p, int i, double l, double r) {
     double mid = (l + r) * 0.5;
     if (p == nullptr) {
-        tag[i] = mid;
-        p = new (treap){mid, i, 1, mt_rand(), {nullptr, nullptr}};
-        return;
+        tags[i] = mid;
+        return new treap(mid, i);
     }
-    bool f = comp(p->pos, i);
+    bool f = suffix_comp(S, tags, p->pos, i);
     if (f) {
-        insert(p->ch[1], i, mid, r);
+        p->ch[1] = insert(S, tags, p->ch[1], i, mid, r);
     } else {
-        insert(p->ch[0], i, l, mid);
+        p->ch[0] = insert(S, tags, p->ch[0], i, l, mid);
     }
     if (p->ch[f]->pri < p->pri) {
-        rotate(p, f);
-        re_tag(p, l, r);
+        p = p->rotate(f);
+        re_tag(tags, p, l, r);
     }
-    p->push_up();
+    return p->push_up();
 }
-void remove(treap *&p, int i, double l, double r) {
+
+treap *remove(char *S, double *tags, treap *p, int i, double l, double r) {
     double mid = (l + r) * 0.5;
     if (p->pos == i) {
         if (p->ch[0] == nullptr || p->ch[1] == nullptr) {
             p = p->ch[p->ch[0] == nullptr];
             if (p != nullptr) {
-                re_tag(p, l, r);
+                re_tag(tags, p, l, r);
             }
-            return;
+            return p;
         }
         bool f = p->ch[1]->pri < p->ch[0]->pri;
-        rotate(p, f);
+        p = p->rotate(f);
         if (f) {
-            remove(p->ch[!f], i, l, mid);
-            re_tag(p->ch[f], mid, r);
+            p->ch[!f] = remove(S, tags, p->ch[!f], i, l, mid);
+            re_tag(tags, p->ch[f], mid, r);
         } else {
-            remove(p->ch[!f], i, mid, r);
-            re_tag(p->ch[f], l, mid);
+            p->ch[!f] = remove(S, tags, p->ch[!f], i, mid, r);
+            re_tag(tags, p->ch[f], l, mid);
         }
-        tag[p->pos] = p->tag = mid;
+        tags[p->pos] = p->tag = mid;
     } else {
-        bool f = comp(p->pos, i);
+        bool f = suffix_comp(S, tags, p->pos, i);
         if (f) {
-            remove(p->ch[f], i, mid, r);
+            p->ch[f] = remove(S, tags, p->ch[f], i, mid, r);
         } else {
-            remove(p->ch[f], i, l, mid);
+            p->ch[f] = remove(S, tags, p->ch[f], i, l, mid);
         }
     }
     p->push_up();
+    return p;
+}
+
+int index(treap *p, char *S, char *Q, int len) {
+    int res = 1;
+    while (p != nullptr) {
+        bool f = reverse_comp(S, Q, p->pos + 1, len);
+        if (f) {
+            res += safe_size(p->ch[0]) + 1;
+        }
+        p = p->ch[f];
+    }
+    return res;
 }

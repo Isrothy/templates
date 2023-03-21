@@ -1,5 +1,7 @@
+#include <stack>
+#include <vector>
 struct TwoSAT {
-    std::stack<int> scc;
+    std::stack<int> scc{};
     std::vector<int> sccno, dfn, low;
     std::vector<std::vector<int>> adj;
     std::vector<bool> mark;

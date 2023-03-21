@@ -1,12 +1,14 @@
-bool Euler(int S, int* ans, int m) {
+bool Euler(int S, int *ans, int m) {
     memset(cur, 0, sizeof cur);
     memset(vis, 0, sizeof vis);
     int sz = 0, top = 0;
     stk[top++] = make_pair(S, 0);
     while (top != 0) {
-        pair<int,int> p = stk[top - 1];
+        pair<int, int> p = stk[top - 1];
         int u = p.first, &i = cur[u];
-        while (i < (int) E[u].size() && vis[E[u][i].second]) { ++i; }
+        while (i < (int) E[u].size() && vis[E[u][i].second]) {
+            ++i;
+        }
         if (i < (int) E[u].size()) {
             stk[top++] = E[u][i];
             vis[E[u][i].second] = true;

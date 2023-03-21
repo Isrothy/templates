@@ -1,9 +1,11 @@
-namespace Blossom{
+namespace Blossom {
     vector<int> E[M];
     int mate[M], link[M], label[M], fa[M], Q[M];
     int head, tail;
     int find(int x) {
-        if (x == fa[x]) { return x; }
+        if (x == fa[x]) {
+            return x;
+        }
         fa[x] = find(fa[x]);
         return fa[x];
     }
@@ -45,7 +47,7 @@ namespace Blossom{
         label[S] = 2;
         while (head < tail) {
             int u = Q[head++];
-            for (auto v : E[u]) {
+            for (auto v: E[u]) {
                 if (label[v] == 0) {
                     label[v] = 1;
                     link[v] = u;
@@ -79,4 +81,4 @@ namespace Blossom{
         }
         return res;
     }
-}
+}// namespace Blossom

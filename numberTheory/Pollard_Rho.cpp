@@ -1,3 +1,4 @@
+#include <cstdlib>
 long long f(long long x, long long c, long long n) {
     return ((__int128) x * x + c) % n;
 }

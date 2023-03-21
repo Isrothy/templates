@@ -1,8 +1,9 @@
-namespace Two_SAT {
-    vector<int> E[2 * M];
-    int stk[M];
-    bool mark[2 * M];
-    int top;
+#include <vector>
+template<size_t M> struct Two_SAT {
+    std::vector<int> E[2 * M];
+    int stk[M]{};
+    bool mark[2 * M]{};
+    int top{};
     void add_clause(int u, bool f1, int v, bool f2) {
         u = u << 1 | f1;
         v = v << 1 | f2;
@@ -40,4 +41,4 @@ namespace Two_SAT {
         }
         return true;
     }
-}// namespace Two_SAT
+}

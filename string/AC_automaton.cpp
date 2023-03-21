@@ -1,50 +1,69 @@
+#include <cstring>
 #include <vector>
-struct ACAutomaton {
-    static const int OMEGA = 26;
-    struct node {
-        std::vector<int> next;
-        int fail;
-        int cnt;
-        node() : next(OMEGA, -1), fail(-1), cnt(0) {}
-    };
-    std::vector<node> nodes;
-    std::vector<int> que, position;
-    ACAutomaton() : nodes(1) {}
-    int node_count = 1;
-    void insert(const char *S) {
+
+template<size_t SIGMA, size_t M> struct ACAutomaton {
+    int next[M][SIGMA], fail[M], Q[M], cnt[M];
+    std::vector<int> position;
+    int tot;
+    ACAutomaton() {
+        tot = 1;
+        memset(next[0], -1, sizeof(next[0]));
+    }
+    void insert(char *S) {
         int p = 0;
-        for (int i = 0; S[i] != '\0'; ++i) {
-            int c = S[i] - 'a';
-            if (nodes[p].next[c] == -1) {
-                nodes[p].next[c] = node_count++;
-                nodes.emplace_back();
+        while (*S != '\0') {
+            int c = *S - 'a';
+            if (next[p][c] == -1) {
+                memset(next[tot], -1, sizeof(next[tot]));
+                next[p][c] = tot++;
             }
-            p = nodes[p].next[c];
+            p = next[p][c];
+            ++S;
         }
         position.push_back(p);
     }
     void build() {
-        que.clear();
-        nodes[0].fail = 0;
-        for (int i = 0; i < OMEGA; ++i) {
-            if (nodes[0].next[i] == -1) {
-                nodes[0].next[i] = 0;
+        int head = 0, tail = 0;
+        fail[0] = 0;
+        for (int i = 0; i < SIGMA; ++i) {
+            if (next[0][i] != -1) {
+                fail[next[0][i]] = 0;
+                Q[tail++] = next[0][i];
             } else {
-                nodes[nodes[0].next[i]].fail = 0;
-                que.push_back(nodes[0].next[i]);
+                next[0][i] = 0;
             }
         }
-        for (int i = 0; i < (int) que.size(); ++i) {
-            int p = que[i];
-            auto &u = nodes[p];
-            for (int j = 0; j < OMEGA; ++j) {
-                if (u.next[j] == -1) {
-                    u.next[j] = nodes[u.fail].next[j];
+        while (head < tail) {
+            int p = Q[head++];
+            for (int i = 0; i < SIGMA; ++i) {
+                int q = next[p][i];
+                if (q != -1) {
+                    fail[q] = next[fail[p]][i];
+                    Q[tail++] = q;
                 } else {
-                    nodes[u.next[j]].fail = nodes[u.fail].next[j];
-                    que.push_back(u.next[j]);
+                    next[p][i] = next[fail[p]][i];
                 }
             }
         }
+    }
+
+    std::vector<int> query(char *s) {
+        memset(cnt, 0, sizeof(cnt));
+        int p = 0;
+        while (*s != '\0') {
+            p = next[p][*s - 'a'];
+            ++cnt[p];
+            ++s;
+        }
+        for (int i = tot - 1; i >= 0; i--) {
+            if (Q[i] != 0) {
+                cnt[fail[Q[i]]] += cnt[Q[i]];
+            }
+        }
+        std::vector<int> ret(position.size());
+        for (int i = 0; i < position.size(); i++) {
+            ret[i] = cnt[position[i]];
+        }
+        return ret;
     }
 };

@@ -3,7 +3,7 @@ struct DLX {
     struct node {
         int i, j;
         node *left, *right, *up, *down;
-        node() = default;
+        node() : i(0), j(0), left(nullptr), right(nullptr), up(nullptr), down(nullptr) {}
         explicit node(int i = 0, int j = 0) {
             this->i = i;
             this->j = j;
