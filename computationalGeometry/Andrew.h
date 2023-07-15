@@ -1,7 +1,9 @@
+#include "2D-computational_geometry.h"
 #include <algorithm>
+
 int Andrew(Point *a, int n) {
     auto *b = new Point[n];
-    std::sort(a, a + n, [](Point const &A, Point const &B) {
+    std::sort(a, a + n, [](const Point &A, const Point &B) {
         return A.x == B.x ? A.y < B.y : A.x < B.x;
     });
     int top = 0;
@@ -19,8 +21,7 @@ int Andrew(Point *a, int n) {
         }
         b[top++] = a[i];
     }
-    for (int i = 0; i < top; ++i) {
-        a[i] = b[i];
-    }
+    std::copy(b, b + top, a);
+    delete[] b;
     return top - 1;
 }

@@ -38,7 +38,6 @@ struct DLX {
             row[j]->down = row[(j + 1) % (r + 1)];
         }
     }
-
     void insert_back(int r, int c) {
         auto p = new node(r, c);
         p->up = col[c]->up;
@@ -49,8 +48,6 @@ struct DLX {
         p->left->right = p->right->left = p;
         ++cnt[c];
     }
-
-
     void remove(node *p) {
         p->left->right = p->right;
         p->right->left = p->left;

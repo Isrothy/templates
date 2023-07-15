@@ -35,7 +35,7 @@ struct Matrix : public std::vector<std::vector<long long>> {
         }
     }
 
-    Matrix argument(std::vector<long long> v) const {
+    Matrix augment(std::vector<long long> v) const {
         assert(n == v.size());
         Matrix res(n, m + 1);
         for (int i = 0; i < n; ++i) {
@@ -47,7 +47,7 @@ struct Matrix : public std::vector<std::vector<long long>> {
         return res;
     }
 
-    Matrix argument(Matrix B) const {
+    Matrix augment(Matrix B) const {
         assert(n == B.n);
         Matrix res(n, m + B.m);
         for (int i = 0; i < n; ++i) {
@@ -117,7 +117,7 @@ struct Matrix : public std::vector<std::vector<long long>> {
         assert(n == v.size());
         std::vector<long long> v0(m);
         std::vector<int> p(n, -1), f;
-        Matrix tmp = this->argument(v);
+        Matrix tmp = this->augment(v);
         for (int i = 0, pivot = 0; i < n; ++i) {
             while (pivot < m && tmp[i][pivot] == 0) {
                 for (int j = i + 1; j < n; ++j) {
@@ -173,7 +173,7 @@ struct Matrix : public std::vector<std::vector<long long>> {
     }
     std::optional<Matrix> inverse() const {
         assert(n == m);
-        auto tmp = this->argument(Matrix::identity(n));
+        auto tmp = this->augment(Matrix::identity(n));
         for (int i = 0; i < n; ++i) {
             if (tmp[i][i] == 0) {
                 for (int j = i + 1; j < n; ++j) {

@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <cmath>
-const double EPS = 1e-10;
+#include <vector>
+
+constexpr double EPS = 1e-10;
 int sign(double x) {
     if (x < -EPS) {
         return -1;
@@ -14,62 +17,74 @@ int sign(double x, double y) {
 }
 struct Point {
     double x, y;
-    double len2() const {
+    explicit Point(double _x = 0, double _y = 0) : x(_x), y(_y) {}
+    [[nodiscard]] double len2() const {
         return x * x + y * y;
     }
-    double len() const {
+    [[nodiscard]] double len() const {
         return sqrt(len2());
     }
     Point operator+(Point const &_) const {
-        return (Point){x + _.x, y + _.y};
+        return Point(x + _.x, y + _.y);
     }
     Point operator-(Point const &_) const {
-        return (Point){x - _.x, y - _.y};
+        return Point(x - _.x, y - _.y);
     }
     Point operator*(double p) const {
-        return (Point){x * p, y * p};
+        return Point(x * p, y * p);
     }
     Point operator/(double p) const {
-        return (Point){x / p, y / p};
+        return Point(x / p, y / p);
     }
     bool operator==(Point const &_) const {
         return sign(x, _.x) == 0 && sign(y, _.y) == 0;
     }
-    Point unit() const {
+    [[nodiscard]] Point unit() const {
         return *this / len();
     }
-    double angle() const {
-        return atan2(y, x);
+    [[nodiscard]] constexpr double angle() const {
+        return std::atan2(y, x);
     }
-    Point normal() const {
-        return (Point){-y, x};
+    [[nodiscard]] Point normal() const {
+        return Point(-y, x);
     }
 };
-typedef Point Vector;
+using Vector = Point;
+using Line = std::pair<Point, Point>;
+using Ray = Line;
+using Segment = Line;
+using Polygon = std::vector<Point>;
+
 Point operator*(double p, Point const &_) {
-    return (Point){p * _.x, p * _.y};
+    return Point(p * _.x, p * _.y);
 }
-double dot(Vector const &A, Vector const &B) {
+constexpr double dot(const Vector &A, const Vector &B) {
     return A.x * B.x + A.y * B.y;
 }
-double det(Vector const &A, Vector const &B) {
+constexpr double det(const Vector &A, const Vector &B) {
     return A.x * B.y - A.y * B.x;
 }
-Point middle(Point const &A, Point const &B) {
+Point middle(const Point &A, const Point &B) {
     return 0.5 * (A + B);
 }
-double angle(Vector const &a, Vector const &b) {
+double angle(const Vector &a, const Vector &b) {
     double tmp = a.len() * b.len();
     return sign(tmp) == 0 ? 0 : acos(dot(a, b) / tmp);
 }
-double point_line_distance(Point const &P, Point const &A, Point const &B) {
+double point_line_distance(const Point &P, const Point &A, const Point &B) {
     Vector v1 = B - A, v2 = P - A;
-    return fabs(det(v1, v2) / v1.len());
+    return std::fabs(det(v1, v2) / v1.len());
 }
-int point_on_segment(Point const &P, Point const &A, Point const &B) {
-    return (int) (sign(det(A - P, B - P)) == 0 && sign(dot(A - P, B - P)) <= 0);
+double point_line_distance(const Point &P, const Line &L) {
+    return point_line_distance(P, L.first, L.second);
 }
-double point_segment_distance(Point const &P, Point const &A, Point const &B) {
+bool point_on_segment(const Point &P, const Point &A, const Point &B) {
+    return sign(det(A - P, B - P)) == 0 && sign(dot(A - P, B - P)) <= 0;
+}
+bool point_on_segment(const Point &P, const Segment &s) {
+    return point_on_segment(P, s.first, s.second);
+}
+double point_segment_distance(const Point &P, const Point &A, const Point &B) {
     if (A == B) {
         return (P - A).len();
     }
@@ -82,14 +97,25 @@ double point_segment_distance(Point const &P, Point const &A, Point const &B) {
     }
     return det(v1, v2) / v1.len();
 }
-Point projection(Point const &P, Point const &A, Point const &B) {
-    Vector v = B - A;
-    return A + v * (dot(v, P - A) / v.len2());
+double point_segment_distance(const Point &P, const Segment &s) {
+    return point_segment_distance(P, s.first, s.second);
 }
-Point symmetry(Point const &P, Point const &A, Point const &B) {
+Point projection(const Point &P, const Point &A, const Point &B) {
+    Vector v = B - A;
+    return A + v / v.len2() * dot(v, P - A);
+}
+Point projection(const Point &P, const Line &l) {
+    return projection(P, l.first, l.second);
+}
+Point symmetry(const Point &P, const Point &A, const Point &B) {
     return 2 * projection(P, A, B) - P;
 }
-int intersection(Point const &A, Point const &B, Point const &C, Point const &D, Point &O) {
+Point symmetry(const Point &P, const Line &l) {
+    return symmetry(P, l.first, l.second);
+}
+int line_line_intersection(
+    const Point &A, const Point &B, const Point &C, const Point &D, Point &O
+) {
     if (sign(det(B - A, D - C)) == 0) {
         if (sign(det(B - A, C - A)) == 0) {
             return -1;
@@ -101,35 +127,48 @@ int intersection(Point const &A, Point const &B, Point const &C, Point const &D,
     O = A + (B - A) * (s1 / (s1 + s2));
     return 1;
 }
+int line_line_intersection(const Line &l1, const Line &l2, Point &O) {
+    return line_line_intersection(l1.first, l1.second, l2.first, l2.second, O);
+}
 int segment_segment_intersection(
-    Point const &A, Point const &B, Point const &C, Point const &D, Point &O
+    const Point &A, const Point &B, const Point &C, const Point &D, Point &O
 ) {
-    int ret = intersection(A, B, C, D, O);
+    int ret = line_line_intersection(A, B, C, D, O);
     if (ret != 1) {
         return ret;
     }
-    return (int) (point_on_segment(O, A, B) == 1 && point_on_segment(O, C, D) == 1);
+    return sign(dot(A - O, B - O)) <= 0 && sign(dot(C - O, D - O)) <= 0 ? 1 : 0;
 }
-int point_in_triangle(Point const &P, Point const &A, Point const &B, Point const &C) {
-    double s1 = det(A - P, B - P) + det(B - P, C - P) + det(C - P, A - P);
-    double s2 = det(A - B, C - B);
-    return (int) (sign(s1, s2) == 0);
+int segment_segment_intersection(const Segment &s1, const Segment &s2, Point &O) {
+    return segment_segment_intersection(s1.first, s1.second, s2.first, s2.second, O);
 }
-int point_in_convex_polygon(Point const &P, Point const *polygon, int n) {
+int point_in_triangle(const Point &P, const Point &A, const Point &B, const Point &C) {
+    if (point_on_segment(P, A, B) || point_on_segment(P, B, C) || point_on_segment(P, C, A)) {
+        return 0;
+    }
+    double a = angle(A - P, B - P) + angle(B - P, C - P) + angle(C - P, A - P);
+    return sign(a) == 0 ? 1 : -1;
+}
+int point_in_convex_polygon(const Point &P, const Polygon &poly) {
+    auto n = poly.size();
     for (int i = 0; i < n; ++i) {
-        if (sign(det(polygon[i] - P, polygon[(i + 1) % n] - P)) < 0) {
+        if (point_on_segment(P, poly[i], poly[(i + 1) % n])) {
             return 0;
         }
-    }
-    return 1;
-}
-int point_in_polygon(Point const &P, Point const *polygon, int n) {
-    int result = 0;
-    for (int i = 0; i < n; ++i) {
-        Point A = polygon[i];
-        Point B = polygon[(i + 1) % n];
-        if (point_on_segment(P, A, B)) {
+        if (sign(det(poly[i] - P, poly[(i + 1) % n] - P)) < 0) {
             return 1;
+        }
+    }
+    return -1;
+}
+int point_in_polygon(const Point &P, const Polygon &poly) {
+    int result = 0;
+    auto n = poly.size();
+    for (int i = 0; i < n; ++i) {
+        Point A = poly[i];
+        Point B = poly[(i + 1) % n];
+        if (point_on_segment(P, A, B)) {
+            return 0;
         }
         if (sign(A.y - B.y) > 0) {
             std::swap(A, B);
@@ -138,7 +177,7 @@ int point_in_polygon(Point const &P, Point const *polygon, int n) {
             result ^= 1;
         }
     }
-    return result;
+    return result & 1 ? -1 : 1;
 }
 double triangle_area(const Point &A, const Point &B, const Point &C) {
     return fabs(det(B - A, C - A)) * 0.5;
@@ -166,7 +205,7 @@ int circle_line_intersection(
 }
 
 int circle_segment_intersection(
-    Point const &O, double r, Point const &A, Point const &B, Point &P1, Point &P2
+    const Point &O, double r, const Point &A, const Point &B, Point &P1, Point &P2
 ) {
     int tmp = circle_line_intersection(O, r, A, B, P1, P2);
     bool o1 = tmp >= 1 && sign(dot(P1 - A, P1 - B)) <= 0;
@@ -184,7 +223,7 @@ int circle_segment_intersection(
     return 0;
 }
 int circle_circle_intersection(
-    Point const &O1, double r1, Point const &O2, double r2, Point &P1, Point &P2
+    const Point &O1, double r1, const Point &O2, double r2, Point &P1, Point &P2
 ) {
     if (O2 == O1) {
         return 0;
@@ -225,8 +264,8 @@ double circle_point_tangent(Point const &O, double r, Point const &A, Point &P1,
         return (A - P1).len();
     }
 }
-double circumscribed_circle(Point const &A, Point const &B, Point const &C, Point &O) {
-    if (intersection(
+double circumscribed_circle(const Point &A, const Point &B, const Point &C, Point &O) {
+    if (line_line_intersection(
             middle(A, B),
             middle(A, B) + (A - B).normal(),
             middle(B, C),
@@ -238,15 +277,15 @@ double circumscribed_circle(Point const &A, Point const &B, Point const &C, Poin
     }
     return (A - O).len();
 }
-double inscribed_circle(Point const &A, Point const &B, Point const &C, Point &I) {
+double inscribed_circle(const Point &A, const Point &B, const Point &C, Point &I) {
     double a = (B - C).len(), b = (C - A).len(), c = (A - B).len();
     I = (A * a + B * b + C * c) / (a + b + c);
     return point_line_distance(I, A, B);
 }
 double external_co_tangent(
-    Point const &O1,
+    const Point &O1,
     double r1,
-    Point const &O2,
+    const Point &O2,
     double r2,
     Point &P1,
     Point &P2,
@@ -269,9 +308,9 @@ double external_co_tangent(
     return res;
 }
 double internal_co_tangent(
-    Point const &O1,
+    const Point &O1,
     double r1,
-    Point const &O2,
+    const Point &O2,
     double r2,
     Point &P1,
     Point &P2,
