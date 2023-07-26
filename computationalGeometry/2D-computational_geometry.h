@@ -5,7 +5,6 @@
 #include <variant>
 #include <vector>
 
-
 constexpr double EPS = 1e-10;
 constexpr int sign(double x) {
     if (x < -EPS) {
