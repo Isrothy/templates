@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
-struct BigUnsigned : public std::vector<int> {
-    static const int bit = 9;
-    static const int base = 1e9;
+struct BigUnsigned : protected std::vector<int> {
+    static constexpr int bit = 9;
+    static constexpr int base = 1e9;
 #define PLACE_HOLDER "%09d"
 
     BigUnsigned(unsigned long long x = 0) {
@@ -29,6 +29,10 @@ struct BigUnsigned : public std::vector<int> {
     }
 
     explicit BigUnsigned(const std::string &s) : BigUnsigned(s.c_str()) {}
+
+    bool is_zero() const {
+        return empty();
+    }
 
     void print(FILE *fout = stdout) const {
         int n = int(size()) - 1;
@@ -277,8 +281,8 @@ struct BigInt {
         return _digits;
     }
 
-    bool is_zero() const {
-        return _digits.empty();
+    [[nodiscard]] bool is_zero() const {
+        return _digits.is_zero();
     }
 
     int sign() const {
