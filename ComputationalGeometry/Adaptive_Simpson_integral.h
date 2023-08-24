@@ -1,14 +1,20 @@
-#include <cmath>
-const double EPS = 1e-10;
-double Simpson(double l, double r, double (*F)(double)) {
-    double mid = (l + r) / 2;
-    return (r - l) * (F(l) + 4 * F(mid) + F(r)) / 6;
+#include "2D_computational_geometry.h"
+#include <functional>
+
+auto simpson(double l, double r, const std::function<double(double)> &f) {
+    auto mid = (l + r) / 2;
+    return (r - l) * (f(l) + 4 * f(mid) + f(r)) / 6;
 }
-double ASR(double l, double r, double tmp, double (*F)(double)) {
-    double mid = (l + r) * 0.5;
-    double sl = Simpson(l, mid, F), sr = Simpson(mid, r, F);
-    if (fabs(sl + sr - tmp) < EPS) {
-        return sl + sr + (sl + sr - tmp);
+auto asr(
+    double l,
+    double r,
+    const std::function<double(double)> &f,
+    std::optional<double> tmp = std::nullopt
+) {
+    auto mid = (l + r) / 2;
+    auto sl = simpson(l, mid, f), sr = simpson(mid, r, f);
+    if (tmp.has_value() && (sl + sr - tmp.value()) < EPS) {
+        return sl + sr + (sl + sr - tmp.value());
     }
-    return ASR(l, mid, sl, F) + ASR(mid, r, sr, F);
+    return asr(l, mid, f, sl) + asr(mid, r, f, sr);
 }

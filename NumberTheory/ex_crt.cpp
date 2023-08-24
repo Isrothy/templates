@@ -15,4 +15,3 @@ ex_crt(long long a1, long long m1, long long a2, long long m2) {
     }
     return std::make_pair(a, m);
 }
-
