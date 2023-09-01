@@ -1,7 +1,7 @@
 #include <cstring>
 #include <vector>
-
-template<size_t SIGMA, size_t M> struct ACAutomaton {
+template<size_t SIGMA, size_t M>
+struct ACAutomaton {
     int next[M][SIGMA], fail[M], Q[M], cnt[M];
     std::vector<int> position;
     int tot;
@@ -46,7 +46,6 @@ template<size_t SIGMA, size_t M> struct ACAutomaton {
             }
         }
     }
-
     std::vector<int> query(char *s) {
         memset(cnt, 0, sizeof(cnt));
         int p = 0;
@@ -56,14 +55,10 @@ template<size_t SIGMA, size_t M> struct ACAutomaton {
             ++s;
         }
         for (int i = tot - 1; i >= 0; i--) {
-            if (Q[i] != 0) {
-                cnt[fail[Q[i]]] += cnt[Q[i]];
-            }
+            if (Q[i] != 0) { cnt[fail[Q[i]]] += cnt[Q[i]]; }
         }
         std::vector<int> ret(position.size());
-        for (int i = 0; i < position.size(); i++) {
-            ret[i] = cnt[position[i]];
-        }
+        for (int i = 0; i < position.size(); i++) { ret[i] = cnt[position[i]]; }
         return ret;
     }
 };

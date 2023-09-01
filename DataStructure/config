@@ -1,9 +1,9 @@
-<Link-Cut Tree> <link_cut_tree.cpp>
-<Segment Tree Beats> <segment_tree_beats.cpp>
-<binary indexed tree> <binary_indexed_tree.cpp>
-<KD-Tree> <kd_tree.cpp>
-<Li Chao Tree> <Li_Chao_segment_tree.cpp>
-<Sparse Table> <Sparse_Table.cpp>
-<AVL> <avl.cpp>
-<Treap> <treap.cpp>
-<Splay> <splay_tree.cpp>
+<Link-Cut Tree> <link_cut_tree.h>
+<Segment Tree Beats> <segment_tree_beats.h>
+<binary indexed tree> <binary_indexed_tree.h>
+<KD-Tree> <kd_tree.h>
+<Li Chao Tree> <Li_Chao_segment_tree.h>
+<Sparse Table> <Sparse_Table.h>
+<AVL> <avl.h>
+<Treap> <treap.h>
+<Splay> <splay_tree.h>

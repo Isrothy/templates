@@ -1,10 +1,8 @@
+#include "2D_computational_geometry.h"
 #include <algorithm>
+#include <cmath>
 #include <set>
 #include <vector>
-#include <cmath>
-struct Point {
-    double x, y;
-};
 void build_tree(Point *o, long long *r, int n, int *par) {
     struct arc {
         int id;
@@ -12,18 +10,14 @@ void build_tree(Point *o, long long *r, int n, int *par) {
         double r;
         bool convax;
         arc(int id, Point o, double r, bool convax) : id(id), o(o), r(r), convax(convax) {}
-        double intersection(double x) const {
-            return o.y + (convax ? -1 : 1) * sqrt(r * r - (x - o.x) * (x - o.x));
-        }
+        double intersection(double x) const { return o.y + (convax ? -1 : 1) * sqrt(r * r - (x - o.x) * (x - o.x)); }
     };
     struct events {
         double x;
         int id;
         bool type;
-        events(long long x, int id, bool type) : x(x), id(id), type(type) {}
-        bool operator<(const events &other) const {
-            return x == other.x ? type < other.type : x < other.x;
-        }
+        events(double x, int id, bool type) : x(x), id(id), type(type) {}
+        bool operator<(const events &other) const { return x == other.x ? type < other.type : x < other.x; }
     };
     std::vector<events> events;
     for (int i = 0; i < n; i++) {

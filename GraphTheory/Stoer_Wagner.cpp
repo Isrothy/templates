@@ -2,9 +2,7 @@ int Stoer_Wagner(int d[M][M], int n) {
     static int w[M];
     static bool vis[M], del[M];
     int res = INF;
-    for (int u = 1; u <= n; ++u) {
-        del[u] = false;
-    }
+    for (int u = 1; u <= n; ++u) { del[u] = false; }
     for (int i = 1; i < n; ++i) {
         for (int u = 1; u <= n; ++u) {
             w[u] = 0;
@@ -14,15 +12,11 @@ int Stoer_Wagner(int d[M][M], int n) {
         for (int j = 1; j <= n - i + 1; ++j) {
             int v = -1;
             for (int u = 1; u <= n; ++u) {
-                if (!del[u] && !vis[u] && (v == -1 || w[v] < w[u])) {
-                    v = u;
-                }
+                if (!del[u] && !vis[u] && (v == -1 || w[v] < w[u])) { v = u; }
             }
             vis[v] = true;
             for (int u = 1; u <= n; ++u) {
-                if (!del[u] && !vis[u]) {
-                    w[u] += d[u][v];
-                }
+                if (!del[u] && !vis[u]) { w[u] += d[u][v]; }
             }
             s = t;
             t = v;

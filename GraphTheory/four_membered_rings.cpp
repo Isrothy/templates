@@ -10,9 +10,7 @@ int four_membered_rings(std::vector<int> *E, int n) {
     }
     for (int u = 1; u <= n; ++u) {
         for (auto v: E[u]) {
-            if (Rank[u] < Rank[v]) {
-                F[u].push_back(v);
-            }
+            if (Rank[u] < Rank[v]) { F[u].push_back(v); }
         }
     }
     int res = 0;

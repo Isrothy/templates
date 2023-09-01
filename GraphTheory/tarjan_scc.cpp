@@ -17,9 +17,7 @@ void Tarjan(int u) {
         for (;;) {
             int v = stk[--top];
             sccno[v] = scc_cnt;
-            if (v == u) {
-                break;
-            }
+            if (v == u) { break; }
         }
     }
 }

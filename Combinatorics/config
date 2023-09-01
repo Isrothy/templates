@@ -1,5 +1,5 @@
-<polynomial> <polynomial.cpp>
-<Euclidean like> <Euclidean_like.cpp>
-<Euclidean like pro> <Euclidean_like_pro.cpp>
+<polynomial> <polynomial.h>
+<Euclidean like> <Euclidean_like.h>
+<Euclidean like pro> <Euclidean_like_pro.h>
 <MTT> <MTT.cpp>
-<FWT> <FWT.cpp>
+<FWT> <FWT.h>

@@ -1,7 +1,6 @@
 #include "2D_computational_geometry.h"
 #include <list>
 #include <numeric>
-
 class DelaunayGraph {
     class QuadEdge;
     using EdgeIt = std::list<QuadEdge>::iterator;
@@ -11,13 +10,9 @@ class DelaunayGraph {
 
       public:
         explicit QuadEdge(Point *origin) : orig_(origin) {}
-#define DEFINE_ACCESSOR(name, expr)                                                                \
-    auto name() const {                                                                            \
-        return expr;                                                                               \
-    }                                                                                              \
-    auto &name() {                                                                                 \
-        return expr;                                                                               \
-    }
+#define DEFINE_ACCESSOR(name, expr)                                                                                    \
+    auto name() const { return expr; }                                                                                 \
+    auto &name() { return expr; }
         DEFINE_ACCESSOR(rot, rot_);
         DEFINE_ACCESSOR(onext, onext_);
         DEFINE_ACCESSOR(rev, rot()->rot());
@@ -27,9 +22,7 @@ class DelaunayGraph {
         DEFINE_ACCESSOR(orig, orig_)
         DEFINE_ACCESSOR(dest, rev()->orig());
 #undef DEFINE_ACCESSOR
-        auto segment() const {
-            return Segment{*orig(), *dest()};
-        }
+        auto segment() const { return Segment{*orig(), *dest()}; }
     };
     std::list<QuadEdge> edges_;
     auto new_edge(Point *origin) {
@@ -64,18 +57,13 @@ class DelaunayGraph {
         return e;
     }
     static auto determinate(const std::array<std::array<double, 3>, 3> &matrix) {
-        return matrix[0][0] * matrix[1][1] * matrix[2][2]
-               + matrix[0][1] * matrix[1][2] * matrix[2][0]
-               + matrix[0][2] * matrix[1][0] * matrix[2][1]
-               - matrix[0][2] * matrix[1][1] * matrix[2][0]
-               - matrix[0][1] * matrix[1][0] * matrix[2][2]
-               - matrix[0][0] * matrix[1][2] * matrix[2][1];
+        return matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0]
+               + matrix[0][2] * matrix[1][0] * matrix[2][1] - matrix[0][2] * matrix[1][1] * matrix[2][0]
+               - matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][0] * matrix[1][2] * matrix[2][1];
     }
     static auto in_circle(const Point &P, const Triangle &t) {
         auto [A, B, C] = t;
-        if (sign(det(B - A, C - A)) < 0) {
-            std::swap(B, C);
-        }
+        if (sign(det(B - A, C - A)) < 0) { std::swap(B, C); }
         auto a = A - P;
         auto b = B - P;
         auto c = C - P;
@@ -124,19 +112,13 @@ class DelaunayGraph {
             }
         }
         auto base = connect(rdi->rev(), ldi);
-        if (ldi->orig() == ldo->orig()) {
-            ldo = base->rev();
-        }
-        if (rdi->orig() == rdo->orig()) {
-            rdo = base;
-        }
+        if (ldi->orig() == ldo->orig()) { ldo = base->rev(); }
+        if (rdi->orig() == rdo->orig()) { rdo = base; }
         while (true) {
             auto lcand = base->rprev();
             auto valid_l = side_of_line(*lcand->dest(), base->segment()) == Side::right;
             if (valid_l) {
-                while (in_circle(
-                    *lcand->onext()->dest(), {*base->orig(), *base->dest(), *lcand->dest()}
-                )) {
+                while (in_circle(*lcand->onext()->dest(), {*base->orig(), *base->dest(), *lcand->dest()})) {
                     auto t = lcand->onext();
                     delete_edge(lcand);
                     lcand = t;
@@ -145,20 +127,14 @@ class DelaunayGraph {
             auto rcand = base->oprev();
             auto valid_r = side_of_line(*rcand->dest(), base->segment()) == Side::right;
             if (valid_r) {
-                while (in_circle(
-                    *rcand->oprev()->dest(), {*base->orig(), *base->dest(), *rcand->dest()}
-                )) {
+                while (in_circle(*rcand->oprev()->dest(), {*base->orig(), *base->dest(), *rcand->dest()})) {
                     auto t = rcand->oprev();
                     delete_edge(rcand);
                     rcand = t;
                 }
             }
-            if (!valid_l && !valid_r) {
-                break;
-            }
-            if (!valid_l
-                || (valid_r
-                    && in_circle(*rcand->dest(), {*base->orig(), *base->dest(), *lcand->dest()}))) {
+            if (!valid_l && !valid_r) { break; }
+            if (!valid_l || (valid_r && in_circle(*rcand->dest(), {*base->orig(), *base->dest(), *lcand->dest()}))) {
                 base = connect(rcand, base->rev());
             } else {
                 base = connect(base->rev(), lcand->rev());
@@ -170,9 +146,7 @@ class DelaunayGraph {
   public:
     explicit DelaunayGraph(std::span<Point> points) {
         auto n = points.size();
-        if (n < 2) {
-            return;
-        }
+        if (n < 2) { return; }
         std::vector<Point *> a(n);
         std::iota(a.begin(), a.end(), points.data());
         std::sort(a.begin(), a.end(), [](const Point *P, const Point *Q) {

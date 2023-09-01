@@ -6,12 +6,14 @@ namespace ex_Lucas {
         long long m = mod;
         for (int i = 2; i * i <= m; ++i) {
             if (mod % i == 0) {
-                P[t] = i; Pk[t] = 1;
-                while (m % i == 0) { m /= i; Pk[t] *= i; }
-                S[t][0] = 1;
-                for (int j = 1; j <= Pk[t]; ++j) {
-                    S[t][j] = j % i == 0 ? S[t][j - 1] : S[t][j - 1] * j % Pk[t];
+                P[t] = i;
+                Pk[t] = 1;
+                while (m % i == 0) {
+                    m /= i;
+                    Pk[t] *= i;
                 }
+                S[t][0] = 1;
+                for (int j = 1; j <= Pk[t]; ++j) { S[t][j] = j % i == 0 ? S[t][j - 1] : S[t][j - 1] * j % Pk[t]; }
                 Mt[t] = (mod / Pk[t]) * inverse(mod / Pk[t], Pk[t]) % mod;
                 ++t;
             }
@@ -19,9 +21,7 @@ namespace ex_Lucas {
         if (m != 1) {
             P[t] = Pk[t] = m;
             S[t][0] = 1;
-            for (int j = 1; j <= Pk[t]; ++j) {
-                S[t][j] = j % m == 0 ? S[t][j - 1] : S[t][j - 1] * j % Pk[t];
-            }
+            for (int j = 1; j <= Pk[t]; ++j) { S[t][j] = j % m == 0 ? S[t][j - 1] : S[t][j - 1] * j % Pk[t]; }
             Mt[t] = (mod / m) * inverse(mod / m, m) % mod;
             ++t;
         }
@@ -36,7 +36,10 @@ namespace ex_Lucas {
     }
     long long g(long long n, long long p) {
         long long res = 0;
-        while (n != 0) { n = n / p; res += n; }
+        while (n != 0) {
+            n = n / p;
+            res += n;
+        }
         return res;
     }
     long long combination(long long n, long long m) {
@@ -51,4 +54,4 @@ namespace ex_Lucas {
         }
         return res;
     }
-}
+}// namespace ex_Lucas

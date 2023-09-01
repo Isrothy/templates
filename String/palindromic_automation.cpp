@@ -1,11 +1,10 @@
 #include <cstring>
-template<unsigned M, unsigned C> struct palindromic_automaton {
+template<unsigned M, unsigned C>
+struct palindromic_automaton {
     int Next[M][C], fail[M], len[M], cnt[M];
     int tot;
     int get_fail(char *S, int i, int p) {
-        while (i - len[p] - 1 < 0 || S[i - len[p] - 1] != S[i]) {
-            p = fail[p];
-        }
+        while (i - len[p] - 1 < 0 || S[i - len[p] - 1] != S[i]) { p = fail[p]; }
         return p;
     }
     void build(char *S) {

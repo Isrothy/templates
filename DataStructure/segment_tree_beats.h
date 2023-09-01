@@ -1,11 +1,9 @@
 #include <algorithm>
-const int M = 100000 + 10;
-const int INF = 0x3f3f3f3f;
-int mx[4 * M], mi[4 * M], second_max[4 * M], second_min[4 * M], cnt_max[4 * M], cnt_min[4 * M],
-    len[4 * M];
+constexpr int M = 100000 + 10;
+constexpr int INF = 0x3f3f3f3f;
+int mx[4 * M], mi[4 * M], second_max[4 * M], second_min[4 * M], cnt_max[4 * M], cnt_min[4 * M], len[4 * M];
 int lazy_min[4 * M], lazy_max[4 * M], lazy_add[4 * M];
 long long sum[4 * M];
-
 void push_up(int p) {
     sum[p] = sum[p << 1] + sum[p << 1 | 1];
     mx[p] = std::max(mx[p << 1], mx[p << 1 | 1]);
@@ -38,24 +36,14 @@ void add(int p, int x) {
     mx[p] += x;
     mi[p] += x;
     sum[p] += (long long) x * len[p];
-    if (second_max[p] != -INF) {
-        second_max[p] += x;
-    }
-    if (second_min[p] != INF) {
-        second_min[p] += x;
-    }
+    if (second_max[p] != -INF) { second_max[p] += x; }
+    if (second_min[p] != INF) { second_min[p] += x; }
     lazy_add[p] += x;
-    if (lazy_min[p] != INF) {
-        lazy_min[p] += x;
-    }
-    if (lazy_max[p] != -INF) {
-        lazy_max[p] += x;
-    }
+    if (lazy_min[p] != INF) { lazy_min[p] += x; }
+    if (lazy_max[p] != -INF) { lazy_max[p] += x; }
 }
 void check_max(int p, int x) {
-    if (x <= mi[p]) {
-        return;
-    }
+    if (x <= mi[p]) { return; }
     sum[p] += (long long) cnt_min[p] * (x - mi[p]);
     if (mx[p] == mi[p]) {
         mx[p] = lazy_min[p] = x;
@@ -65,9 +53,7 @@ void check_max(int p, int x) {
     mi[p] = lazy_max[p] = x;
 }
 void check_min(int p, int x) {
-    if (mx[p] <= x) {
-        return;
-    }
+    if (mx[p] <= x) { return; }
     sum[p] -= (long long) cnt_max[p] * (mx[p] - x);
     if (mx[p] == mi[p]) {
         mi[p] = lazy_max[p] = x;
@@ -129,9 +115,7 @@ void update_add(int p, int l, int r, int a, int b, int x) {
     push_up(p);
 }
 void check_max(int p, int l, int r, int a, int b, int x) {
-    if (x <= mi[p]) {
-        return;
-    }
+    if (x <= mi[p]) { return; }
     if (l == a && r == b && x < second_min[p]) {
         check_max(p, x);
         return;
@@ -149,9 +133,7 @@ void check_max(int p, int l, int r, int a, int b, int x) {
     push_up(p);
 }
 void check_min(int p, int l, int r, int a, int b, int x) {
-    if (mx[p] <= x) {
-        return;
-    }
+    if (mx[p] <= x) { return; }
     if (l == a && r == b && second_max[p] < x) {
         check_min(p, x);
         return;

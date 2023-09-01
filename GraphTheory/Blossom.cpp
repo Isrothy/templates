@@ -3,9 +3,7 @@ namespace Blossom {
     int mate[M], link[M], label[M], fa[M], Q[M];
     int head, tail;
     int find(int x) {
-        if (x == fa[x]) {
-            return x;
-        }
+        if (x == fa[x]) { return x; }
         fa[x] = find(fa[x]);
         return fa[x];
     }
@@ -75,9 +73,7 @@ namespace Blossom {
     int maximum_matching(int n) {
         int res = 0;
         for (int u = 1; u <= n; ++u) {
-            if (mate[u] == 0 && BFS(u, n)) {
-                ++res;
-            }
+            if (mate[u] == 0 && BFS(u, n)) { ++res; }
         }
         return res;
     }

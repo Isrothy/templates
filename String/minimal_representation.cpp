@@ -12,9 +12,7 @@ int minimal_representation(char *S) {
             } else {
                 i += k + 1;
             }
-            if (i == j) {
-                ++i;
-            }
+            if (i == j) { ++i; }
             k = 0;
         }
     }

@@ -1,12 +1,10 @@
 #include <queue>
 #include <vector>
-
 struct BipartiteGraph {
     std::vector<std::vector<int>> E;
     std::vector<int> dx, dy, S, T;
     size_t nl, nr;
-    BipartiteGraph(size_t nl, size_t nr)
-        : E(nl), dx(nl), dy(nr), S(nl, -1), T(nr, -1), nl(nl), nr(nr) {}
+    BipartiteGraph(size_t nl, size_t nr) : E(nl), dx(nl), dy(nr), S(nl, -1), T(nr, -1), nl(nl), nr(nr) {}
     void add_edge(int u, int v) {
         assert(0 <= u && u < nl && 0 <= v && v < nr);
         E[u].push_back(v);
@@ -25,9 +23,7 @@ struct BipartiteGraph {
         while (!Q.empty()) {
             int u = Q.front();
             Q.pop();
-            if (ret != -1 && dx[u] > ret) {
-                break;
-            }
+            if (ret != -1 && dx[u] > ret) { break; }
             for (auto v: E[u]) {
                 if (dy[v] == -1) {
                     dy[v] = dx[u];
@@ -42,7 +38,6 @@ struct BipartiteGraph {
         }
         return ret != -1;
     }
-
     bool DFS(int u) {
         for (auto v: E[u]) {
             if (dy[v] == dx[u]) {
@@ -60,9 +55,7 @@ struct BipartiteGraph {
         int res = 0;
         while (BFS()) {
             for (int u = 0; u < nl; ++u) {
-                if (S[u] == -1 && DFS(u)) {
-                    ++res;
-                }
+                if (S[u] == -1 && DFS(u)) { ++res; }
             }
         }
         return res;

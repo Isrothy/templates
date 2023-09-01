@@ -4,6 +4,7 @@
 <Minimal Representation> <minimal_representation.cpp>
 <Palindromic Automation> <palindromic_automation.cpp>
 <Suffix Sort> <suffix_sort.cpp>
+<SA-IS> <SA_IS.cpp>
 <Suffix Automaton> <suffix_automaton.cpp>
 <Suffix balanced tree> <suffix_balanced_tree.cpp>
 <General Suffix Automaton> <general_suffix_automaton.cpp>

@@ -1,26 +1,16 @@
 #include <algorithm>
 #include <cmath>
 struct Cp {
-    double Re, Im;
-    Cp operator+(Cp const &_) const {
-        return {Re + _.Re, Im + _.Im};
-    }
-    Cp operator-(Cp const &_) const {
-        return {Re - _.Re, Im - _.Im};
-    }
-    Cp operator*(Cp const &_) const {
-        return {Re * _.Re - Im * _.Im, Re * _.Im + Im * _.Re};
-    }
-    Cp operator*(double _) const {
-        return {Re * _, Im * _};
-    }
+    double re, im;
+    Cp operator+(Cp const &_) const { return {re + _.re, im + _.im}; }
+    Cp operator-(Cp const &_) const { return {re - _.re, im - _.im}; }
+    Cp operator*(Cp const &_) const { return {re * _.re - im * _.im, re * _.im + im * _.re}; }
+    Cp operator*(double _) const { return {re * _, im * _}; }
 };
 void DFT(Cp *a, int n, int p) {
     static Cp w[M];
     for (int i = 0, j = 0; i < n; ++i) {
-        if (i < j) {
-            std::swap(a[i], a[j]);
-        }
+        if (i < j) { std::swap(a[i], a[j]); }
         for (int k = n >> 1; (j ^= k) < k; k >>= 1)
             ;
     }
@@ -40,23 +30,14 @@ void DFT(Cp *a, int n, int p) {
             }
         }
     }
-    if (0 < p) {
-        return;
-    }
+    if (0 < p) { return; }
     int inv = 1.0 / n;
-    for (int i = 0; i < n; ++i) {
-        a[i] = a[i] * inv;
-    }
+    for (int i = 0; i < n; ++i) { a[i] = a[i] * inv; }
 }
-
 void multiply(int *A, int *B, int *C, int n, int m, int mod) {
     static Cp a[M], b[M], c[M], d[M], w[M];
-    for (int i = 0; i < n; ++i) {
-        a[i] = {(double) (A[i] & 32767), (double) (A[i] >> 15)};
-    }
-    for (int i = 0; i < m; ++i) {
-        b[i] = {(double) (B[i] & 32767), (double) (B[i] >> 15)};
-    }
+    for (int i = 0; i < n; ++i) { a[i] = {(double) (A[i] & 32767), (double) (A[i] >> 15)}; }
+    for (int i = 0; i < m; ++i) { b[i] = {(double) (B[i] & 32767), (double) (B[i] >> 15)}; }
     int l = get_length(m + n - 1);
     DFT(a, l, 1);
     DFT(b, l, 1);

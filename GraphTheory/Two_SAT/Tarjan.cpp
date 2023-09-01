@@ -6,8 +6,7 @@ struct TwoSAT {
     std::vector<std::vector<int>> adj;
     std::vector<bool> mark;
     int n, scc_cnt, idx;
-    explicit TwoSAT(int n)
-        : dfn(2 * n), low(2 * n), adj(2 * n), mark(2 * n), n(n), scc_cnt(0), idx(0) {}
+    explicit TwoSAT(int n) : dfn(2 * n), low(2 * n), adj(2 * n), mark(2 * n), n(n), scc_cnt(0), idx(0) {}
     void add_clause(int x, int xval, int y, int yval) {
         x = x * 2 + xval;
         y = y * 2 + yval;
@@ -40,15 +39,11 @@ struct TwoSAT {
     std::vector<bool> solve() {
         sccno.resize(2 * n);
         for (int i = 0; i < 2 * n; ++i) {
-            if (!dfn[i]) {
-                Tarjan(i);
-            }
+            if (!dfn[i]) { Tarjan(i); }
         }
         std::vector<bool> res(n);
         for (int i = 0; i < n; ++i) {
-            if (sccno[i * 2] == sccno[i * 2 + 1]) {
-                return {};
-            }
+            if (sccno[i * 2] == sccno[i * 2 + 1]) { return {}; }
             res[i] = sccno[i * 2] > sccno[i * 2 + 1];
         }
         return res;

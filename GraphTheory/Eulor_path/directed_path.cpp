@@ -1,7 +1,6 @@
 pair<int, int> stk[N];
 int cur[M];
 bool vis[N];
-
 bool Euler(int S, int *ans, int m) {
     memset(cur, 0, sizeof cur);
     memset(vis, 0, sizeof vis);
@@ -10,9 +9,7 @@ bool Euler(int S, int *ans, int m) {
     while (top != 0) {
         pair<int, int> p = stk[top - 1];
         int u = p.first, &i = cur[u];
-        while (i < (int) E[u].size() && vis[abs(E[u][i].second)]) {
-            ++i;
-        }
+        while (i < (int) E[u].size() && vis[abs(E[u][i].second)]) { ++i; }
         if (i < (int) E[u].size()) {
             stk[top++] = E[u][i];
             vis[abs(E[u][i].second)] = true;

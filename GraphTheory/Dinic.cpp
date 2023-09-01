@@ -1,42 +1,37 @@
 #include <cstdio>
 #include <queue>
 #include <vector>
-
 struct Network {
-    static const int INF = 0x3f3f3f3f;
-    struct edge {
-        int from, to, cap, flow;
-        edge(int u, int v, int c, int f) : from(u), to(v), cap(c), flow(f) {}
+    static constexpr int INF = 0x3f3f3f3f;
+    struct Edge {
+        size_t from, to;
+        int cap, flow;
+        Edge(size_t u, size_t v, int c) : from(u), to(v), cap(c), flow(0) {}
     };
-    std::vector<edge> edges;
+    std::vector<Edge> edges;
     std::vector<std::vector<size_t>> adj;
     std::vector<int> dis;
     std::vector<size_t> cur;
     std::vector<bool> vis;
-    int n;
-    explicit Network(int n) : adj(n), dis(n), cur(n), vis(n), n(n) {}
-    void add_edge(int u, int v, int c) {
+    size_t n;
+    explicit Network(size_t n) : adj(n), dis(n), cur(n), vis(n), n(n) {}
+    void add_edge(size_t u, size_t v, int c) {
         adj[u].push_back(edges.size());
-        edges.emplace_back(u, v, c, 0);
+        edges.emplace_back(u, v, c);
         adj[v].push_back(edges.size());
-        edges.emplace_back(v, u, 0, 0);
+        edges.emplace_back(v, u, 0);
     }
-    void clear() {
-        for (auto &e: edges) {
-            e.flow = 0;
-        }
-    }
-    bool BFS(int S, int T) {
-        std::queue<int> q;
+    bool BFS(size_t s, size_t t) {
+        std::queue<size_t> q;
         fill(vis.begin(), vis.end(), false);
-        dis[T] = 0;
-        vis[T] = true;
-        q.push(T);
+        dis[t] = 0;
+        vis[t] = true;
+        q.push(t);
         while (!q.empty()) {
-            int u = q.front();
+            auto u = q.front();
             q.pop();
             for (auto i: adj[u]) {
-                edge e = edges[i ^ 1];
+                Edge e = edges[i ^ 1];
                 if (e.flow < e.cap && !vis[e.from]) {
                     vis[e.from] = true;
                     dis[e.from] = dis[u] + 1;
@@ -44,29 +39,25 @@ struct Network {
                 }
             }
         }
-        return vis[S];
+        return vis[s];
     }
-    int DFS(int u, int T, int a) {
-        if (u == T) {
-            return a;
-        }
+    auto DFS(size_t u, size_t t, int a) {
+        if (u == t) { return a; }
         int m = a;
         for (auto &i = cur[u]; i < adj[u].size(); ++i) {
-            edge &e = edges[adj[u][i]];
+            Edge &e = edges[adj[u][i]];
             if (e.flow < e.cap && vis[e.to] && dis[e.to] == dis[u] - 1) {
-                int f = DFS(e.to, T, std::min(a, e.cap - e.flow));
+                int f = DFS(e.to, t, std::min(m, e.cap - e.flow));
                 e.flow += f;
                 edges[adj[u][i] ^ 1].flow -= f;
-                a -= f;
-                if (a == 0) {
-                    break;
-                }
+                m -= f;
+                if (a == 0) { break; }
             }
         }
-        return m - a;
+        return a - m;
     }
-    long long max_flow(int S, int T) {
-        long long flow = 0;
+    auto max_flow(size_t S, size_t T) {
+        int flow = 0;
         while (BFS(S, T)) {
             fill(cur.begin(), cur.end(), 0);
             flow += DFS(S, T, INF);

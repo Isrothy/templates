@@ -1,6 +1,6 @@
 #include <cstring>
-
-template<size_t SIGMA, size_t M> struct SuffixAutomaton {
+template<size_t SIGMA, size_t M>
+struct SuffixAutomaton {
     int trans[2 * M][SIGMA], mxlen[2 * M], slink[2 * M];
     int tot;
     SuffixAutomaton() : tot(1) {
@@ -37,8 +37,6 @@ template<size_t SIGMA, size_t M> struct SuffixAutomaton {
     }
     void insert(char *S) {
         int p = 0, n = (int) strlen(S);
-        for (int i = 0; i < n; ++i) {
-            p = extend(p, S[i] - 'a');
-        }
+        for (int i = 0; i < n; ++i) { p = extend(p, S[i] - 'a'); }
     }
 };

@@ -9,21 +9,15 @@ int three_membered_rings(vector<int> *E, int n) {
     }
     for (int u = 1; u <= n; ++u) {
         for (auto v: E[u]) {
-            if (Rank[u] < Rank[v]) {
-                F[u].push_back(v);
-            }
+            if (Rank[u] < Rank[v]) { F[u].push_back(v); }
         }
     }
     int res = 0;
     for (int u = 1; u <= n; ++u) {
-        for (auto v: F[u]) {
-            vis_time[v] = u;
-        }
+        for (auto v: F[u]) { vis_time[v] = u; }
         for (auto v: F[u]) {
             for (auto w: F[v]) {
-                if (vis_time[w] == u) {
-                    ++res;
-                }
+                if (vis_time[w] == u) { ++res; }
             }
         }
     }

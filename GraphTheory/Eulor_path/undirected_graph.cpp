@@ -6,9 +6,7 @@ bool Euler(int S, int *ans, int m) {
     while (top != 0) {
         pair<int, int> p = stk[top - 1];
         int u = p.first, &i = cur[u];
-        while (i < (int) E[u].size() && vis[E[u][i].second]) {
-            ++i;
-        }
+        while (i < (int) E[u].size() && vis[E[u][i].second]) { ++i; }
         if (i < (int) E[u].size()) {
             stk[top++] = E[u][i];
             vis[E[u][i].second] = true;

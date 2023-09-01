@@ -1,6 +1,5 @@
-<2D Computational Geometry> <2D-computational_geometry.h>
-<3D Computational Geometry> <3D-computational_geometry.h>
+<2D Computational Geometry> <2D_computational_geometry.h>
+<3D Computational Geometry> <3D_computational_geometry.h>
 <Delaunary Triangulation> <delaunary_triangulation.h>
 <closest pair of points> <closest_pair_of_points.h>
-<dynamic convex hull> <dynamic_convex_hull.h>
 <Adaptive Simpson Integral> <Adaptive_Simpson_integral.h>

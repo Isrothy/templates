@@ -83,6 +83,9 @@ int main() {
             if (endsWith(lb.file, "cpp")) {
                 strcpy(lang, "c++");
             }
+            if (endsWith(lb.file, "h")) {
+                strcpy(lang, "c++");
+            }
             if (endsWith(lb.file, "java")) {
                 strcpy(lang, "java");
             }

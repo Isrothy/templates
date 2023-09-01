@@ -1,6 +1,6 @@
 #include <cstring>
-
-template<size_t SIGMA, size_t M> struct GeneralSuffixAutomaton {
+template<size_t SIGMA, size_t M>
+struct GeneralSuffixAutomaton {
     int trans[2 * M][SIGMA], mxlen[2 * M], slink[2 * M];
     int tot;
     GeneralSuffixAutomaton() : tot(1) {
@@ -10,9 +10,7 @@ template<size_t SIGMA, size_t M> struct GeneralSuffixAutomaton {
     int extend(int p, int c) {
         if (trans[p][c] != -1) {
             int r = trans[p][c];
-            if (mxlen[r] == mxlen[p] + 1) {
-                return r;
-            }
+            if (mxlen[r] == mxlen[p] + 1) { return r; }
             int o = tot++;
             slink[o] = slink[r];
             mxlen[o] = mxlen[p] + 1;
@@ -53,9 +51,6 @@ template<size_t SIGMA, size_t M> struct GeneralSuffixAutomaton {
     }
     void insert(char *S) {
         int p = 0, n = (int) strlen(S);
-        for (int i = 0; i < n; ++i) {
-            p = extend(p, S[i] - 'a');
-        }
+        for (int i = 0; i < n; ++i) { p = extend(p, S[i] - 'a'); }
     }
 };
-

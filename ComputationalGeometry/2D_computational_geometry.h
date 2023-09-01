@@ -8,48 +8,25 @@
 #include <utility>
 #include <variant>
 #include <vector>
-
 constexpr double EPS = 1e-10;
 constexpr int sign(double x) {
-    if (x < -EPS) {
-        return -1;
-    }
-    if (EPS < x) {
-        return 1;
-    }
+    if (x < -EPS) { return -1; }
+    if (EPS < x) { return 1; }
     return 0;
 }
-constexpr double sqr_diff(double a, double b) {
-    return (a + b) * (a - b);
-}
+constexpr double sqr_diff(double a, double b) { return (a + b) * (a - b); }
 struct Point {
     double x = 0, y = 0;
     Point() = default;
     Point(double x, double y) : x(x), y(y){};
-    auto len2() const {
-        return x * x + y * y;
-    }
-    auto len() const {
-        return std::hypot(x, y);
-    }
-    Point operator-() const {
-        return {-x, -y};
-    }
-    Point operator*(double k) const {
-        return {x * k, y * k};
-    }
-    Point operator/(double k) const {
-        return {x / k, y / k};
-    }
-    Point unit() const {
-        return *this / len();
-    }
-    Point normal() const {
-        return {-y, x};
-    }
-    auto angle() const {
-        return std::atan2(y, x);
-    }
+    auto len2() const { return x * x + y * y; }
+    auto len() const { return std::hypot(x, y); }
+    Point operator-() const { return {-x, -y}; }
+    Point operator*(double k) const { return {x * k, y * k}; }
+    Point operator/(double k) const { return {x / k, y / k}; }
+    Point unit() const { return *this / len(); }
+    Point normal() const { return {-y, x}; }
+    auto angle() const { return std::atan2(y, x); }
 };
 using Vector = Point;
 using Line = std::pair<Point, Point>;
@@ -58,36 +35,16 @@ using Segment = Line;
 using Circle = std::pair<Point, double>;
 using Polygon = std::vector<Point>;
 using Triangle = std::tuple<Point, Point, Point>;
-Vector operator+(const Vector &a, const Vector &b) {
-    return {a.x + b.x, a.y + b.y};
-}
-Vector operator-(const Vector &a, const Vector &b) {
-    return {a.x - b.x, a.y - b.y};
-}
-Vector operator*(double k, const Vector &a) {
-    return {a.x * k, a.y * k};
-}
-auto operator==(const Point &A, const Point &B) {
-    return sign((A - B).len()) == 0;
-}
-auto dot(const Vector &a, const Vector &b) {
-    return a.x * b.x + a.y * b.y;
-}
-auto det(const Vector &a, const Vector &b) {
-    return a.x * b.y - a.y * b.x;
-}
-auto middle(const Point &A, const Point &B) {
-    return 0.5 * (A + B);
-}
-auto vec(const Line &l) {
-    return l.second - l.first;
-}
-auto len(const Segment &s) {
-    return vec(s).len();
-}
-auto len2(const Segment &s) {
-    return vec(s).len2();
-}
+Vector operator+(const Vector &a, const Vector &b) { return {a.x + b.x, a.y + b.y}; }
+Vector operator-(const Vector &a, const Vector &b) { return {a.x - b.x, a.y - b.y}; }
+Vector operator*(double k, const Vector &a) { return {a.x * k, a.y * k}; }
+auto operator==(const Point &A, const Point &B) { return sign((A - B).len()) == 0; }
+auto dot(const Vector &a, const Vector &b) { return a.x * b.x + a.y * b.y; }
+auto det(const Vector &a, const Vector &b) { return a.x * b.y - a.y * b.x; }
+auto middle(const Point &A, const Point &B) { return 0.5 * (A + B); }
+auto vec(const Line &l) { return l.second - l.first; }
+auto len(const Segment &s) { return vec(s).len(); }
+auto len2(const Segment &s) { return vec(s).len2(); }
 auto angle(const Vector &a, const Vector &b) {
     auto tmp = a.len() * b.len();
     return sign(sqrt(tmp)) == 0 ? 0 : acos(dot(a, b) / tmp);
@@ -106,9 +63,7 @@ auto projection(const Point &P, const Line &l) {
     Vector v = B - A;
     return A + dot(v, P - A) * v / v.len2();
 }
-auto symmetry(const Point &P, const Line &l) {
-    return 2 * projection(P, l) - P;
-}
+auto symmetry(const Point &P, const Line &l) { return 2 * projection(P, l) - P; }
 auto point_line_distance(const Point &P, const Line &l) {
     const auto &[A, B] = l;
     Vector v1 = B - A, v2 = P - A;
@@ -123,37 +78,27 @@ auto point_segment_distance(const Point &P, const Segment &s) {
     auto v1 = B - A;
     auto v2 = P - A;
     auto v3 = P - B;
-    if (sign(dot(v1, v2)) < 0) {
-        return v2.len();
-    }
-    if (sign(dot(v1, v3)) > 0) {
-        return v3.len();
-    }
+    if (sign(dot(v1, v2)) < 0) { return v2.len(); }
+    if (sign(dot(v1, v3)) > 0) { return v3.len(); }
     return det(v1, v2) / v1.len();
 }
-auto parallel(const Line &l1, const Line &l2) {
-    return sign(det(vec(l1), vec(l2))) == 0;
-}
+auto parallel(const Line &l1, const Line &l2) { return sign(det(vec(l1), vec(l2))) == 0; }
 enum class LineLineRelation {
     parallel,
     identical,
     intersecting,
 };
-auto line_intersection(const Line &l1, const Line &l2)
-    -> std::pair<LineLineRelation, std::optional<Point>> {
+auto line_intersection(const Line &l1, const Line &l2) -> std::pair<LineLineRelation, std::optional<Point>> {
     const auto &[A, B] = l1;
     const auto &[C, D] = l2;
     if (parallel(l1, l2)) {
-        if (side_of_line(A, l2) == Side::on) {
-            return {LineLineRelation::identical, std::nullopt};
-        }
+        if (side_of_line(A, l2) == Side::on) { return {LineLineRelation::identical, std::nullopt}; }
         return {LineLineRelation::parallel, std::nullopt};
     }
     double s1 = det(D - A, C - A);
     double s2 = det(C - B, D - B);
     return {LineLineRelation::intersecting, A + (B - A) * (s1 / (s1 + s2))};
 }
-
 enum class SegmentSegmentRelation {
     disjoint,
     intersecting,
@@ -169,8 +114,8 @@ auto segment_intersection(const Segment &s1, const Segment &s2)
         case parallel:
             return {SegmentSegmentRelation::disjoint, std::nullopt};
         case identical: {
-            if (sign(dot(C - A, C - B)) <= 0 || sign(dot(D - A, D - B)) <= 0
-                || sign(dot(A - C, A - D)) <= 0 || sign(dot(B - C, B - D)) <= 0) {
+            if (sign(dot(C - A, C - B)) <= 0 || sign(dot(D - A, D - B)) <= 0 || sign(dot(A - C, A - D)) <= 0
+                || sign(dot(B - C, B - D)) <= 0) {
                 return {SegmentSegmentRelation::touching, std::nullopt};
             }
             return {SegmentSegmentRelation::disjoint, std::nullopt};
@@ -213,9 +158,7 @@ auto circie_circle_relation(const Circle &c1, const Circle &c2) {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
     auto d = (O2 - O1).len();
-    if (sign(d) == 0 && sign(r1 - r2) == 0) {
-        return identital;
-    }
+    if (sign(d) == 0 && sign(r1 - r2) == 0) { return identital; }
     switch (sign(d - r1 - r2)) {
         case 0:
             return externally_tangent;
@@ -232,9 +175,8 @@ auto circie_circle_relation(const Circle &c1, const Circle &c2) {
             }
     }
 }
-auto circle_circle_intersection(
-    const Circle &c1, const Circle &c2
-) -> std::pair<CircleCircleRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
+auto circle_circle_intersection(const Circle &c1, const Circle &c2)
+    -> std::pair<CircleCircleRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
     auto relation = circie_circle_relation(c1, c2);
@@ -305,12 +247,10 @@ auto circle_point_tangent(const Circle &c, const Point &P)
 auto circumscribed_circle(const Triangle &t) {
     const auto &[A, B, C] = t;
     auto [relation, O] = line_intersection(
-        {middle(A, B), middle(A, B) + (A - B).normal()},
-        {middle(B, C), middle(B, C) + (B - C).normal()}
+        {middle(A, B), middle(A, B) + (A - B).normal()}, {middle(B, C), middle(B, C) + (B - C).normal()}
     );
-    return relation == LineLineRelation::intersecting
-               ? std::optional<Circle>{Circle{O.value(), (O.value() - A).len()}}
-               : std::nullopt;
+    return relation == LineLineRelation::intersecting ? std::optional<Circle>{Circle{O.value(), (O.value() - A).len()}}
+                                                      : std::nullopt;
 }
 auto inscribed_circle(const Triangle &t) {
     const auto &[A, B, C] = t;
@@ -323,9 +263,7 @@ auto external_co_tangent(const Circle &c1, const Circle &c2)
     -> std::variant<std::monostate, Line, std::pair<Line, Line>> {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
-    if (r1 < r2) {
-        return external_co_tangent(c2, c1);
-    }
+    if (r1 < r2) { return external_co_tangent(c2, c1); }
     const auto &[relation, p] = circle_point_tangent({O1, r1 - r2}, O2);
     switch (relation) {
         using enum PointShapeRelation;
@@ -346,9 +284,7 @@ auto internal_co_tangent(const Circle &c1, const Circle &c2)
     -> std::variant<std::monostate, Line, std::pair<Line, Line>> {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
-    if (r1 < r2) {
-        return internal_co_tangent(c2, c1);
-    }
+    if (r1 < r2) { return internal_co_tangent(c2, c1); }
     const auto &[relation, p] = circle_point_tangent({O1, r1 + r2}, O2);
     switch (relation) {
         using enum PointShapeRelation;
@@ -375,16 +311,12 @@ auto convex_hull(std::vector<Point> points) {
     int64_t top = 0;
     stk[top++] = points[0];
     for (int i = 1; i < n; ++i) {
-        while (2 <= top && side_of_line(points[i], {stk[top - 2], stk[top - 1]}) != Side::left) {
-            --top;
-        }
+        while (2 <= top && side_of_line(points[i], {stk[top - 2], stk[top - 1]}) != Side::left) { --top; }
         stk[top++] = points[i];
     }
     auto tmp = top;
     for (auto i = n - 2; i >= 0; --i) {
-        while (tmp < top && side_of_line(points[i], {stk[top - 2], stk[top - 1]}) != Side::left) {
-            --top;
-        }
+        while (tmp < top && side_of_line(points[i], {stk[top - 2], stk[top - 1]}) != Side::left) { --top; }
         stk[top++] = points[i];
     }
     stk.erase(stk.begin() + top - 1, stk.end());
@@ -395,9 +327,7 @@ auto point_in_convex_polygon(const Point &P, const Polygon &polygon) {
     using enum PointShapeRelation;
     auto n = polygon.size();
     assert(n >= 3);
-    if (P.x < polygon[0].x || (P.x == polygon[0].x && P.y < polygon[0].y)) {
-        return outside;
-    }
+    if (P.x < polygon[0].x || (P.x == polygon[0].x && P.y < polygon[0].y)) { return outside; }
     if (side_of_line(P, {polygon[0], polygon[1]}) == Side::on) {
         return sign(dot(polygon[1] - P, polygon[0] - P)) <= 0 ? on : outside;
     }
@@ -417,9 +347,7 @@ auto point_in_convex_polygon(const Point &P, const Polygon &polygon) {
 }
 auto minkowski_sum(const Polygon &a, const Polygon &b) {
     auto push_point = [](Polygon &v, const Point &P) {
-        while (2 < v.size() && side_of_line(P, {v[v.size() - 2], v.back()}) != Side::left) {
-            v.pop_back();
-        }
+        while (2 < v.size() && side_of_line(P, {v[v.size() - 2], v.back()}) != Side::left) { v.pop_back(); }
         v.emplace_back(P);
     };
     auto n = a.size(), m = b.size();
@@ -457,24 +385,16 @@ auto point_in_polygon(const Point &P, const Polygon &polygon) {
     for (size_t i = 0; i < n; ++i) {
         auto A = polygon[i];
         auto B = polygon[(i + 1) % n];
-        if (point_on_segment(P, {A, B})) {
-            return on;
-        }
-        if (A.y > B.y) {
-            std::swap(A, B);
-        }
-        if (sign(A.y - P.y) <= 0 && sign(P.y - B.y) < 0 && side_of_line(P, {A, B}) == Side::left) {
-            result ^= 1;
-        }
+        if (point_on_segment(P, {A, B})) { return on; }
+        if (A.y > B.y) { std::swap(A, B); }
+        if (sign(A.y - P.y) <= 0 && sign(P.y - B.y) < 0 && side_of_line(P, {A, B}) == Side::left) { result ^= 1; }
     }
     return result ? inside : outside;
 }
 auto polygon_area(const Polygon &polygon) {
     double result = 0;
     auto n = polygon.size();
-    for (size_t i = 0; i < n; ++i) {
-        result += triangle_area({polygon[0], polygon[i], polygon[(i + 1) % n]});
-    }
+    for (size_t i = 0; i < n; ++i) { result += triangle_area({polygon[0], polygon[i], polygon[(i + 1) % n]}); }
     return result;
 }
 auto half_planes_intersection(std::vector<Line> lines) {
@@ -487,9 +407,7 @@ auto half_planes_intersection(std::vector<Line> lines) {
     });
     q.emplace_back(lines[0]);
     for (const auto &line: lines) {
-        if (parallel(q.back(), line)) {
-            continue;
-        }
+        if (parallel(q.back(), line)) { continue; }
         while (!t.empty() && side_of_line(t.back(), line) != Side::left) {
             t.pop_back();
             q.pop_back();

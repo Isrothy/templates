@@ -10,11 +10,9 @@ struct DLX {
             left = right = up = down = nullptr;
         }
     };
-
     std::vector<node *> row, col;
     std::vector<int> cnt;
     node *sentinel;
-
     DLX(int r, int c) {
         sentinel = new node(0, 0);
         col = std::vector<node *>(c + 1);
@@ -59,7 +57,6 @@ struct DLX {
             }
         }
     }
-
     void recover(node *p) {
         for (auto q = p->up; q != p; q = q->up) {
             for (auto r = q->left; r != q; r = r->left) {
@@ -71,47 +68,33 @@ struct DLX {
         p->right->left = p;
         p->left->right = p;
     }
-
     bool dance(int depth, std::vector<int> &ans) {
         if (sentinel->right == sentinel) {
             ans.resize(depth);
             return true;
         }
-        if (depth == ans.size()) {
-            ans.push_back(0);
-        }
+        if (depth == ans.size()) { ans.push_back(0); }
         node *p = sentinel->right;
         for (auto q = sentinel->right; q != sentinel; q = q->right) {
-            if (cnt[q->j] < cnt[p->j]) {
-                p = q;
-            }
+            if (cnt[q->j] < cnt[p->j]) { p = q; }
         }
         remove(p);
         for (auto q = p->down; q != p; q = q->down) {
             ans[depth] = q->i;
             for (auto r = q->right; r != q; r = r->right) {
-                if (r->j != 0) {
-                    remove(col[r->j]);
-                }
+                if (r->j != 0) { remove(col[r->j]); }
             }
-            if (dance(depth + 1, ans)) {
-                return true;
-            }
+            if (dance(depth + 1, ans)) { return true; }
             for (auto r = q->left; r != q; r = r->left) {
-                if (r->j != 0) {
-                    recover(col[r->j]);
-                }
+                if (r->j != 0) { recover(col[r->j]); }
             }
         }
         recover(p);
         return false;
     }
-
     std::vector<int> solve() {
         std::vector<int> ans;
-        if (dance(0, ans)) {
-            return ans;
-        }
+        if (dance(0, ans)) { return ans; }
         return {};
     }
 };

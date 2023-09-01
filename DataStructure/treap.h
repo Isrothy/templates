@@ -1,11 +1,8 @@
 #include <iostream>
 #include <random>
-
 struct treap;
 size_t safe_size(treap *p);
-
-std::mt19937_64 mt_rand(time(nullptr));
-
+std::mt19937_64 mt_rand(std::random_device{}());
 struct treap {
     int val;
     size_t size;
@@ -16,9 +13,7 @@ struct treap {
         size = 1 + safe_size(ch[0]) + safe_size(ch[1]);
         return this;
     }
-    treap *push_down() {
-        return this;
-    }
+    treap *push_down() { return this; }
     treap *rotate(int f) {
         treap *q = ch[f];
         ch[f] = q->ch[!f];
@@ -29,27 +24,17 @@ struct treap {
     }
 };
 typedef std::pair<treap *, treap *> ptt;
-
-size_t safe_size(treap *p) {
-    return p == nullptr ? 0 : p->size;
-}
-
+size_t safe_size(treap *p) { return p == nullptr ? 0 : p->size; }
 treap *insert(treap *p, int x) {
-    if (p == nullptr) {
-        return new treap(x);
-    }
+    if (p == nullptr) { return new treap(x); }
     bool f = p->val < x;
     p->ch[f] = insert(p->ch[f], x);
-    if (p->ch[f]->priority < p->priority) {
-        p = p->rotate(f);
-    }
+    if (p->ch[f]->priority < p->priority) { p = p->rotate(f); }
     return p->push_up();
 }
 treap *erase(treap *p, int x) {
     if (x == p->val) {
-        if (p->ch[0] == nullptr || p->ch[1] == nullptr) {
-            return p->ch[p->ch[0] == nullptr];
-        }
+        if (p->ch[0] == nullptr || p->ch[1] == nullptr) { return p->ch[p->ch[0] == nullptr]; }
         bool f = p->ch[1]->priority < p->ch[0]->priority;
         p = p->rotate(f);
         p->ch[!f] = erase(p->ch[!f], x);
@@ -71,13 +56,10 @@ size_t rank(treap *p, int x) {
     }
     return res;
 }
-
 int kth(treap *p, size_t k) {
     for (;;) {
         size_t s = safe_size(p->ch[0]);
-        if (s + 1 == k) {
-            return p->val;
-        }
+        if (s + 1 == k) { return p->val; }
         if (k <= s) {
             p = p->ch[0];
         } else {
@@ -86,7 +68,6 @@ int kth(treap *p, size_t k) {
         }
     }
 }
-
 int pre(treap *p, int x) {
     int res = -1;
     while (p != nullptr) {
@@ -99,7 +80,6 @@ int pre(treap *p, int x) {
     }
     return res;
 }
-
 int suc(treap *p, int x) {
     int res = -1;
     while (p != nullptr) {
@@ -113,12 +93,8 @@ int suc(treap *p, int x) {
     return res;
 }
 treap *merge(treap *p, treap *q) {
-    if (p == nullptr) {
-        return q;
-    }
-    if (q == nullptr) {
-        return p;
-    }
+    if (p == nullptr) { return q; }
+    if (q == nullptr) { return p; }
     p->push_down();
     q->push_down();
     if (p->priority < q->priority) {
@@ -130,9 +106,7 @@ treap *merge(treap *p, treap *q) {
     }
 }
 ptt split(treap *p, int k) {
-    if (p == nullptr) {
-        return {nullptr, nullptr};
-    }
+    if (p == nullptr) { return {nullptr, nullptr}; }
     p->push_down();
     if (k <= safe_size(p->ch[0])) {
         ptt o = split(p->ch[0], k);
@@ -147,9 +121,7 @@ ptt split(treap *p, int k) {
     }
 }
 std::pair<treap *, treap *> split_by_value(treap *p, int v) {
-    if (p == nullptr) {
-        return {};
-    }
+    if (p == nullptr) { return {}; }
     if (v < p->val) {
         ptt o = split_by_value(p->ch[0], v);
         p->ch[0] = o.second;
@@ -163,15 +135,9 @@ std::pair<treap *, treap *> split_by_value(treap *p, int v) {
     }
 }
 treap *heuristic_merge(treap *p, treap *q) {
-    if (p == nullptr) {
-        return q;
-    }
-    if (q == nullptr) {
-        return p;
-    }
-    if (p->priority < q->priority) {
-        std::swap(p, q);
-    }
+    if (p == nullptr) { return q; }
+    if (q == nullptr) { return p; }
+    if (p->priority < q->priority) { std::swap(p, q); }
     ptt o = split_by_value(p, q->val);
     q->ch[0] = heuristic_merge(q->ch[0], o.first);
     q->ch[1] = heuristic_merge(q->ch[1], o.second);

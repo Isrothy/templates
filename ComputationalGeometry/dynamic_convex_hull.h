@@ -1,38 +1,25 @@
 #include "2D_computational_geometry.h"
 #include <set>
-
 class DynamicConvexHull {
     struct less_x {
-        bool operator()(const Point &A, const Point &B) const {
-            return A.x == B.x ? A.y < B.y : A.x < B.x;
-        }
+        bool operator()(const Point &A, const Point &B) const { return A.x == B.x ? A.y < B.y : A.x < B.x; }
     };
     struct greater_x {
-        bool operator()(const Point &A, const Point &B) const {
-            return A.x == B.x ? A.y > B.y : A.x > B.x;
-        }
+        bool operator()(const Point &A, const Point &B) const { return A.x == B.x ? A.y > B.y : A.x > B.x; }
     };
     std::set<Point, less_x> lower_;
     std::set<Point, greater_x> upper_;
     template<typename Set>
     auto contain(const Set &s, const Point &P) const {
-        if (s.size() < 2) {
-            return PointShapeRelation::outside;
-        }
+        if (s.size() < 2) { return PointShapeRelation::outside; }
         auto it = s.lower_bound(P);
-        if (it != s.end() && *it == P) {
-            return PointShapeRelation::on;
-        }
-        if (it == s.begin() || it == s.end()) {
-            return PointShapeRelation::outside;
-        }
+        if (it != s.end() && *it == P) { return PointShapeRelation::on; }
+        if (it == s.begin() || it == s.end()) { return PointShapeRelation::outside; }
         return PointShapeRelation(side_of_line(P, {*prev(it), *it}));
     }
     template<typename Set>
     auto insert(Set &s, const Point &P) {
-        if (contain(s, P) != PointShapeRelation::outside) {
-            return;
-        }
+        if (contain(s, P) != PointShapeRelation::outside) { return; }
         s.insert(P);
         auto it = s.find(P);
         if (auto i = next(it); i != s.end()) {
@@ -52,9 +39,7 @@ class DynamicConvexHull {
     }
 
   public:
-    auto contain(const Point &P) const {
-        return std::max(contain(lower_, P), contain(upper_, P));
-    }
+    auto contain(const Point &P) const { return std::max(contain(lower_, P), contain(upper_, P)); }
     auto insert(const Point &P) {
         insert(lower_, P);
         insert(upper_, P);
