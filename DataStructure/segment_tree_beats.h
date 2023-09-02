@@ -11,16 +11,10 @@ void push_up(int p) {
     second_max[p] = std::max(second_max[p << 1], second_max[p << 1 | 1]);
     second_min[p] = std::min(second_min[p << 1], second_min[p << 1 | 1]);
     cnt_max[p] = cnt_min[p] = 0;
-    if (mx[p] == mx[p << 1]) {
-        cnt_max[p] += cnt_max[p << 1];
-    } else {
-        second_max[p] = std::max(second_max[p], mx[p << 1]);
-    }
-    if (mx[p] == mx[p << 1 | 1]) {
-        cnt_max[p] += cnt_max[p << 1 | 1];
-    } else {
-        second_max[p] = std::max(second_max[p], mx[p << 1 | 1]);
-    }
+    if (mx[p] == mx[p << 1]) { cnt_max[p] += cnt_max[p << 1]; }
+    else { second_max[p] = std::max(second_max[p], mx[p << 1]); }
+    if (mx[p] == mx[p << 1 | 1]) { cnt_max[p] += cnt_max[p << 1 | 1];}
+    else { second_max[p] = std::max(second_max[p], mx[p << 1 | 1]); }
     if (mi[p] == mi[p << 1]) {
         cnt_min[p] += cnt_min[p << 1];
     } else {

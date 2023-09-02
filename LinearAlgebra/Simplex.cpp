@@ -1,10 +1,3 @@
-#include <vector>
-const double EPS = 1e-10;
-int sign(double x) {
-    if (x < -EPS) { return -1; }
-    if (x > EPS) { return 1; }
-    return 0;
-}
 void pivot(std::vector<std::vector<double>> &A, int l, int e, std::vector<int> &id) {
     int m = (int) A.size();
     int n = (int) A[0].size();

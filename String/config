@@ -1,11 +1,10 @@
-<AC Automaton> <AC_automaton.cpp>
-<Lyndon decomposition> <Lyndon_decomposition.cpp>
-<Manacher> <Manacher.cpp>
-<Minimal Representation> <minimal_representation.cpp>
-<Palindromic Automation> <palindromic_automation.cpp>
-<Suffix Sort> <suffix_sort.cpp>
-<SA-IS> <SA_IS.cpp>
-<Suffix Automaton> <suffix_automaton.cpp>
-<Suffix balanced tree> <suffix_balanced_tree.cpp>
-<General Suffix Automaton> <general_suffix_automaton.cpp>
+<AC Automaton> <AC_automaton.h>
+<Lyndon decomposition> <Lyndon_decomposition.h>
+<Manacher> <Manacher.h>
+<Minimal Representation> <minimal_representation.h>
+<Palindromic Automation> <palindromic_automation.h>
+<Suffix Sort> <suffix_sort.h>
+<SA-IS> <SA_IS.h>
+<Suffix balanced tree> <suffix_balanced_tree.h>
+<General Suffix Automaton> <general_suffix_automaton.h>
 

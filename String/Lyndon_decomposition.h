@@ -1,18 +1,18 @@
-#include <cstring>
+#include <string_view>
 #include <vector>
-std::vector<int> Lyndon_decomposition(char *S) {
-    int n = (int) strlen(S);
-    int l = 0, r = 1, d = 1;
-    std::vector<int> res;
+auto lyndon_decomposition(std::string_view s) {
+    auto n = s.size();
+    size_t l = 0, r = 1, d = 1;
+    std::vector<size_t> res;
     while (r <= n) {
-        if (S[r] < S[r - d]) {
+        if (s[r] < s[r - d]) {
             while (l + d <= r) {
                 l += d;
                 res.push_back(l);
             }
             r = l;
             d = 1;
-        } else if (S[r - d] < S[r]) {
+        } else if (s[r - d] < s[r]) {
             d = r - l + 1;
         }
         ++r;

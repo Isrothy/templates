@@ -93,8 +93,8 @@ int suc(treap *p, int x) {
     return res;
 }
 treap *merge(treap *p, treap *q) {
-    if (p == nullptr) { return q; }
-    if (q == nullptr) { return p; }
+    if (!p) { return q; }
+    if (!q) { return p; }
     p->push_down();
     q->push_down();
     if (p->priority < q->priority) {
@@ -121,7 +121,7 @@ ptt split(treap *p, int k) {
     }
 }
 std::pair<treap *, treap *> split_by_value(treap *p, int v) {
-    if (p == nullptr) { return {}; }
+    if (!p) { return {}; }
     if (v < p->val) {
         ptt o = split_by_value(p->ch[0], v);
         p->ch[0] = o.second;
@@ -135,8 +135,8 @@ std::pair<treap *, treap *> split_by_value(treap *p, int v) {
     }
 }
 treap *heuristic_merge(treap *p, treap *q) {
-    if (p == nullptr) { return q; }
-    if (q == nullptr) { return p; }
+    if (!p) { return q; }
+    if (!q) { return p; }
     if (p->priority < q->priority) { std::swap(p, q); }
     ptt o = split_by_value(p, q->val);
     q->ch[0] = heuristic_merge(q->ch[0], o.first);

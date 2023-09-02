@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 bool witness(long long a, int s, long long d, long long n) {
     long long x = power(a, d, n);
     if (x == 1 || x == n - 1) { return false; }
@@ -16,7 +17,6 @@ bool Miller_Rabin(long long n) {
         d >>= 1;
         ++s;
     }
-    // int p[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
-    long long p[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
-    return std::all_of(p, p + 7, [&](long long i) { return !witness(i, s, d, n); });
+    constexpr std::array<int, 10> p{2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+    return std::all_of(p.begin(), p.end(), [&](long long i) { return !witness(i, s, d, n); });
 }

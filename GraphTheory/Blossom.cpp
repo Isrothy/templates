@@ -1,7 +1,9 @@
-namespace Blossom {
-    vector<int> E[M];
-    int mate[M], link[M], label[M], fa[M], Q[M];
-    int head, tail;
+#include <vector>
+template<size_t M>
+struct Blossom {
+    std::vector<int> E[M];
+    int mate[M]{}, link[M]{}, label[M]{}, fa[M]{}, Q[M]{};
+    int head{}, tail{};
     int find(int x) {
         if (x == fa[x]) { return x; }
         fa[x] = find(fa[x]);
@@ -19,7 +21,7 @@ namespace Blossom {
                 last_time[u] = time;
                 u = find(link[mate[u]]);
             }
-            swap(u, v);
+            std::swap(u, v);
         }
         return u;
     }
@@ -77,4 +79,4 @@ namespace Blossom {
         }
         return res;
     }
-}// namespace Blossom
+};

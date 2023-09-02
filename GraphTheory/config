@@ -3,7 +3,6 @@
 <Primal Dual> <Primal_Dual.cpp>
 <DMST> <DMST.cpp>
 <Steiner Minimum Tree> <Steiner_Minimum_Tree.cpp>
-<Gomory Hu Tree> <Gomory_Hu_Tree.cpp>
 <Stoer Wagner> <Stoer_Wagner.cpp>
 <Four Membered Rings> <four_membered_rings.cpp>
 <Three Membered Rings> <three_membered_rings.cpp>
@@ -17,5 +16,4 @@
 <Block Cut Tree> <block_cut_tree.cpp>
 <Eulor Path (Directed)> <Eulor_path/directed_path.cpp>
 <Eulor Path (Undirected)> <Eulor_path/undirected_graph.cpp>
-<2-SAT (DFS)> <Two_SAT/DFS.cpp>
 <2-SAT (Tarjan)> <Two_SAT/Tarjan.cpp>

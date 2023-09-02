@@ -1,9 +1,6 @@
 <Link-Cut Tree> <link_cut_tree.h>
 <Segment Tree Beats> <segment_tree_beats.h>
-<binary indexed tree> <binary_indexed_tree.h>
 <KD-Tree> <kd_tree.h>
 <Li Chao Tree> <Li_Chao_segment_tree.h>
-<Sparse Table> <Sparse_Table.h>
 <AVL> <avl.h>
-<Treap> <treap.h>
 <Splay> <splay_tree.h>

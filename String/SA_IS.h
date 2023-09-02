@@ -1,9 +1,12 @@
 #include <numeric>
+#include <span>
+#include <string_view>
 #include <vector>
-#define L_TYPE false
-#define S_TYPE true
-bool is_lms_char(const std::vector<bool> &type, int x) { return x > 0 && type[x] == S_TYPE && type[x - 1] == L_TYPE; }
-bool substring_equal(const std::vector<int> &s, const std::vector<bool> &type, int x, int y) {
+enum class SuffixType : bool { l, s };
+bool is_lms_char(std::span<SuffixType> type, int x) {
+    return x > 0 && type[x] == SuffixType::s && type[x - 1] == SuffixType::l;
+}
+bool substring_equal(std::span<int> s, std::span<SuffixType> type, int x, int y) {
     do {
         if (s[x] != s[y]) { return false; }
         ++x;
@@ -12,43 +15,42 @@ bool substring_equal(const std::vector<int> &s, const std::vector<bool> &type, i
     return s[x] == s[y];
 }
 void induce_sort(
-    const std::vector<int> &s,
+    std::span<int> s,
     std::vector<int> &sa,
-    const std::vector<bool> &type,
+    std::span<SuffixType> type,
     std::vector<int> &bucket,
     std::vector<int> &lbucket,
     std::vector<int> &sbucket,
     size_t n,
     size_t sigma
 ) {
-    lbucket[0] = 0;
-    sbucket[0] = 1;
+    lbucket[0] = sbucket[0] = 1;
     for (int i = 1; i < sigma; ++i) {
         lbucket[i] = bucket[i - 1];
         sbucket[i] = bucket[i];
     }
     for (int i = 0; i < n; ++i) {
-        if (sa[i] > 0 && type[sa[i] - 1] == L_TYPE) { sa[lbucket[s[sa[i] - 1]]++] = sa[i] - 1; }
+        if (sa[i] > 0 && type[sa[i] - 1] == SuffixType::l) { sa[lbucket[s[sa[i] - 1]]++] = sa[i] - 1; }
     }
-    for (int i = (int) n - 1; i >= 0; --i) {
-        if (sa[i] > 0 && type[sa[i] - 1] == S_TYPE) { sa[--sbucket[s[sa[i] - 1]]] = sa[i] - 1; }
+    for (int i = static_cast<int>(n) - 1; i >= 0; --i) {
+        if (sa[i] > 0 && type[sa[i] - 1] == SuffixType::s) { sa[--sbucket[s[sa[i] - 1]]] = sa[i] - 1; }
     }
 }
-std::vector<int> SA_IS(const std::vector<int> &s, size_t sigma) {
+std::vector<int> SA_IS(std::span<int> s, size_t sigma) {
     size_t n = s.size();
-    std::vector<bool> type(n);
+    std::vector<SuffixType> type(n);
     std::vector<int> bucket(sigma), lbucket(sigma), sbucket(sigma);
     for (int i = 0; i < n; i++) { bucket[s[i]]++; }
     std::partial_sum(bucket.begin(), bucket.end(), bucket.begin());
-    type[n - 1] = S_TYPE;
-    for (int i = (int) n - 2; i >= 0; i--) {
-        type[i] = s[i] < s[i + 1] || (s[i] == s[i + 1] && type[i + 1] == S_TYPE) ? S_TYPE : L_TYPE;
+    type[n - 1] = SuffixType::s;
+    for (int i = static_cast<int>(n) - 2; i >= 0; i--) {
+        type[i] = s[i] < s[i + 1] || (s[i] == s[i + 1] && type[i + 1] == SuffixType::s) ? SuffixType::s : SuffixType::l;
     }
     std::vector<int> position;
     for (int i = 1; i < n; ++i) {
-        if (type[i] == S_TYPE && type[i - 1] == L_TYPE) { position.push_back(i); }
+        if (type[i] == SuffixType::s && type[i - 1] == SuffixType::l) { position.push_back(i); }
     }
-    size_t m = position.size();
+    auto m = position.size();
     sbucket[0] = 1;
     for (int i = 1; i < sigma; ++i) { sbucket[i] = bucket[i]; }
     std::vector<int> sa(n, -1);
@@ -85,25 +87,23 @@ std::vector<int> SA_IS(const std::vector<int> &s, size_t sigma) {
     }
     sbucket[0] = 1;
     for (int i = 1; i < sigma; ++i) { sbucket[i] = bucket[i]; }
-    fill(sa.begin(), sa.end(), -1);
+    std::fill(sa.begin(), sa.end(), -1);
     for (int i = (int) m - 1; i >= 0; --i) { sa[--sbucket[s[position[sa1[i]]]]] = position[sa1[i]]; }
     induce_sort(s, sa, type, bucket, lbucket, sbucket, n, sigma);
     return sa;
 }
-std::pair<std::vector<int>, std::vector<int>> suffix_sort(char *S) {
-    size_t n = strlen(S);
+auto suffix_sort(std::string_view str) {
+    auto n = str.size();
     std::vector<int> s(n + 1);
-    for (int i = 0; i < n; ++i) { s[i] = (int) (unsigned) S[i]; }
-    auto sa = SA_IS(s, 256);
+    for (int i = 0; i < n; ++i) { s[i] = static_cast<unsigned char>(str[i]); }
+    auto sa = SA_IS(s, 128);
     std::vector<int> rank(n + 1), height(n);
     for (int i = 0; i <= n; ++i) { rank[sa[i]] = i; }
     for (int i = 0, h = 0; i < n; ++i) {
         if (h != 0) { --h; }
         int j = sa[rank[i] - 1];
-        while (i + h < n && j + h < n && S[i + h] == S[j + h]) { ++h; }
+        while (i + h < n && j + h < n && str[i + h] == str[j + h]) { ++h; }
         height[rank[i] - 1] = h;
     }
-    return {sa, height};
+    return std::make_pair(sa, height);
 }
-#undef L_TYPE
-#undef S_TYPE

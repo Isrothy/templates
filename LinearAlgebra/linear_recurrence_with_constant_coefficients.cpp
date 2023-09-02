@@ -1,5 +1,3 @@
-#include "../Combinatorics/polynomial.h"
-#include <vector>
 template<int64_t Mod, int64_t G>
 auto linear_recurrence_with_constant_coefficients(const std::vector<int> &A, const std::vector<int> &f, int n) {
     size_t k = A.size();

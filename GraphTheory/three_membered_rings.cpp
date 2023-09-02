@@ -1,22 +1,20 @@
-int three_membered_rings(vector<int> *E, int n) {
-    static long long Rank[M];
-    static int vis_time[M];
-    static vector<int> F[M];
+#include <span>
+#include <vector>
+auto three_membered_rings(std::span<std::vector<size_t>> adj) {
+    auto n = adj.size() - 1;
+    std::vector<size_t> rank(n + 1), vis_time(n + 1);
+    std::vector<std::vector<size_t>> f(n + 1);
+    for (int u = 1; u <= n; ++u) { rank[u] = adj[u].size() * (n + 1) + u; }
     for (int u = 1; u <= n; ++u) {
-        Rank[u] = (long long) E[u].size() * (n + 1) + u;
-        vis_time[u] = 0;
-        F[u].clear();
-    }
-    for (int u = 1; u <= n; ++u) {
-        for (auto v: E[u]) {
-            if (Rank[u] < Rank[v]) { F[u].push_back(v); }
+        for (auto v: adj[u]) {
+            if (rank[u] < rank[v]) { f[u].push_back(v); }
         }
     }
-    int res = 0;
+    size_t res = 0;
     for (int u = 1; u <= n; ++u) {
-        for (auto v: F[u]) { vis_time[v] = u; }
-        for (auto v: F[u]) {
-            for (auto w: F[v]) {
+        for (auto v: f[u]) { vis_time[v] = u; }
+        for (auto v: f[u]) {
+            for (auto w: f[v]) {
                 if (vis_time[w] == u) { ++res; }
             }
         }

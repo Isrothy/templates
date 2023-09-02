@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <bit>
 #include <cmath>
 struct Cp {
     double re, im;
@@ -38,7 +39,7 @@ void multiply(int *A, int *B, int *C, int n, int m, int mod) {
     static Cp a[M], b[M], c[M], d[M], w[M];
     for (int i = 0; i < n; ++i) { a[i] = {(double) (A[i] & 32767), (double) (A[i] >> 15)}; }
     for (int i = 0; i < m; ++i) { b[i] = {(double) (B[i] & 32767), (double) (B[i] >> 15)}; }
-    int l = get_length(m + n - 1);
+    int l = std::bit_ceil(m + n - 1);
     DFT(a, l, 1);
     DFT(b, l, 1);
     for (int i = 0; i < l; ++i) {

@@ -2,7 +2,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
-struct BigUnsigned : protected std::vector<int> {
+struct BigUnsigned : private std::vector<int> {
     static constexpr int bit = 9;
     static constexpr int base = 1e9;
 #define PLACE_HOLDER "%09d"
@@ -73,19 +73,19 @@ struct BigUnsigned : protected std::vector<int> {
         while (!res.empty() && res.back() == 0) { res.pop_back(); }
         return res;
     }
-    int cmp(const BigUnsigned &that) const {
-        if (size() != that.size()) { return (int) size() - (int) that.size(); }
+    auto operator<=>(const BigUnsigned &that) const {
+        if (size() != that.size()) { return size() <=> that.size(); }
         for (int i = (int) size() - 1; i >= 0; --i) {
-            if ((*this)[i] != that[i]) { return (*this)[i] - that[i]; }
+            if ((*this)[i] != that[i]) { return (*this)[i] <=> that[i]; }
         }
-        return 0;
+        return std::strong_ordering::equal;
     }
-    bool operator<(const BigUnsigned &that) const { return cmp(that) < 0; }
-    bool operator>(const BigUnsigned &that) const { return cmp(that) > 0; }
-    bool operator<=(const BigUnsigned &that) const { return cmp(that) <= 0; }
-    bool operator>=(const BigUnsigned &that) const { return cmp(that) >= 0; }
-    bool operator==(const BigUnsigned &that) const { return cmp(that) == 0; }
-    bool operator!=(const BigUnsigned &that) const { return cmp(that) != 0; }
+    bool operator<(const BigUnsigned &that) const { return (*this <=> that) == std::strong_ordering::less; }
+    bool operator>(const BigUnsigned &that) const { return (*this <=> that) == std::strong_ordering::greater; }
+    bool operator<=(const BigUnsigned &that) const { return (*this <=> that) != std::strong_ordering::greater; }
+    bool operator>=(const BigUnsigned &that) const { return (*this <=> that) != std::strong_ordering::less; }
+    bool operator==(const BigUnsigned &that) const { return (*this <=> that) == std::strong_ordering::equal; }
+    bool operator!=(const BigUnsigned &that) const { return (*this <=> that) != std::strong_ordering::equal; }
     BigUnsigned operator*(const BigUnsigned &that) const {
         std::vector<long long> res;
         res.resize((size()) + that.size());
@@ -164,44 +164,6 @@ struct BigUnsigned : protected std::vector<int> {
     }
     BigUnsigned operator/(const BigUnsigned &that) const { return divide(*this, that).first; }
     BigUnsigned operator%(const BigUnsigned &that) const { return divide(*this, that).second; }
-    BigUnsigned operator+=(const BigUnsigned &b) {
-        *this = *this + b;
-        return *this;
-    }
-    BigUnsigned operator-=(const BigUnsigned &b) {
-        *this = *this - b;
-        return *this;
-    }
-    BigUnsigned operator*=(const BigUnsigned &b) {
-        *this = *this * b;
-        return *this;
-    }
-    BigUnsigned operator/=(const BigUnsigned &b) {
-        *this = *this / b;
-        return *this;
-    }
-    BigUnsigned operator%=(const BigUnsigned &b) {
-        *this = *this % b;
-        return *this;
-    }
-    BigUnsigned operator++() {
-        *this += 1;
-        return *this;
-    }
-    BigUnsigned operator--() {
-        *this -= 1;
-        return *this;
-    }
-    BigUnsigned operator++(int) {
-        BigUnsigned ans = *this;
-        *this += 1;
-        return ans;
-    }
-    BigUnsigned operator--(int) {
-        BigUnsigned ans = *this;
-        *this -= 1;
-        return ans;
-    }
 };
 struct BigInt {
     bool _is_negative;
@@ -275,58 +237,20 @@ struct BigInt {
         if (is_zero()) { return 0; }
         return {is_negative(), digits() % that.digits()};
     }
-    int cmp(const BigInt &that) const {
-        if (sign() != that.sign()) { return sign() - that.sign(); }
+    auto operator<=>(const BigInt &that) const {
+        if (sign() != that.sign()) { return sign() <=> that.sign(); }
         if (sign() > 0) {
-            return digits().cmp(that.digits());
+            return digits() <=> that.digits();
         } else if (sign() == 0) {
-            return 0;
+            return std::strong_ordering::equal;
         } else {
-            return -digits().cmp(that.digits());
+            return that.digits() <=> digits();
         }
     }
-    bool operator<(const BigInt &that) const { return cmp(that) < 0; }
-    bool operator>(const BigInt &that) const { return cmp(that) > 0; }
-    bool operator<=(const BigInt &that) const { return cmp(that) <= 0; }
-    bool operator>=(const BigInt &that) const { return cmp(that) >= 0; }
-    bool operator==(const BigInt &that) const { return cmp(that) == 0; }
-    bool operator!=(const BigInt &that) const { return cmp(that) != 0; }
-    BigInt &operator+=(const BigInt &that) {
-        *this = *this + that;
-        return *this;
-    }
-    BigInt &operator-=(const BigInt &that) {
-        *this = *this - that;
-        return *this;
-    }
-    BigInt &operator*=(const BigInt &that) {
-        *this = *this * that;
-        return *this;
-    }
-    BigInt &operator/=(const BigInt &that) {
-        *this = *this / that;
-        return *this;
-    }
-    BigInt &operator%=(const BigInt &that) {
-        *this = *this % that;
-        return *this;
-    }
-    BigInt &operator++() {
-        *this += 1;
-        return *this;
-    }
-    BigInt &operator--() {
-        *this -= 1;
-        return *this;
-    }
-    BigInt operator++(int) {
-        BigInt ans = *this;
-        *this += 1;
-        return ans;
-    }
-    BigInt operator--(int) {
-        BigInt ans = *this;
-        *this -= 1;
-        return ans;
-    }
+    bool operator<(const BigInt &that) const { return (*this <=> that) == std::strong_ordering::less; }
+    bool operator>(const BigInt &that) const { return (*this <=> that) == std::strong_ordering::greater; }
+    bool operator<=(const BigInt &that) const { return (*this <=> that) != std::strong_ordering::greater; }
+    bool operator>=(const BigInt &that) const { return (*this <=> that) != std::strong_ordering::less; }
+    bool operator==(const BigInt &that) const { return (*this <=> that) == std::strong_ordering::equal; }
+    bool operator!=(const BigInt &that) const { return (*this <=> that) != std::strong_ordering::equal; }
 };

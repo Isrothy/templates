@@ -1,5 +1,3 @@
-<ex-gcd> <ex_gcd.cpp>
-<inverse> <inverse.cpp>
 <CRT> <CRT.cpp>
 <ex-CRT> <ex_crt.cpp>
 <BSGS> <BSGS.cpp>

@@ -1,21 +1,3 @@
-#include <optional>
-#include <vector>
-int64_t ex_gcd(int64_t a, int64_t b, int64_t &x, int64_t &y) {
-    if (b == 0) {
-        x = 1;
-        y = 0;
-        return a;
-    }
-    int64_t d = ex_gcd(b, a % b, y, x);
-    y -= a / b * x;
-    return d;
-}
-int64_t inv(int64_t a, int64_t mod) {
-    int64_t x, y;
-    a = (a + mod) % mod;
-    ex_gcd(a, mod, x, y);
-    return (x % mod + mod) % mod;
-}
 template<int64_t mod>
 struct Matrix : private std::vector<std::vector<int64_t>> {
     size_t n{}, m{};
@@ -37,55 +19,6 @@ struct Matrix : private std::vector<std::vector<int64_t>> {
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < m; ++j) { res[i][j] = (*this)[i][j]; }
             res[i][m] = v[i];
-        }
-        return res;
-    }
-    Matrix augment(Matrix B) const {
-        assert(n == B.n);
-        Matrix res(n, m + B.m);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) { res[i][j] = (*this)[i][j]; }
-            for (int j = 0; j < B.m; ++j) { res[i][m + j] = B[i][j]; }
-        }
-        return res;
-    }
-    Matrix transpose() const {
-        Matrix res(m, n);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) { res[j][i] = (*this)[i][j]; }
-        }
-        return res;
-    }
-    Matrix remove_column(size_t k) const {
-        assert(m != 1 && k < m);
-        Matrix res(n, m - 1);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m - 1; ++j) { res[i][j] = (*this)[i][j < k ? j : j + 1]; }
-        }
-        return res;
-    }
-    Matrix remove_row(size_t k) const {
-        assert(n != 1 && k < n);
-        Matrix res(n - 1, m);
-        for (int i = 0; i < n - 1; ++i) {
-            for (int j = 0; j < m; ++j) { res[i][j] = (*this)[i < k ? i : i + 1][j]; }
-        }
-        return res;
-    }
-    int64_t determinate() const {
-        assert(n == m);
-        Matrix tmp = *this;
-        int64_t res = 1;
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                while (tmp[j][i] != 0) {
-                    int64_t t = tmp[i][i] / tmp[j][i];
-                    for (int k = i; k < n; ++k) { tmp[i][k] = (tmp[i][k] - t * tmp[j][k]) % mod; }
-                    std::swap(tmp[i], tmp[j]);
-                    res = -res;
-                }
-            }
-            res = (res * tmp[i][i]) % mod;
         }
         return res;
     }

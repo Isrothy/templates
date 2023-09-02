@@ -1,17 +1,13 @@
-#include <cstring>
-template<size_t SIGMA, size_t M>
+#include <string_view>
+template<size_t M, size_t Sigma>
 struct GeneralSuffixAutomaton {
-    int trans[2 * M][SIGMA], mxlen[2 * M], slink[2 * M];
-    int tot;
-    GeneralSuffixAutomaton() : tot(1) {
-        slink[0] = -1;
-        memset(trans[0], -1, sizeof(trans[0]));
-    }
-    int extend(int p, int c) {
-        if (trans[p][c] != -1) {
-            int r = trans[p][c];
+    size_t trans[2 * M + 10][Sigma]{}, mxlen[2 * M + 10]{}, slink[2 * M + 10]{};
+    size_t n;
+    GeneralSuffixAutomaton() : n(1) {}
+    auto extend(size_t p, int c) {
+        if (auto r = trans[p][c]) {
             if (mxlen[r] == mxlen[p] + 1) { return r; }
-            int o = tot++;
+            auto o = ++n;
             slink[o] = slink[r];
             mxlen[o] = mxlen[p] + 1;
             memcpy(trans[o], trans[r], sizeof trans[o]);
@@ -22,21 +18,20 @@ struct GeneralSuffixAutomaton {
             slink[r] = o;
             return o;
         }
-        int q = tot++;
+        auto q = ++n;
         mxlen[q] = mxlen[p] + 1;
-        memset(trans[q], -1, sizeof trans[q]);
-        while (p != -1 && trans[p][c] == -1) {
+        memset(trans[q], 0, sizeof trans[q]);
+        while (p && !trans[p][c]) {
             trans[p][c] = q;
             p = slink[p];
         }
-        if (p == -1) {
-            slink[q] = 0;
+        if (!p) {
+            slink[q] = 1;
         } else {
-            int r = trans[p][c];
-            if (mxlen[r] == mxlen[p] + 1) {
+            if (auto r = trans[p][c]; mxlen[r] == mxlen[p] + 1) {
                 slink[q] = r;
             } else {
-                int o = tot++;
+                auto o = ++n;
                 slink[o] = slink[r];
                 mxlen[o] = mxlen[p] + 1;
                 memcpy(trans[o], trans[r], sizeof trans[o]);
@@ -49,8 +44,8 @@ struct GeneralSuffixAutomaton {
         }
         return q;
     }
-    void insert(char *S) {
-        int p = 0, n = (int) strlen(S);
-        for (int i = 0; i < n; ++i) { p = extend(p, S[i] - 'a'); }
+    void insert(std::string_view s) {
+        size_t p = 1;
+        for (auto c: s) { p = extend(p, c - 'a'); }
     }
 };

@@ -23,7 +23,7 @@ void FibLink(FibNode<T> *x, FibNode<T> *y) {
     x->left->right = x->right;
     x->right->left = x->left;
     x->parent = y;
-    if (y->child == nullptr) {
+    if (!y->child) {
         y->child = x;
         x->left = x->right = x;
     } else {
@@ -40,7 +40,7 @@ FibNode<T> *consolidate(FibNode<T> *min, size_t size) {
         auto x = w, next = x->right;
         int d = x->degree;
         x->left = x->right = x;
-        while (a[d] != nullptr) {
+        while (a[d]) {
             auto y = a[d];
             if (x->key > y->key) { std::swap(x, y); }
             FibLink(y, x);
@@ -52,8 +52,8 @@ FibNode<T> *consolidate(FibNode<T> *min, size_t size) {
     } while (w != min);
     min = nullptr;
     for (auto &x: a) {
-        if (x != nullptr) {
-            if (min == nullptr) {
+        if (x) {
+            if (!min) {
                 min = x;
             } else {
                 min->link_left(x);
@@ -65,8 +65,8 @@ FibNode<T> *consolidate(FibNode<T> *min, size_t size) {
 }
 template<typename T>
 FibNode<T> *merge(FibNode<T> *x, FibNode<T> *y) {
-    if (x == nullptr) { return y; }
-    if (y == nullptr) { return x; }
+    if (!x) { return y; }
+    if (!y) { return x; }
     if (x->key > y->key) { std::swap(x, y); }
     x->link_left(y);
     x->size += y->size;
@@ -82,7 +82,7 @@ std::pair<T, FibNode<T> *> extract_min(FibNode<T> *min) {
     T result = min->key;
     size_t size = min->size;
     auto child = min->child;
-    if (child != nullptr) {
+    if (child) {
         child->parent = nullptr;
         for (auto w = child->right; w != child; w = w->right) { w->parent = nullptr; }
         min->link_left(child);
@@ -118,9 +118,9 @@ FibNode<T> *decrease_key(FibNode<T> *min, FibNode<T> *x, T key) {
     x->key = std::move(key);
     size_t size = min->size;
     auto y = x->parent;
-    if (y != nullptr && x->key < y->key) {
+    if (y && x->key < y->key) {
         min = cut(min, x);
-        while (y->parent != nullptr) {
+        while (y->parent) {
             if (!y->mark) {
                 y->mark = true;
                 break;

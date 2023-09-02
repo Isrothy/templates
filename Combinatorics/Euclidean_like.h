@@ -1,6 +1,5 @@
 #include <tuple>
-std::tuple<int64_t, int64_t, int64_t>
-Euclidean_like(int64_t n, int64_t a, int64_t b, int64_t c, int64_t mod) {
+auto Euclidean_like(int64_t n, int64_t a, int64_t b, int64_t c, int64_t mod) -> std::tuple<int64_t, int64_t, int64_t> {
     // sum_{x=0}^n (ax + b)/c
     int64_t x = a / c % mod, y = b / c % mod;
     int64_t s0 = (n + 1) % mod;
