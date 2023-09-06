@@ -82,11 +82,11 @@ struct DLX {
         for (auto q = p->down; q != p; q = q->down) {
             ans[depth] = q->i;
             for (auto r = q->right; r != q; r = r->right) {
-                if (r->j != 0) { remove(col[r->j]); }
+                if (r->j) { remove(col[r->j]); }
             }
             if (dance(depth + 1, ans)) { return true; }
             for (auto r = q->left; r != q; r = r->left) {
-                if (r->j != 0) { recover(col[r->j]); }
+                if (r->j) { recover(col[r->j]); }
             }
         }
         recover(p);

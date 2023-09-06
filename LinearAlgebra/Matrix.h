@@ -1,5 +1,6 @@
-template<int64_t mod>
-struct Matrix : private std::vector<std::vector<int64_t>> {
+#include <optional>
+#include <vector>
+template<int64_t mod> struct Matrix : private std::vector<std::vector<int64_t>> {
     size_t n{}, m{};
     Matrix() = default;
     using std::vector<std::vector<int64_t>>::vector;
@@ -30,12 +31,12 @@ struct Matrix : private std::vector<std::vector<int64_t>> {
         for (int i = 0, pivot = 0; i < n; ++i) {
             while (pivot < m && tmp[i][pivot] == 0) {
                 for (int j = i + 1; j < n; ++j) {
-                    if (tmp[j][pivot] != 0) {
+                    if (tmp[j][pivot]) {
                         std::swap(tmp[i], tmp[j]);
                         break;
                     }
                 }
-                if (tmp[i][pivot] == 0) {
+                if (!tmp[i][pivot]) {
                     f.push_back(pivot);
                     ++pivot;
                 }
@@ -53,7 +54,7 @@ struct Matrix : private std::vector<std::vector<int64_t>> {
         }
         for (int i = 0; i < n; ++i) {
             if (p[i] == -1) {
-                if (tmp[i][m] != 0) { return {}; }
+                if (tmp[i][m]) { return {}; }
             } else {
                 v0[p[i]] = tmp[i][m];
             }
@@ -76,7 +77,7 @@ struct Matrix : private std::vector<std::vector<int64_t>> {
         for (int i = 0; i < n; ++i) {
             if (tmp[i][i] == 0) {
                 for (int j = i + 1; j < n; ++j) {
-                    if (tmp[j][i] != 0) {
+                    if (tmp[j][i]) {
                         std::swap(tmp[i], tmp[j]);
                         break;
                     }

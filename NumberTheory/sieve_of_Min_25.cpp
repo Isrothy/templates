@@ -1,63 +1,59 @@
-namespace Min_25 {
-    long long w[M], h0[M], h1[M], h[M];
-    int s, m;
-    int index(long long x, long long n) { return x <= s ? x : m - n / x + 1; }
-    int dfs_mu(long long x, int k, long long n) {
+#include <cmath>
+#include <vector>
+class Min25 {
+    int64_t n, s, m;
+    std::vector<int64_t> prime, h0, h1, w, h;
+    size_t index(int64_t x) const { return x <= s ? x : m - n / x + 1; }
+    int64_t dfs_mu(int64_t x, size_t k, int64_t n) const {
         if (x <= prime[k]) { return 0; }
-        int res = (h[index(x, n)] - h[prime[k]]) % mod;
-        for (int i = k + 1; (long long) prime[i] * prime[i] <= x; ++i) {
-            res = (res - dfs_mu(x / prime[i], i, n)) % mod;
+        auto res = h[index(x)] - h[prime[k]];
+        for (size_t i = k + 1; i < prime.size() && prime[i] * prime[i] <= x; ++i) {
+            res = res - dfs_mu(x / prime[i], i, n);
         }
         return res;
     }
-    int dfs_phi(long long x, int k, long long n) {
+    int64_t dfs_phi(int64_t x, size_t k, int64_t n) const {
         if (x <= prime[k]) { return 0; }
-        int res = (h[index(x, n)] - h[prime[k]]) % mod;
-        for (int i = k + 1; (long long) prime[i] * prime[i] <= x; ++i) {
-            long long p = prime[i], d = prime[i], g = p - 1;
-            while (d * p <= x) {
-                res = (res + g * (dfs_phi(x / d, i, n)) + g * p)) % mod;
-                g = (g * p) % mod;
-                d *= p;
+        int64_t res = h[index(x)] - h[prime[k]];
+        for (size_t i = k + 1; i < prime.size() && prime[i] * prime[i] <= x; ++i) {
+            for (int64_t p = prime[i], d = prime[i], g = p - 1; d <= x / p; d *= p) {
+                res = res + g * (dfs_phi(x / d, i, n)) + g * p;
+                g = g * p;
             }
         }
         return res;
     }
-    int sum_of_mu(long long n) {
-        m = 0;
-        s = (int) sqrtl(n);
-        for (long long x = 1; x <= n; x = w[m] + 1) {
-            w[++m] = n / (n / x);
-            h0[m] = w[m];
+  public:
+    explicit Min25(int64_t n)
+        : n(n), s((int) std::sqrt(n)), m(0), h0(2 * s + 2), h1(2 * s + 2), w(2 * s + 2), h(2 * s + 2) {
+        std::vector<bool> is_composite(s + 1);
+        prime.push_back(0);
+        for (int i = 2; i <= s; ++i) {
+            if (!is_composite[i]) {
+                prime.push_back(i);
+                for (auto j = 2 * i; j <= s; j += i) { is_composite[j] = true; }
+            }
         }
-        for (int i = 1; prime[i] <= s; ++i) {
-            long long p = prime[i];
-            for (int j = m; p * p <= w[j]; --j) {
-                int k = index(w[j] / p, n);
+        for (int64_t x = 1; x <= n; x = w[m] + 1) {
+            ++m;
+            auto tmp = w[m] = n / (n / x);
+            h0[m] = tmp;
+            h1[m] = (tmp * (tmp + 1)) >> 1;
+        }
+        for (size_t i = 1; i < prime.size(); ++i) {
+            for (auto j = m, p = prime[i]; w[j] >= p * p; --j) {
+                auto k = index(w[j] / p);
                 h0[j] -= h0[k] - h0[p - 1];
+                h1[j] -= (h1[k] - h1[p - 1]) * p;
             }
         }
-        for (int i = 2; i <= m; ++i) { h[i] = -h0[i]; }
+    }
+    int64_t sum_of_phi(int64_t n) {
+        for (int i = 2; i <= m; ++i) { h[i] = h1[i] - h0[i]; }
+        return 1 + dfs_phi(n, 0, n);
+    }
+    int64_t sum_of_mu(int64_t n) {
+        for (int i = 2; i <= m; ++i) { h[i] = 1 - h0[i]; }
         return 1 + dfs_mu(n, 0, n);
     }
-    int sum_of_phi(long long n) {
-        m = 0;
-        s = (int) sqrtl(n);
-        for (long long x = 1; x <= n; x = w[m] + 1) {
-            w[++m] = n / (n / x);
-            long long tmp = w[m] % mod;
-            h0[m] = tmp;
-            h1[m] = ((tmp * (tmp + 1)) >> 1) % mod;
-        }
-        for (int i = 1; prime[i] <= s; ++i) {
-            long long p = prime[i];
-            for (int j = m; p * p <= w[j]; --j) {
-                int k = index(w[j] / p, n);
-                h0[j] -= h0[k] - h0[p - 1];
-                h1[j] -= (h1[k] - h1[p - 1]) * p % mod;
-            }
-        }
-        for (int i = 2; i <= m; ++i) { h[i] = (h1[i] - h0[i]) % mod; }
-        return (1 + dfs_phi(n, 0, n)) % mod;
-    }
-}// namespace Min_25
+};

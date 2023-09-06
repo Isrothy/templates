@@ -45,7 +45,7 @@ struct BipartiteGraph {
                 }
             }
             for (int v = 1; v <= n; ++v) {
-                if (visy[v] != 0 || slack[v] != 0) { continue; }
+                if (visy[v] || slack[v]) { continue; }
                 if (T[v] == 0) { return v; }
                 visy[v] = visx[T[v]] = true;
                 Q[tail++] = T[v];
@@ -54,9 +54,9 @@ struct BipartiteGraph {
     }
     long long maximum_weight_matching(int n) {
         for (int i = 1; i <= n; ++i) {
-            if (S[i] != 0) { continue; }
+            if (S[i]) { continue; }
             int u = BFS(i, n);
-            while (u != 0) {
+            while (u) {
                 T[u] = pre[u];
                 swap(u, S[T[u]]);
             }

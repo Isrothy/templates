@@ -3,12 +3,12 @@ namespace Edmonds {
         int from, c, lazy;
         heap *ch[2];
         void push_down() {
-            if (lazy != 0) {
-                if (ch[0] != nullptr) {
+            if (lazy) {
+                if (ch[0]) {
                     ch[0]->lazy += lazy;
                     ch[0]->c += lazy;
                 }
-                if (ch[1] != nullptr) {
+                if (ch[1]) {
                     ch[1]->lazy += lazy;
                     ch[1]->c += lazy;
                 }
@@ -47,7 +47,7 @@ namespace Edmonds {
         mark[root] = root;
         int res = 0;
         for (int i = 1; i <= n; ++i) {
-            if (mark[i] != 0 || i == root) continue;
+            if (mark[i] || i == root) continue;
             int u = i;
             mark[u] = i;
             for (;;) {

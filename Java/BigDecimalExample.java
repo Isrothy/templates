@@ -1,6 +1,5 @@
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 class BigIntegerExample {
     public static void main(String[] args) {
         BigDecimal one = BigDecimal.ONE;

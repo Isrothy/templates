@@ -6,8 +6,8 @@ struct BigUnsigned : private std::vector<int> {
     static constexpr int bit = 9;
     static constexpr int base = 1e9;
 #define PLACE_HOLDER "%09d"
-    BigUnsigned(unsigned long long x = 0) {
-        while (x != 0) {
+    BigUnsigned(uint64_t x = 0) {
+        while (x) {
             push_back((int) (x % base));
             x /= base;
         }
@@ -42,15 +42,15 @@ struct BigUnsigned : private std::vector<int> {
         for (int i = 0; i < size(); ++i) { res[i] += (*this)[i]; }
         for (int i = 0; i < that.size(); ++i) { res[i] += that[i]; }
         int carry = 0;
-        for (int i = 0; i < res.size(); ++i) {
-            res[i] += carry;
+        for (int &re: res) {
+            re += carry;
             carry = 0;
-            if (res[i] >= base) {
-                res[i] -= base;
+            if (re >= base) {
+                re -= base;
                 ++carry;
             }
         }
-        if (carry != 0) {
+        if (carry) {
             res.push_back(carry);
             carry = 0;
         }
@@ -62,11 +62,11 @@ struct BigUnsigned : private std::vector<int> {
         for (int i = 0; i < size(); ++i) { res[i] += (*this)[i]; }
         for (int i = 0; i < that.size(); ++i) { res[i] -= that[i]; }
         int carry = 0;
-        for (int i = 0; i < res.size(); ++i) {
-            res[i] += carry;
+        for (int &re: res) {
+            re += carry;
             carry = 0;
-            if (res[i] < 0) {
-                res[i] += base;
+            if (re < 0) {
+                re += base;
                 carry--;
             }
         }
@@ -87,15 +87,15 @@ struct BigUnsigned : private std::vector<int> {
     bool operator==(const BigUnsigned &that) const { return (*this <=> that) == std::strong_ordering::equal; }
     bool operator!=(const BigUnsigned &that) const { return (*this <=> that) != std::strong_ordering::equal; }
     BigUnsigned operator*(const BigUnsigned &that) const {
-        std::vector<long long> res;
+        std::vector<int64_t> res;
         res.resize((size()) + that.size());
         for (int i = 0; i < (size()); ++i)
             for (int j = 0; j < that.size(); ++j) {
-                res[i + j] += (long long) (*this)[i] * that[j];
+                res[i + j] += (int64_t) (*this)[i] * that[j];
                 res[i + j + 1] += res[i + j] / base;
                 res[i + j] %= base;
             }
-        long long carry = 0;
+        int64_t carry = 0;
         for (auto &digit: res) {
             digit += carry;
             carry = digit / base;
@@ -109,7 +109,7 @@ struct BigUnsigned : private std::vector<int> {
     }
     static std::pair<BigUnsigned, BigUnsigned> divide(BigUnsigned A, BigUnsigned b) {
         BigUnsigned c;
-        std::vector<long long> a;
+        std::vector<int64_t> a;
         a.resize(A.size());
         std::copy(A.begin(), A.end(), a.begin());
         if (a.size() >= b.size()) { c.resize(a.size() - b.size() + 1); }
@@ -118,7 +118,7 @@ struct BigUnsigned : private std::vector<int> {
                 int carry = 0;
                 c[i - b.size()] += t;
                 for (int j = i - b.size(), k = 0; k < b.size(); ++j, ++k) {
-                    long long val = a[j] + carry - (long long) t * b[k];
+                    int64_t val = a[j] + carry - (int64_t) t * b[k];
                     carry = val / base;
                     val %= base;
                     if (val < 0) {
@@ -127,7 +127,7 @@ struct BigUnsigned : private std::vector<int> {
                     }
                     a[j] = val;
                 }
-                a[i - 1] += (long long) carry * base;
+                a[i - 1] += (int64_t) carry * base;
             };
             while (a[i - 1] > b.back() + 1) { try_devide(a[i - 1] / (b.back() + 1)); }
             bool left = true;
@@ -184,7 +184,7 @@ struct BigInt {
         if (is_negative()) { fprintf(fout, "-"); }
         _digits.print(fout);
     }
-    BigInt(long long x = 0) {
+    BigInt(int64_t x = 0) {
         _is_negative = false;
         if (x < 0) {
             x = -x;

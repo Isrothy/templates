@@ -1,28 +1,32 @@
-void pivot(std::vector<std::vector<double>> &A, int l, int e, std::vector<int> &id) {
-    int m = (int) A.size();
-    int n = (int) A[0].size();
-    double tmp = -1 / A[l][e];
-    A[l][e] = -1;
-    for (auto &x: A[l]) { x *= tmp; }
-    for (int i = 0; i < m; ++i) {
-        if (i == l) { continue; }
-        tmp = A[i][e];
-        A[i][e] = 0;
-        for (int j = 0; j < n; ++j) { A[i][j] += tmp * A[l][j]; }
+#include <optional>
+#include <vector>
+namespace {
+    constexpr double Eps = 1e-10;
+    constexpr int sign(double x) { return (x > Eps) - (x < -Eps); }
+    void pivot(std::vector<std::vector<double>> &A, int l, int e, std::vector<int> &id) {
+        auto m = static_cast<int>(A.size());
+        auto n = static_cast<int>(A[0].size());
+        double tmp = -1 / A[l][e];
+        A[l][e] = -1;
+        for (auto &x: A[l]) { x *= tmp; }
+        for (int i = 0; i < m; ++i) {
+            if (i == l) { continue; }
+            tmp = A[i][e];
+            A[i][e] = 0;
+            for (int j = 0; j < n; ++j) { A[i][j] += tmp * A[l][j]; }
+        }
+        std::swap(id[e], id[l + n - 1]);
     }
-    std::swap(id[e], id[l + n - 1]);
-}
-//-1: unbounded
-//-2: infeasible
-// 0: optimal
-int simplex(
-    const std::vector<std::vector<double>> &A,
-    const std::vector<double> &b,
-    const std::vector<double> &c,
-    std::vector<double> &result
-) {
-    size_t m = A.size();
-    size_t n = A[0].size();
+}// namespace
+enum class SimplexResult {
+    unbounded,
+    infeasible,
+    optimal,
+};
+auto simplex(const std::vector<std::vector<double>> &A, const std::vector<double> &b, const std::vector<double> &c)
+    -> std::pair<SimplexResult, std::optional<std::vector<double>>> {
+    auto m = static_cast<int>(A.size());
+    auto n = static_cast<int>(A[0].size());
     std::vector<int> Id(n + m);
     for (int i = 0; i < n + m; ++i) { Id[i] = i; }
     std::vector<std::vector<double>> T(m + 1, std::vector<double>(n + 1));
@@ -41,7 +45,7 @@ int simplex(
         for (int i = 0; i < n; ++i) {
             if (sign(T[l][i]) > 0 && (e == -1 || Id[i] > Id[e])) { e = i; }
         }
-        if (e == -1) { return -2; }
+        if (e == -1) { return {SimplexResult::infeasible, std::nullopt}; }
         pivot(T, l, e, Id);
     }
     while (true) {
@@ -61,13 +65,13 @@ int simplex(
                 }
             }
         }
-        if (l == -1) { return -1; }
+        if (l == -1) { return {SimplexResult::unbounded, std::nullopt}; }
         pivot(T, l, e, Id);
     }
-    result = std::vector<double>(n + 1);
+    auto result = std::vector<double>(n + 1);
     result[n] = T[m][n];
     for (int i = 0; i < m; ++i) {
         if (Id[n + i] < n) { result[Id[n + i]] = T[i][n]; }
     }
-    return 0;
+    return {SimplexResult::optimal, result};
 }

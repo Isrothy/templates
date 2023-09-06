@@ -4,8 +4,8 @@ auto linear_recurrence_with_constant_coefficients(const std::vector<int> &A, con
     polynomial::polynomial<Mod, G> a(k + 1), b(k), c(k);
     for (int i = 0; i < k; ++i) { a[i] = -f[k - i]; }
     a[k] = b[1] = c[0] = 1;
-    while (n != 0) {
-        if ((n & 1) == 1) { c = c * b % a; }
+    while (n) {
+        if (n & 1) { c = c * b % a; }
         b = b * b % a;
         n >>= 1;
     }

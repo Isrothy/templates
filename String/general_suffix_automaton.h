@@ -1,6 +1,5 @@
 #include <string_view>
-template<size_t M, size_t Sigma>
-struct GeneralSuffixAutomaton {
+template<size_t M, size_t Sigma> struct GeneralSuffixAutomaton {
     size_t trans[2 * M + 10][Sigma]{}, mxlen[2 * M + 10]{}, slink[2 * M + 10]{};
     size_t n;
     GeneralSuffixAutomaton() : n(1) {}

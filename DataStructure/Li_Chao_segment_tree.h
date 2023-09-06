@@ -1,6 +1,5 @@
 #include <cctype>
-template<size_t M>
-struct LiChaoSegmentTree {
+template<size_t M> struct LiChaoSegmentTree {
     struct Segment {
         long long x1, y1, x2, y2;
         int id;
@@ -14,8 +13,9 @@ struct LiChaoSegmentTree {
     void update(int p, int l, int r, int a, int b, const Segment &L) {
         int mid = (l + r) >> 1;
         if (l == a && r == b) {
-            if (S[p].id == 0) { S[p] = L; }
-            else {
+            if (S[p].id == 0) {
+                S[p] = L;
+            } else {
                 if (cmp(S[p], L, mid)) { swap(S[p], L); }
                 if (l != r) {
                     if (cmp(S[p], L, l)) { update(p << 1, l, mid, a, mid, L); }
@@ -24,9 +24,11 @@ struct LiChaoSegmentTree {
             }
             return;
         }
-        if (b <= mid) { update(p << 1, l, mid, a, b, L); }
-        else if (mid < a) { update(p << 1 | 1, mid + 1, r, a, b, L); }
-        else {
+        if (b <= mid) {
+            update(p << 1, l, mid, a, b, L);
+        } else if (mid < a) {
+            update(p << 1 | 1, mid + 1, r, a, b, L);
+        } else {
             update(p << 1, l, mid, a, mid, L);
             update(p << 1 | 1, mid + 1, r, mid + 1, b, L);
         }
@@ -35,9 +37,12 @@ struct LiChaoSegmentTree {
         if (l == r) { return S[p]; }
         int mid = (l + r) >> 1;
         Segment res{};
-        if (x <= mid) { res = query(p << 1, l, mid, x); }
-        else { res = query(p << 1 | 1, mid + 1, r, x); }
-        if (S[p].id != 0 && (res.id == 0 || cmp(res, S[p], x))) { res = S[p]; }
+        if (x <= mid) {
+            res = query(p << 1, l, mid, x);
+        } else {
+            res = query(p << 1 | 1, mid + 1, r, x);
+        }
+        if (S[p].id && (res.id == 0 || cmp(res, S[p], x))) { res = S[p]; }
         return res;
     }
 };

@@ -1,17 +1,18 @@
 #include "2D_computational_geometry.h"
+#include <array>
 #include <list>
 #include <numeric>
+#include <span>
 class DelaunayGraph {
     class QuadEdge;
     using EdgeIt = std::list<QuadEdge>::iterator;
     class QuadEdge {
         Point *orig_;
         EdgeIt rot_{}, onext_{};
-
       public:
         explicit QuadEdge(Point *origin) : orig_(origin) {}
-#define DEFINE_ACCESSOR(name, expr)                                                                                    \
-    auto name() const { return expr; }                                                                                 \
+#define DEFINE_ACCESSOR(name, expr)    \
+    auto name() const { return expr; } \
     auto &name() { return expr; }
         DEFINE_ACCESSOR(rot, rot_);
         DEFINE_ACCESSOR(onext, onext_);
@@ -142,7 +143,6 @@ class DelaunayGraph {
         }
         return {ldo, rdo};
     }
-
   public:
     explicit DelaunayGraph(std::span<Point> points) {
         auto n = points.size();

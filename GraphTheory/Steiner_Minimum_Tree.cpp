@@ -6,7 +6,7 @@ int Steiner_Minimum_Tree(int *s, int k) {
     }
     for (int i = 0; i < k; ++i) { dp[1 << i][s[i]] = 0; }
     for (int S = 1; S < 1 << k; ++S) {
-        for (int T = (S - 1) & S; T != 0; --T &= S) {
+        for (int T = (S - 1) & S; T; --T &= S) {
             for (int u = 1; u <= n; ++u) { dp[S][u] = min(dp[S][u], dp[T][u] + dp[S ^ T][u]); }
         }
         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> Q;

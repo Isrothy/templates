@@ -2,7 +2,8 @@
 #include <span>
 #include <string_view>
 #include <vector>
-enum class SuffixType : bool { l, s };
+enum class SuffixType : bool { l,
+                               s };
 bool is_lms_char(std::span<SuffixType> type, int x) {
     return x > 0 && type[x] == SuffixType::s && type[x - 1] == SuffixType::l;
 }
@@ -15,14 +16,8 @@ bool substring_equal(std::span<int> s, std::span<SuffixType> type, int x, int y)
     return s[x] == s[y];
 }
 void induce_sort(
-    std::span<int> s,
-    std::vector<int> &sa,
-    std::span<SuffixType> type,
-    std::vector<int> &bucket,
-    std::vector<int> &lbucket,
-    std::vector<int> &sbucket,
-    size_t n,
-    size_t sigma
+    std::span<int> s, std::vector<int> &sa, std::span<SuffixType> type, std::vector<int> &bucket,
+    std::vector<int> &lbucket, std::vector<int> &sbucket, size_t n, size_t sigma
 ) {
     lbucket[0] = sbucket[0] = 1;
     for (int i = 1; i < sigma; ++i) {
@@ -100,7 +95,7 @@ auto suffix_sort(std::string_view str) {
     std::vector<int> rank(n + 1), height(n);
     for (int i = 0; i <= n; ++i) { rank[sa[i]] = i; }
     for (int i = 0, h = 0; i < n; ++i) {
-        if (h != 0) { --h; }
+        if (h) { --h; }
         int j = sa[rank[i] - 1];
         while (i + h < n && j + h < n && str[i + h] == str[j + h]) { ++h; }
         height[rank[i] - 1] = h;

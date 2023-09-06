@@ -15,11 +15,11 @@ void dfs(int u) {
 void re_dfs(int u) {
     ladder[++ladder_sz] = u;
     id[u] = ladder_sz;
-    if (son[u] != 0) { re_dfs(son[u]); }
+    if (son[u]) { re_dfs(son[u]); }
     for (auto v: E[u]) {
         if (v == par[u] || v == son[u]) continue;
         int tmp = ladder_sz;
-        for (int j = 1, w = u; j < len[v] && w != 0; ++j) {
+        for (int j = 1, w = u; j < len[v] && w; ++j) {
             ladder[++ladder_sz] = w;
             w = par[w];
         }

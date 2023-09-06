@@ -77,7 +77,7 @@ namespace Kth_SSP {
                 tmp[j]->dis = tmp[j]->ch[0] == nullptr ? 1 : tmp[j]->ch[0]->dis + 1;
             }
             H[u] = sz == 0 ? nullptr : tmp[1];
-            if (pre[u] != 0) { H[u] = merge(H[u], H[pre[u]]); }
+            if (pre[u]) { H[u] = merge(H[u], H[pre[u]]); }
         }
         priority_queue<node, vector<node>, greater<node>> Q;
         if (H[S] != nullptr) { Q.push((node){H[S], dis[S] + H[S]->val}); }

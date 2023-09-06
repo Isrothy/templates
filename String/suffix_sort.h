@@ -31,7 +31,7 @@ auto suffix_sort(std::string_view s) {
     }
     --n;
     for (size_t i = 0, h = 0; i < n; ++i) {
-        if (h != 0) { --h; }
+        if (h) { --h; }
         auto j = sa[rank[i] - 1];
         while (i + h < n && j + h < n && s[i + h] == s[j + h]) { ++h; }
         height[rank[i] - 1] = h;

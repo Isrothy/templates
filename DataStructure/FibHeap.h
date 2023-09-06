@@ -2,24 +2,22 @@
 #include <cstdlib>
 #include <iostream>
 #include <numbers>
-template<typename T>
-struct FibNode {
+template<typename T> struct FibNode {
     T key;
     int degree;
     size_t size;
     bool mark;
     FibNode *parent, *child, *left, *right;
     explicit FibNode(T key)
-        : key(std::move(key)), degree(0), size(1), mark(false), parent(nullptr), child(nullptr), left(this),
-          right(this) {}
+        : key(std::move(key)), degree(0), size(1), mark(false), parent(nullptr), child(nullptr),
+          left(this), right(this) {}
     void link_left(FibNode *other) {
         other->left->right = this;
         this->left->right = other;
         std::swap(this->left, other->left);
     }
 };
-template<typename T>
-void FibLink(FibNode<T> *x, FibNode<T> *y) {
+template<typename T> void FibLink(FibNode<T> *x, FibNode<T> *y) {
     x->left->right = x->right;
     x->right->left = x->left;
     x->parent = y;
@@ -32,8 +30,7 @@ void FibLink(FibNode<T> *x, FibNode<T> *y) {
     y->degree++;
     x->mark = false;
 }
-template<typename T>
-FibNode<T> *consolidate(FibNode<T> *min, size_t size) {
+template<typename T> FibNode<T> *consolidate(FibNode<T> *min, size_t size) {
     std::vector<FibNode<T> *> a(log(size) / log(std::numbers::phi) + 1, nullptr);
     auto w = min;
     do {
@@ -63,8 +60,7 @@ FibNode<T> *consolidate(FibNode<T> *min, size_t size) {
     }
     return min;
 }
-template<typename T>
-FibNode<T> *merge(FibNode<T> *x, FibNode<T> *y) {
+template<typename T> FibNode<T> *merge(FibNode<T> *x, FibNode<T> *y) {
     if (!x) { return y; }
     if (!y) { return x; }
     if (x->key > y->key) { std::swap(x, y); }
@@ -72,13 +68,11 @@ FibNode<T> *merge(FibNode<T> *x, FibNode<T> *y) {
     x->size += y->size;
     return x;
 }
-template<typename T>
-FibNode<T> *insert(FibNode<T> *min, T key) {
+template<typename T> FibNode<T> *insert(FibNode<T> *min, T key) {
     auto *node = new FibNode<T>(std::move(key));
     return merge(min, node);
 }
-template<typename T>
-std::pair<T, FibNode<T> *> extract_min(FibNode<T> *min) {
+template<typename T> std::pair<T, FibNode<T> *> extract_min(FibNode<T> *min) {
     T result = min->key;
     size_t size = min->size;
     auto child = min->child;
@@ -97,8 +91,7 @@ std::pair<T, FibNode<T> *> extract_min(FibNode<T> *min) {
     }
     return std::make_pair(result, min);
 }
-template<typename T>
-FibNode<T> *cut(FibNode<T> *min, FibNode<T> *x) {
+template<typename T> FibNode<T> *cut(FibNode<T> *min, FibNode<T> *x) {
     if (x->right == x) {
         x->parent->child = nullptr;
     } else {
@@ -113,8 +106,7 @@ FibNode<T> *cut(FibNode<T> *min, FibNode<T> *x) {
     min->link_left(x);
     return min;
 }
-template<typename T>
-FibNode<T> *decrease_key(FibNode<T> *min, FibNode<T> *x, T key) {
+template<typename T> FibNode<T> *decrease_key(FibNode<T> *min, FibNode<T> *x, T key) {
     x->key = std::move(key);
     size_t size = min->size;
     auto y = x->parent;

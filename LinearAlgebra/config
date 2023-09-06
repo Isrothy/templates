@@ -1,3 +1,3 @@
-<Matrix> <Matrix.cpp>
-<Homogeneous Linear Recurrence with Constant Coefficients> <linear_recurrence_with_constant_coefficients.cpp>
-<Simplex> <Simplex.cpp>
+<Matrix> <Matrix.h>
+<Homogeneous Linear Recurrence with Constant Coefficients> <linear_recurrence_with_constant_coefficients.h>
+<Simplex> <Simplex.h>

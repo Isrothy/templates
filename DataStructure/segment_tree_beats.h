@@ -11,10 +11,16 @@ void push_up(int p) {
     second_max[p] = std::max(second_max[p << 1], second_max[p << 1 | 1]);
     second_min[p] = std::min(second_min[p << 1], second_min[p << 1 | 1]);
     cnt_max[p] = cnt_min[p] = 0;
-    if (mx[p] == mx[p << 1]) { cnt_max[p] += cnt_max[p << 1]; }
-    else { second_max[p] = std::max(second_max[p], mx[p << 1]); }
-    if (mx[p] == mx[p << 1 | 1]) { cnt_max[p] += cnt_max[p << 1 | 1];}
-    else { second_max[p] = std::max(second_max[p], mx[p << 1 | 1]); }
+    if (mx[p] == mx[p << 1]) {
+        cnt_max[p] += cnt_max[p << 1];
+    } else {
+        second_max[p] = std::max(second_max[p], mx[p << 1]);
+    }
+    if (mx[p] == mx[p << 1 | 1]) {
+        cnt_max[p] += cnt_max[p << 1 | 1];
+    } else {
+        second_max[p] = std::max(second_max[p], mx[p << 1 | 1]);
+    }
     if (mi[p] == mi[p << 1]) {
         cnt_min[p] += cnt_min[p << 1];
     } else {
@@ -57,7 +63,7 @@ void check_min(int p, int x) {
     mx[p] = lazy_min[p] = x;
 }
 void push_down(int p) {
-    if (lazy_add[p] != 0) {
+    if (lazy_add[p]) {
         add(p << 1, lazy_add[p]);
         add(p << 1 | 1, lazy_add[p]);
         lazy_add[p] = 0;

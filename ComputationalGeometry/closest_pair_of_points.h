@@ -1,4 +1,5 @@
 #include "2D_computational_geometry.h"
+#include <span>
 namespace {
     auto cmp_y(const Point &A, const Point &B) { return A.y != B.y ? A.y < B.y : A.x < B.x; };
     auto closer(const Segment &s1, const Segment &s2) { return len2(s1) < len2(s2); }

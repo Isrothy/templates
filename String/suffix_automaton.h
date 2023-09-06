@@ -1,6 +1,5 @@
 #include <string_view>
-template<size_t M, size_t Sigma>
-struct SuffixAutomaton {
+template<size_t M, size_t Sigma> struct SuffixAutomaton {
     size_t trans[2 * M][Sigma]{}, mxlen[2 * M]{}, slink[2 * M]{};
     size_t n{};
     SuffixAutomaton() : n(1) {}

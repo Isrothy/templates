@@ -26,7 +26,7 @@ struct Two_SAT {
             if (!mark[i] && !mark[i ^ 1]) {
                 top = 0;
                 if (!dfs(i)) {
-                    while (top != 0) { mark[stk[--top]] = false; }
+                    while (top) { mark[stk[--top]] = false; }
                     if (!dfs(i ^ 1)) { return false; }
                 }
             }

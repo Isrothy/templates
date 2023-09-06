@@ -28,8 +28,11 @@ KdTree *build(KdTree **p, int l, int r, int D = 1) {
     if (r < l) { return nullptr; }
     int mid = (l + r) >> 1;
     std::nth_element(p + l, p + mid, p + r + 1, [=](KdTree *p, KdTree *q) {
-        if (D == 1) { return p->x == q->x ? p->y < q->y : p->x < q->x; }
-        else { return p->y == q->y ? p->x < q->x : p->y < q->y; }
+        if (D == 1) {
+            return p->x == q->x ? p->y < q->y : p->x < q->x;
+        } else {
+            return p->y == q->y ? p->x < q->x : p->y < q->y;
+        }
     });
     KdTree *root = p[mid];
     root->ch[0] = build(p, l, mid - 1, D ^ 1);

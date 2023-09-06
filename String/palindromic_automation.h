@@ -1,7 +1,6 @@
 #include <deque>
 #include <string_view>
-template<size_t M, size_t Sigma>
-struct PalindromicAutomaton {
+template<size_t M, size_t Sigma> struct PalindromicAutomaton {
     size_t next[M][Sigma]{}, fail[M]{};
     int length[M]{};
     std::deque<char> str;

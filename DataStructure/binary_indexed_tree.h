@@ -1,7 +1,6 @@
 #include <cctype>
 #include <span>
-template<size_t M>
-struct binary_indexed_tree {
+template<size_t M> struct binary_indexed_tree {
     long long b0[M], b1[M];
     int n;
     void update(size_t l, size_t r, int x) {
@@ -16,7 +15,7 @@ struct binary_indexed_tree {
     }
     auto query(size_t i) {
         long long x = 0, y = 0;
-        for (auto j = i; j != 0; j -= j & -j) {
+        for (auto j = i; j; j -= j & -j) {
             x += b0[j];
             y += b1[j];
         }

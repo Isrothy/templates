@@ -3,34 +3,21 @@ namespace {
     std::mt19937_64 mt_rand(std::random_device{}());
 }// namespace
 class SuffixBalancedTree {
-    struct treap {
-        uint64_t pri{};
-        double tag{};
-        size_t size{}, ch[2]{};
-        treap(double tag, size_t size) : pri(mt_rand()), tag(tag), size(size) {}
+    struct Treap {
+        uint64_t pri;
+        double tag;
+        size_t size, ch[2];
+        Treap(uint64_t pri, double tag, size_t size, size_t l, size_t r) : pri(pri), tag(tag), size(size), ch{l, r} {}
     };
-    std::vector<treap> nodes;
+    std::vector<Treap> nodes;
     std::string s;
     size_t root{};
-    using Interval = std::pair<double, double>;
-    static auto middle(const Interval &inter) { return (inter.first + inter.second) * 0.5; }
-    static auto half_inter(const Interval &interval, int f) {
-        auto mid = middle(interval);
-        return f ? Interval(mid, interval.second) : Interval(interval.first, mid);
-    }
     bool suffix_comp(size_t i, size_t j) {
         if (auto diff = s[i] - s[j]) { return diff < 0; }
         return nodes[i - 1].tag < nodes[j - 1].tag;
     }
     auto &child(size_t p, int f) { return nodes[p].ch[f]; }
     void push_up(size_t p) { nodes[p].size = nodes[child(p, 0)].size + nodes[child(p, 1)].size + 1; }
-    auto rotate(size_t p, bool f) {
-        auto q = child(p, f);
-        child(p, f) = child(q, !f);
-        child(q, !f) = p;
-        push_up(p);
-        return q;
-    }
     static bool reverse_comp(const std::string_view &s, const std::string_view &t) {
         auto l1 = s.size();
         auto l2 = t.size();
@@ -39,51 +26,74 @@ class SuffixBalancedTree {
         }
         return l1 < l2;
     }
-    void retag(size_t p, const Interval &inter) {
+    void retag(size_t p, double l, double r) {
         if (!p) { return; }
-        nodes[p].tag = middle(inter);
-        retag(child(p, 0), half_inter(inter, 0));
-        retag(child(p, 1), half_inter(inter, 1));
+        auto mid = (l + r) * 0.5;
+        nodes[p].tag = mid;
+        retag(child(p, 0), l, mid);
+        retag(child(p, 1), mid, r);
     }
-    auto insert(size_t p, size_t i, const Interval &inter) -> size_t {
-        if (!p) {
-            nodes.emplace_back(middle(inter), 1);
-            return nodes.size() - 1;
-        }
-        bool f = suffix_comp(p, i);
-        child(p, f) = insert(child(p, f), i, half_inter(inter, f));
-        if (nodes[child(p, f)].pri < nodes[p].pri) {
-            p = rotate(p, f);
-            retag(p, inter);
-        }
-        push_up(p);
-        return p;
-    }
-    auto remove(size_t p, size_t i, const Interval &inter) {
-        if (p == i) {
-            if (!child(p, 1) || !child(p, 0)) {
-                auto q = child(p, 0) | child(p, 1);
-                retag(q, inter);
-                nodes.pop_back();
-                return q;
-            }
-            auto f = nodes[child(p, 1)].pri < nodes[child(p, 0)].pri;
-            p = rotate(p, f);
-            child(p, !f) = remove(child(p, !f), i, half_inter(inter, !f));
-            retag(child(p, f), half_inter(inter, f));
-            nodes[p].tag = middle(inter);
+    auto merge(size_t p, size_t q) {
+        if (!p || !q) { return p | q; }
+        if (nodes[p].pri < nodes[q].pri) {
+            child(p, 1) = merge(child(p, 1), q);
+            push_up(p);
+            return p;
         } else {
-            auto f = suffix_comp(p, i);
-            child(p, f) = remove(child(p, f), i, half_inter(inter, f));
+            child(q, 0) = merge(p, child(q, 0));
+            push_up(q);
+            return q;
         }
-        push_up(p);
-        return p;
     }
-
+    auto split(size_t p, size_t x) -> std::pair<size_t, size_t> {
+        if (!p) { return {0, 0}; }
+        if (suffix_comp(p, x)) {
+            auto [l, r] = split(child(p, 1), x);
+            child(p, 1) = l;
+            push_up(p);
+            return {p, r};
+        } else {
+            auto [l, r] = split(child(p, 0), x);
+            child(p, 0) = r;
+            push_up(p);
+            return {l, p};
+        }
+    }
+    void insert() {
+        auto *ptr = &root;
+        auto pri = mt_rand();
+        auto x = nodes.size();
+        double l = 0, r = 1;
+        while (*ptr && nodes[*ptr].pri < pri) {
+            ++nodes[*ptr].size;
+            auto f = suffix_comp(*ptr, x);
+            ptr = &child(*ptr, f);
+            (f ? l : r) = (l + r) * 0.5;
+        }
+        auto [ls, rs] = split(*ptr, x);
+        *ptr = x;
+        nodes.emplace_back(pri, (l + r) * 0.5, 1, ls, rs);
+        retag(x, l, r);
+        push_up(x);
+    }
+    auto remove() {
+        auto *ptr = &root;
+        auto x = nodes.size() - 1;
+        double l = 0, r = 1;
+        while (*ptr != x) {
+            --nodes[*ptr].size;
+            auto f = suffix_comp(*ptr, x);
+            ptr = &child(*ptr, f);
+            (f ? l : r) = (l + r) * 0.5;
+        }
+        *ptr = merge(child(x, 0), child(x, 1));
+        retag(*ptr, l, r);
+        nodes.pop_back();
+    }
   public:
     explicit SuffixBalancedTree(std::string s) : s('\0' + std::move(s)) {
-        nodes.emplace_back(0, 0);
-        for (size_t i = 1; i < this->s.size(); ++i) { root = insert(root, i, {0, 1}); }
+        nodes.emplace_back(0, 0, 0, 0, 0);
+        for (size_t i = 1; i < this->s.size(); ++i) { insert(); }
     }
     SuffixBalancedTree() : SuffixBalancedTree("") {}
     auto index(const std::string_view &q) {
@@ -97,10 +107,10 @@ class SuffixBalancedTree {
     }
     void push_back(char ch) {
         s.push_back(ch);
-        root = insert(root, s.size() - 1, {0, 1});
+        insert();
     }
     void pop_back() {
-        root = remove(root, s.size() - 1, {0, 1});
+        remove();
         s.pop_back();
     }
 };

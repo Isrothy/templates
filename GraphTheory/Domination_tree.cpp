@@ -24,7 +24,7 @@ void dfs(int u) {
 void Lengauer_Tarjan(int root) {
     dfs(root);
     for (int u = 1; u <= n; ++u) { Fa[u] = sdom[u] = val[u] = u; }
-    for (int i = dfs_clock; i != 0; --i) {
+    for (int i = dfs_clock; i; --i) {
         int u = vertices[i];
         for (auto v: R[u]) {
             if (dfn[v] == 0) { continue; }

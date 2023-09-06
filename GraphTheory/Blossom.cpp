@@ -17,7 +17,7 @@ struct Blossom {
         static int last_time[M], time;
         ++time;
         while (last_time[u] != time) {
-            if (u != 0) {
+            if (u) {
                 last_time[u] = time;
                 u = find(link[mate[u]]);
             }
@@ -52,7 +52,7 @@ struct Blossom {
                     label[v] = 1;
                     link[v] = u;
                     if (mate[v] == 0) {
-                        while (u != 0) {
+                        while (u) {
                             u = mate[link[v]];
                             mate[v] = link[v];
                             mate[mate[v]] = v;

@@ -37,7 +37,6 @@ class DynamicConvexHull {
             }
         }
     }
-
   public:
     auto contain(const Point &P) const { return std::max(contain(lower_, P), contain(upper_, P)); }
     auto insert(const Point &P) {

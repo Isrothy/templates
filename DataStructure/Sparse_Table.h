@@ -3,8 +3,7 @@
 #include <cassert>
 #include <functional>
 #include <span>
-template<size_t M, typename T, typename Cmp = std::less<>>
-struct Sparse_Table {
+template<size_t M, typename T, typename Cmp = std::less<>> struct Sparse_Table {
     static constexpr size_t K = std::bit_floor(M) + 1;
     T ST[K][M];
     void init(std::span<T> a) {
