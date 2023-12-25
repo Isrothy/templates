@@ -7,9 +7,7 @@ class Min25 {
     int64_t dfs_mu(int64_t x, size_t k, int64_t n) const {
         if (x <= prime[k]) { return 0; }
         auto res = h[index(x)] - h[prime[k]];
-        for (size_t i = k + 1; i < prime.size() && prime[i] * prime[i] <= x; ++i) {
-            res = res - dfs_mu(x / prime[i], i, n);
-        }
+        for (size_t i = k + 1; i < prime.size() && prime[i] * prime[i] <= x; ++i) { res = res - dfs_mu(x / prime[i], i, n); }
         return res;
     }
     int64_t dfs_phi(int64_t x, size_t k, int64_t n) const {
@@ -24,8 +22,7 @@ class Min25 {
         return res;
     }
   public:
-    explicit Min25(int64_t n)
-        : n(n), s((int) std::sqrt(n)), m(0), h0(2 * s + 2), h1(2 * s + 2), w(2 * s + 2), h(2 * s + 2) {
+    explicit Min25(int64_t n) : n(n), s((int) std::sqrt(n)), m(0), h0(2 * s + 2), h1(2 * s + 2), w(2 * s + 2), h(2 * s + 2) {
         std::vector<bool> is_composite(s + 1);
         prime.push_back(0);
         for (int i = 2; i <= s; ++i) {

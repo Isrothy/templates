@@ -13,9 +13,7 @@ Circle minimum_covering_circle(std::vector<Point> a) {
                     O = middle(a[i], a[j]);
                     r = (O - a[j]).len();
                     for (size_t k = 0; k < j; ++k) {
-                        if (sign(sqr_diff(r, (O - a[k]).len())) < 0) {
-                            std::tie(O, r) = circumscribed_circle({a[i], a[j], a[k]}).value();
-                        }
+                        if (sign(sqr_diff(r, (O - a[k]).len())) < 0) { std::tie(O, r) = circumscribed_circle({a[i], a[j], a[k]}).value(); }
                     }
                 }
             }

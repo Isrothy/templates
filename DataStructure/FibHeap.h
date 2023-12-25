@@ -8,9 +8,7 @@ template<typename T> struct FibNode {
     size_t size;
     bool mark;
     FibNode *parent, *child, *left, *right;
-    explicit FibNode(T key)
-        : key(std::move(key)), degree(0), size(1), mark(false), parent(nullptr), child(nullptr),
-          left(this), right(this) {}
+    explicit FibNode(T key) : key(std::move(key)), degree(0), size(1), mark(false), parent(nullptr), child(nullptr), left(this), right(this) {}
     void link_left(FibNode *other) {
         other->left->right = this;
         this->left->right = other;

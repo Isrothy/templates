@@ -1,10 +1,9 @@
 #include <vector>
-template<size_t M>
-struct Two_SAT {
-    std::vector<int> E[2 * M];
-    int stk[M]{};
+template<size_t M> struct Two_SAT {
+    std::vector<size_t> E[2 * M];
+    size_t stk[M]{};
     bool mark[2 * M]{};
-    int top{};
+    size_t top{};
     void add_clause(int u, bool f1, int v, bool f2) {
         u = u << 1 | f1;
         v = v << 1 | f2;
@@ -33,4 +32,4 @@ struct Two_SAT {
         }
         return true;
     }
-}
+};

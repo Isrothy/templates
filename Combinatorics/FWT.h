@@ -1,59 +1,31 @@
-#include <bit>
+#include <functional>
 #include <span>
-void fwt_or(std::span<int> a, int mod) {
-    auto n = std::bit_floor(a.size());
-    for (int i = 1; i < 1 << n; i <<= 1)
-        for (int j = 0; j < 1 << n; j += i << 1) {
+template<typename Fun> void fwt_base(std::span<int> a, const Fun &f) {
+    auto n = a.size();
+    for (size_t i = 1; i < n; i <<= 1)
+        for (size_t j = 0; j < n; j += i << 1) {
             int *p = a.data() + j, *q = a.data() + i + j;
-            for (int k = 0; k < i; ++k) { q[k] = (q[k] + p[k]) % mod; }
+            for (int k = 0; k < i; ++k) { std::tie(p[k], q[k]) = f(p[k], q[k]); }
         }
 }
-void ifwt_or(std::span<int> a, int mod) {
-    auto n = std::bit_floor(a.size());
-    for (int i = 1; i < 1 << n; i <<= 1)
-        for (int j = 0; j < 1 << n; j += i << 1) {
-            int *p = a.data() + j, *q = a.data() + i + j;
-            for (int k = 0; k < i; ++k) { q[k] = (q[k] - p[k]) % mod; }
-        }
+template<int Mod> void fwt_or(std::span<int> a) {
+    fwt_base(a, [](int x, int y) { return std::make_pair(x, (x + y) % Mod); });
 }
-void fwt_and(std::span<int> a, int mod) {
-    auto n = std::bit_floor(a.size());
-    for (int i = 1; i < 1 << n; i <<= 1)
-        for (int j = 0; j < 1 << n; j += i << 1) {
-            int *p = a.data() + j, *q = a.data() + i + j;
-            for (int k = 0; k < i; ++k) { p[k] = (p[k] + q[k]) % mod; }
-        }
+template<int Mod> void ifwt_or(std::span<int> a) {
+    fwt_base(a, [](int x, int y) { return std::make_pair(x, (y - x) % Mod); });
 }
-void ifwt_and(std::span<int> a, int mod) {
-    auto n = std::bit_floor(a.size());
-    for (int i = 1; i < 1 << n; i <<= 1)
-        for (int j = 0; j < 1 << n; j += i << 1) {
-            int *p = a.data() + j, *q = a.data() + i + j;
-            for (int k = 0; k < i; ++k) { p[k] = (p[k] - q[k]) % mod; }
-        }
+template<int Mod> void fwt_and(std::span<int> a) {
+    fwt_base(a, [](int x, int y) { return std::make_pair((x + y) % Mod, y); });
 }
-void fwt_xor(std::span<int> a, int mod) {
-    auto n = std::bit_floor(a.size());
-    for (int i = 1; i < 1 << n; i <<= 1)
-        for (int j = 0; j < 1 << n; j += i << 1) {
-            int *p = a.data() + j, *q = a.data() + i + j;
-            for (int k = 0; k < i; ++k) {
-                int x = p[k], y = q[k];
-                p[k] = (x + y) % mod;
-                q[k] = (x - y) % mod;
-            }
-        }
+template<int Mod> void ifwt_and(std::span<int> a) {
+    fwt_base(a, [](int x, int y) { return std::make_pair((x - y) % Mod, y); });
 }
-void ifwt_xor(std::span<int> a, int mod) {
-    auto n = std::bit_floor(a.size());
-    int64_t w = (mod + 1) / 2;
-    for (int i = 1; i < 1 << n; i <<= 1)
-        for (int j = 0; j < 1 << n; j += i << 1) {
-            int *p = a.data() + j, *q = a.data() + i + j;
-            for (int k = 0; k < i; ++k) {
-                auto x = p[k], y = q[k];
-                p[k] = static_cast<int>((x + y) * w % mod);
-                q[k] = static_cast<int>((x - y) * w % mod);
-            }
-        }
+template<int Mod> void fwt_xor(std::span<int> a) {
+    fwt_base(a, [](int x, int y) { return std::make_pair((x + y) % Mod, (x - y) % Mod); });
+}
+template<int Mod> void ifwt_xor(std::span<int> a) {
+    fwt_base(a, [](int x, int y) {
+        constexpr int64_t inv2 = (Mod + 1) / 2;
+        return std::make_pair((x + y) * inv2 % Mod, (x - y) * inv2 % Mod);
+    });
 }

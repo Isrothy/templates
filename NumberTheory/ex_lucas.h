@@ -1,6 +1,5 @@
 #include "common.h"
-template<typename T>
-class ExLucas {
+template<typename T> class ExLucas {
     std::vector<T> p, pk, mt;
     std::vector<std::vector<T>> s;
     Crt<T> crt;

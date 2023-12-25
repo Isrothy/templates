@@ -1,8 +1,6 @@
 #include "2D_computational_geometry.h"
 #include <array>
 #include <list>
-#include <numeric>
-#include <span>
 class DelaunayGraph {
     class QuadEdge;
     using EdgeIt = std::list<QuadEdge>::iterator;
@@ -11,8 +9,8 @@ class DelaunayGraph {
         EdgeIt rot_{}, onext_{};
       public:
         explicit QuadEdge(Point *origin) : orig_(origin) {}
-#define DEFINE_ACCESSOR(name, expr)    \
-    auto name() const { return expr; } \
+#define DEFINE_ACCESSOR(name, expr)                                                                                                                                                                    \
+    auto name() const { return expr; }                                                                                                                                                                 \
     auto &name() { return expr; }
         DEFINE_ACCESSOR(rot, rot_);
         DEFINE_ACCESSOR(onext, onext_);
@@ -58,8 +56,7 @@ class DelaunayGraph {
         return e;
     }
     static auto determinate(const std::array<std::array<double, 3>, 3> &matrix) {
-        return matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0]
-               + matrix[0][2] * matrix[1][0] * matrix[2][1] - matrix[0][2] * matrix[1][1] * matrix[2][0]
+        return matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + matrix[0][2] * matrix[1][0] * matrix[2][1] - matrix[0][2] * matrix[1][1] * matrix[2][0]
                - matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][0] * matrix[1][2] * matrix[2][1];
     }
     static auto in_circle(const Point &P, const Triangle &t) {
@@ -149,17 +146,13 @@ class DelaunayGraph {
         if (n < 2) { return; }
         std::vector<Point *> a(n);
         std::iota(a.begin(), a.end(), points.data());
-        std::sort(a.begin(), a.end(), [](const Point *P, const Point *Q) {
-            return P->x != Q->x ? P->x < Q->x : P->y < Q->y;
-        });
+        std::sort(a.begin(), a.end(), [](const Point *P, const Point *Q) { return P->x != Q->x ? P->x < Q->x : P->y < Q->y; });
         build(a);
     }
     auto edges() const {
         std::vector<std::tuple<Point *, Point *, double>> edges;
         for (const auto &e: edges_) {
-            if (e.orig() < e.dest() && e.orig() != nullptr && e.dest() != nullptr) {
-                edges.emplace_back(e.orig(), e.dest(), len(e.segment()));
-            }
+            if (e.orig() < e.dest() && e.orig() != nullptr && e.dest() != nullptr) { edges.emplace_back(e.orig(), e.dest(), len(e.segment())); }
         }
         return edges;
     }

@@ -23,8 +23,7 @@ enum class SimplexResult {
     infeasible,
     optimal,
 };
-auto simplex(const std::vector<std::vector<double>> &A, const std::vector<double> &b, const std::vector<double> &c)
-    -> std::pair<SimplexResult, std::optional<std::vector<double>>> {
+auto simplex(const std::vector<std::vector<double>> &A, const std::vector<double> &b, const std::vector<double> &c) -> std::pair<SimplexResult, std::optional<std::vector<double>>> {
     auto m = static_cast<int>(A.size());
     auto n = static_cast<int>(A[0].size());
     std::vector<int> Id(n + m);

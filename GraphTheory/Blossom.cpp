@@ -1,6 +1,5 @@
 #include <vector>
-template<size_t M>
-struct Blossom {
+template<size_t M> struct Blossom {
     std::vector<int> E[M];
     int mate[M]{}, link[M]{}, label[M]{}, fa[M]{}, Q[M]{};
     int head{}, tail{};

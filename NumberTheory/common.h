@@ -8,9 +8,7 @@
 #include <span>
 #include <unordered_map>
 #include <vector>
-int32_t constexpr mul_mod(int32_t a, int32_t b, int32_t mod) {
-    return static_cast<int>(static_cast<int64_t>(a) * b % mod);
-}
+int32_t constexpr mul_mod(int32_t a, int32_t b, int32_t mod) { return static_cast<int>(static_cast<int64_t>(a) * b % mod); }
 int64_t constexpr mul_mod(int64_t a, int64_t b, int64_t mod) {
 #ifdef __SIZEOF_INT128__
     return static_cast<int64_t>(static_cast<__int128>(a) * b % mod);
@@ -30,19 +28,17 @@ template<typename T> constexpr std::tuple<T, T, T> ex_gcd(const T &a, const T &b
 }
 template<typename T, typename U> constexpr T power(T x, U k, const std::function<T(T, T)> &multiply) {
     T res{1};
-    while (k) {
+    for (; k; k >>= 1) {
         if (k & 1) { res = multiply(res, x); }
         x = multiply(x, x);
-        k >>= 1;
     }
     return res;
 }
-template<typename T, typename U> constexpr T power(T x, U k, T mod) {
+template<typename T, typename U> constexpr T power(T x, U k, const T &mod) {
     T res{1};
-    while (k) {
+    for (; k; k >>= 1) {
         if (k & 1) { res = mul_mod(res, x, mod); }
         x = mul_mod(x, x, mod);
-        k >>= 1;
     }
     return res;
 }
@@ -82,9 +78,8 @@ template<typename T> struct Crt {
     std::vector<T> mt;
     T m{};
     Crt() = default;
-    explicit Crt(std::span<T> a) {
-        mt.resize(a.size());
-        m = std::accumulate(a.begin(), a.end(), T(1), std::multiplies<>());
+    explicit Crt(std::span<T> a) : mt(a.size()) {
+        m = std::accumulate(a.begin(), a.end(), T{1}, std::multiplies<>());
         for (size_t i = 0; i < a.size(); ++i) {
             auto mi = m / a[i];
             mt[i] = mi * inverse(mi, a[i]) % m;
@@ -128,9 +123,7 @@ template<typename T> std::optional<T> primitive_root(T n, std::span<int> primes)
     T m = a.size() == 2 ? n / 2 / a[1] * (a[1] - 1) : n / a[0] * (a[0] - 1);
     auto b = prime_factors(m, primes);
     for (T g{2}; g < n; ++g) {
-        if (power(g, m, n) == 1 && std::all_of(b.begin(), b.end(), [&](auto p) { return power(g, m / p, n) != 1; })) {
-            return g;
-        }
+        if (power(g, m, n) == 1 && std::all_of(b.begin(), b.end(), [&](auto p) { return power(g, m / p, n) != 1; })) { return g; }
     }
     return std::nullopt;
 }

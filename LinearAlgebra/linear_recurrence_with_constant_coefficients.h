@@ -1,5 +1,4 @@
-template<int64_t Mod, int64_t G>
-auto linear_recurrence_with_constant_coefficients(const std::vector<int> &A, const std::vector<int> &f, int n) {
+template<int64_t Mod, int64_t G> auto linear_recurrence_with_constant_coefficients(const std::vector<int> &A, const std::vector<int> &f, int n) {
     size_t k = A.size();
     polynomial::polynomial<Mod, G> a(k + 1), b(k), c(k);
     for (int i = 0; i < k; ++i) { a[i] = -f[k - i]; }

@@ -5,8 +5,7 @@ struct KdTree {
     int x_max, x_min, y_max, y_min;
     KdTree *ch[2];
     KdTree() = default;
-    KdTree(int x, int y, int val)
-        : x(x), y(y), val(val), sum(val), sz(1), x_max(x), x_min(x), y_max(y), y_min(y), ch{} {}
+    KdTree(int x, int y, int val) : x(x), y(y), val(val), sum(val), sz(1), x_max(x), x_min(x), y_max(y), y_min(y), ch{} {}
     void push_up() {
         sz = 1;
         sum = val;

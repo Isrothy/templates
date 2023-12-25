@@ -10,9 +10,7 @@ template<size_t M, typename T, typename Cmp = std::less<>> struct Sparse_Table {
         auto n = a.size();
         for (int i = 1; i <= n; ++i) { ST[0][i] = a[i]; }
         for (size_t k = 1; k < K; ++k) {
-            for (size_t i = 1; i + (1zu << k) - 1 <= n; ++i) {
-                ST[k][i] = std::min(ST[k - 1][i], ST[k - 1][i + (1zu << (k - 1))], Cmp());
-            }
+            for (size_t i = 1; i + (1zu << k) - 1 <= n; ++i) { ST[k][i] = std::min(ST[k - 1][i], ST[k - 1][i + (1zu << (k - 1))], Cmp()); }
         }
     }
     T query(size_t l, size_t r) {

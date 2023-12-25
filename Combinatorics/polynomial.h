@@ -7,9 +7,7 @@ namespace polynomial {
     auto congruence_equation(int64_t a, int64_t b, int64_t p) {
         b = (b % p + p) % p;
         auto d = std::gcd(a, p);
-        a /= d;
-        p /= d;
-        b /= d;
+        std::tie(a, b, p) = std::make_tuple(a / d, b / d, p / d);
         return (b * inverse(a, p) % p + p) % p;
     }
     auto quadratic_residue(int64_t x, int64_t mod, int64_t g) -> int64_t {
@@ -71,17 +69,12 @@ namespace polynomial {
         std::vector<int> w(n);
         for (size_t i = 0, j = 0; i < n; ++i) {
             if (i < j) { std::swap(a[i], a[j]); }
-            auto l = n;
-            do {
-                l >>= 1;
-                j ^= l;
-            } while (j < l);
+            for (size_t l = n >> 1; (j ^= l) < l; l >>= 1)
+                ;
         }
         w[0] = 1;
         for (size_t i = 0; 1 << i < n; ++i) {
-            for (size_t j = (1 << (i + 1)) - 1; j > 0; --j) {
-                w[j] = j & 1 ? (int64_t) w[j >> 1] * wn[(1 - f) / 2][i] % Mod : w[j >> 1];
-            }
+            for (size_t j = (1 << (i + 1)) - 1; j; --j) { w[j] = j & 1 ? (int64_t) w[j >> 1] * wn[(1 - f) / 2][i] % Mod : w[j >> 1]; }
             for (size_t j = 0; j < n; j += 1 << (i + 1)) {
                 auto *p = &a[j], *q = &a[j | 1 << i], *r = &w[0];
                 for (size_t k = 0; k < 1 << i; ++k) {
@@ -135,9 +128,7 @@ namespace polynomial {
         for (size_t i = 2; i <= n; i <<= 1) {
             auto a = dft(modXN(modXN(p, i), i << 1), 1);
             auto b = dft(modXN(std::move(res), i << 1), 1);
-            for (size_t j = 0; j < i << 1; ++j) {
-                b[j] = b[j] * (2 - (int64_t) a[j] * b[j] % Mod) % Mod;
-            }
+            for (size_t j = 0; j < i << 1; ++j) { b[j] = b[j] * (2 - (int64_t) a[j] * b[j] % Mod) % Mod; }
             res = modXN(dft(std::move(b), -1), i);
         }
         return modXN(std::move(res), p.size());
@@ -149,9 +140,7 @@ namespace polynomial {
     }
     template<int64_t Mod, int64_t G> auto integral(polynomial<Mod, G> p) {
         p.resize(p.size() + 1);
-        for (size_t i = p.size(); i-- > 0;) {
-            p[i] = ::inverse(static_cast<int64_t>(i), Mod) * p[i - 1] % Mod;
-        }
+        for (size_t i = p.size(); i-- > 0;) { p[i] = ::inverse(static_cast<int64_t>(i), Mod) * p[i - 1] % Mod; }
         p[0] = 0;
         return p;
     }
@@ -177,15 +166,12 @@ namespace polynomial {
             auto a = dft(modXN(modXN(p, i), i << 1), 1);
             auto b = dft(modXN(res, i << 1), 1);
             auto c = dft(modXN(inverse(modXN(std::move(res), i)), i << 1), 1);
-            for (size_t j = 0; j < i << 1; ++j) {
-                b[j] = (b[j] + (int64_t) a[j] * c[j]) % Mod * inv2 % Mod;
-            }
+            for (size_t j = 0; j < i << 1; ++j) { b[j] = (b[j] + (int64_t) a[j] * c[j]) % Mod * inv2 % Mod; }
             res = modXN(dft(std::move(b), -1), i);
         }
         return modXN(std::move(res), p.size());
     }
-    template<int64_t Mod, int64_t G>
-    auto operator/(const polynomial<Mod, G> &lhs, const polynomial<Mod, G> &rhs) {
+    template<int64_t Mod, int64_t G> auto operator/(const polynomial<Mod, G> &lhs, const polynomial<Mod, G> &rhs) {
         auto n = lhs.size();
         auto m = rhs.size();
         if (n < m) { return polynomial<Mod, G>{0}; }
@@ -193,16 +179,10 @@ namespace polynomial {
         auto b = modXN(reverse(rhs), n - m + 1);
         return reverse(modXN(a * inverse(b), n - m + 1));
     }
-    template<int64_t Mod, int64_t G>
-    auto operator%(const polynomial<Mod, G> &lhs, const polynomial<Mod, G> &rhs) {
-        auto m = rhs.size();
-        return modXN(lhs - lhs / rhs * rhs, m - 1);
-    }
+    template<int64_t Mod, int64_t G> auto operator%(const polynomial<Mod, G> &lhs, const polynomial<Mod, G> &rhs) { return modXN(lhs - lhs / rhs * rhs, rhs.size() - 1); }
     template<int64_t Mod, int64_t G> auto operator/=(polynomial<Mod, G> &lhs, const polynomial<Mod, G> &rhs) { return lhs = lhs / rhs; }
     template<int64_t Mod, int64_t G> auto operator%=(polynomial<Mod, G> &lhs, const polynomial<Mod, G> &rhs) { return lhs = lhs % rhs; }
-    template<int64_t Mod, int64_t G> auto eva_build(
-        size_t p, size_t l, size_t r, const std::vector<int> &x, std::vector<polynomial<Mod, G>> &a
-    ) {
+    template<int64_t Mod, int64_t G> auto eva_build(size_t p, size_t l, size_t r, const std::vector<int> &x, std::vector<polynomial<Mod, G>> &a) {
         if (l == r) {
             a[p] = {1, l < x.size() ? -x[l] : 0};
             return;
@@ -212,10 +192,7 @@ namespace polynomial {
         eva_build(p << 1 | 1, mid + 1, r, x, a);
         a[p] = a[p << 1] * a[p << 1 | 1];
     }
-    template<int64_t Mod, int64_t G> auto eva_work(
-        size_t p, size_t l, size_t r, const polynomial<Mod, G> &f,
-        std::vector<polynomial<Mod, G>> &a, std::vector<int> &res
-    ) {
+    template<int64_t Mod, int64_t G> auto eva_work(size_t p, size_t l, size_t r, const polynomial<Mod, G> &f, std::vector<polynomial<Mod, G>> &a, std::vector<int> &res) {
         if (l == r) {
             if (l < res.size()) { res[l] = f[0]; }
             return;
@@ -234,8 +211,7 @@ namespace polynomial {
         eva_work(p << 1, l, mid, lf, a, res);
         eva_work(p << 1 | 1, mid + 1, r, rf, a, res);
     }
-    template<int64_t Mod, int64_t G>
-    auto evaluation(const polynomial<Mod, G> &p, const std::vector<int> &x) {
+    template<int64_t Mod, int64_t G> auto evaluation(const polynomial<Mod, G> &p, const std::vector<int> &x) {
         size_t m = std::max(x.size(), p.size() - 1);
         std::vector<polynomial<Mod, G>> a(m << 2);
         std::vector<int> res(x.size());
@@ -245,18 +221,14 @@ namespace polynomial {
         for (size_t i = 0; i < x.size(); ++i) { res[i] = (p[0] + (int64_t) res[i] * x[i]) % Mod; }
         return res;
     }
-    template<int64_t Mod, int64_t G> polynomial<Mod, G> interpolation_work(
-        size_t p, size_t l, size_t r, const std::vector<int> &y, std::vector<polynomial<Mod, G>> &a,
-        const std::vector<int> &b
-    ) {
+    template<int64_t Mod, int64_t G> polynomial<Mod, G> interpolation_work(size_t p, size_t l, size_t r, const std::vector<int> &y, std::vector<polynomial<Mod, G>> &a, const std::vector<int> &b) {
         if (l == r) { return {(int) (y[l] * ::inverse<int64_t>(b[l], Mod) % Mod)}; }
         auto mid = (l + r) >> 1;
         auto lf = interpolation_work(p << 1, l, mid, y, a, b);
         auto rf = interpolation_work(p << 1 | 1, mid + 1, r, y, a, b);
         return lf * reverse(a[p << 1 | 1]) + rf * reverse(a[p << 1]);
     }
-    template<int64_t Mod, int64_t G>
-    auto interpolation(const std::vector<int> &x, const std::vector<int> &y) {
+    template<int64_t Mod, int64_t G> auto interpolation(const std::vector<int> &x, const std::vector<int> &y) {
         auto n = x.size();
         std::vector<polynomial<Mod, G>> a(n << 2);
         std::vector<int> b(n);

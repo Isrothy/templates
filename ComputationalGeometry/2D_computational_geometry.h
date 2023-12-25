@@ -1,6 +1,8 @@
 #include <cmath>
 #include <deque>
+#include <numeric>
 #include <optional>
+#include <span>
 #include <vector>
 constexpr double EPS = 1e-10;
 constexpr int sign(double x) { return x < -EPS ? -1 : EPS < x; }
@@ -92,8 +94,7 @@ enum class SegmentSegmentRelation {
     intersecting,
     touching,
 };
-auto segment_intersection(const Segment &s1, const Segment &s2)
-    -> std::pair<SegmentSegmentRelation, std::optional<Point>> {
+auto segment_intersection(const Segment &s1, const Segment &s2) -> std::pair<SegmentSegmentRelation, std::optional<Point>> {
     const auto &[A, B] = s1;
     const auto &[C, D] = s2;
     auto [relation, p] = line_intersection(s1, s2);
@@ -101,17 +102,14 @@ auto segment_intersection(const Segment &s1, const Segment &s2)
         using enum LineLineRelation;
         case parallel: return {SegmentSegmentRelation::disjoint, std::nullopt};
         case identical: {
-            if (sign(dot(C - A, C - B)) <= 0 || sign(dot(D - A, D - B)) <= 0 || sign(dot(A - C, A - D)) <= 0
-                || sign(dot(B - C, B - D)) <= 0) {
+            if (sign(dot(C - A, C - B)) <= 0 || sign(dot(D - A, D - B)) <= 0 || sign(dot(A - C, A - D)) <= 0 || sign(dot(B - C, B - D)) <= 0) {
                 return {SegmentSegmentRelation::touching, std::nullopt};
             }
             return {SegmentSegmentRelation::disjoint, std::nullopt};
         }
         case intersecting: {
             auto O = p.value();
-            if (sign(dot(O - A, O - A)) <= 0 && sign(dot(O - C, O - D)) <= 0) {
-                return {SegmentSegmentRelation::intersecting, O};
-            }
+            if (sign(dot(O - A, O - A)) <= 0 && sign(dot(O - C, O - D)) <= 0) { return {SegmentSegmentRelation::intersecting, O}; }
             return {SegmentSegmentRelation::disjoint, std::nullopt};
         }
     }
@@ -157,8 +155,7 @@ auto circie_circle_relation(const Circle &c1, const Circle &c2) {
             }
     }
 }
-auto circle_circle_intersection(const Circle &c1, const Circle &c2)
-    -> std::pair<CircleCircleRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
+auto circle_circle_intersection(const Circle &c1, const Circle &c2) -> std::pair<CircleCircleRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
     auto relation = circie_circle_relation(c1, c2);
@@ -174,9 +171,7 @@ auto circle_circle_intersection(const Circle &c1, const Circle &c2)
         case externally_tangent:
         case internally_tangent_1_to_2:
         case internally_tangent_2_to_1: return {relation, H};
-        case intersecting:
-            auto v = (O2 - O1).unit().normal() * sqrt(sqr_diff(r1, d1));
-            return {relation, std::make_pair(H - v, H + v)};
+        case intersecting: auto v = (O2 - O1).unit().normal() * sqrt(sqr_diff(r1, d1)); return {relation, std::make_pair(H - v, H + v)};
     }
 }
 enum class CircleLineRelation {
@@ -189,8 +184,7 @@ auto circle_line_relation(const Circle &c, const Line &l) {
     auto d = point_line_distance(O, l);
     return CircleLineRelation(sign(r - d));
 }
-auto circle_line_intersection(const Circle &c, const Line &l)
-    -> std::pair<CircleLineRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
+auto circle_line_intersection(const Circle &c, const Line &l) -> std::pair<CircleLineRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
     const auto &[O, r] = c;
     const auto &[A, B] = l;
     Point H = projection(O, l);
@@ -205,8 +199,7 @@ auto circle_line_intersection(const Circle &c, const Line &l)
             return {relation, std::make_pair(H - v, H + v)};
     }
 }
-auto circle_point_tangent(const Circle &c, const Point &P)
-    -> std::pair<PointShapeRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
+auto circle_point_tangent(const Circle &c, const Point &P) -> std::pair<PointShapeRelation, std::variant<std::monostate, Point, std::pair<Point, Point>>> {
     const auto &[O, r] = c;
     auto relation = point_circle_relation(P, c);
     switch (relation) {
@@ -222,11 +215,8 @@ auto circle_point_tangent(const Circle &c, const Point &P)
 }
 auto circumscribed_circle(const Triangle &t) {
     const auto &[A, B, C] = t;
-    auto [relation, O] = line_intersection(
-        {middle(A, B), middle(A, B) + (A - B).normal()}, {middle(B, C), middle(B, C) + (B - C).normal()}
-    );
-    return relation == LineLineRelation::intersecting ? std::optional<Circle>{Circle{O.value(), (O.value() - A).len()}}
-                                                      : std::nullopt;
+    auto [relation, O] = line_intersection({middle(A, B), middle(A, B) + (A - B).normal()}, {middle(B, C), middle(B, C) + (B - C).normal()});
+    return relation == LineLineRelation::intersecting ? std::optional<Circle>{Circle{O.value(), (O.value() - A).len()}} : std::nullopt;
 }
 auto inscribed_circle(const Triangle &t) {
     const auto &[A, B, C] = t;
@@ -235,8 +225,7 @@ auto inscribed_circle(const Triangle &t) {
     double d = point_line_distance(I, {A, B});
     return sign(d) == 0 ? std::nullopt : std::optional<Circle>{Circle{I, d}};
 }
-auto external_co_tangent(const Circle &c1, const Circle &c2)
-    -> std::variant<std::monostate, Line, std::pair<Line, Line>> {
+auto external_co_tangent(const Circle &c1, const Circle &c2) -> std::variant<std::monostate, Line, std::pair<Line, Line>> {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
     if (r1 < r2) { return external_co_tangent(c2, c1); }
@@ -255,8 +244,7 @@ auto external_co_tangent(const Circle &c1, const Circle &c2)
             return std::make_pair(Line{P1 + v1, P2 + v2}, Line{O1 + v1, O2 + v2});
     }
 }
-auto internal_co_tangent(const Circle &c1, const Circle &c2)
-    -> std::variant<std::monostate, Line, std::pair<Line, Line>> {
+auto internal_co_tangent(const Circle &c1, const Circle &c2) -> std::variant<std::monostate, Line, std::pair<Line, Line>> {
     const auto &[O1, r1] = c1;
     const auto &[O2, r2] = c2;
     if (r1 < r2) { return internal_co_tangent(c2, c1); }
@@ -279,9 +267,7 @@ auto internal_co_tangent(const Circle &c1, const Circle &c2)
 auto convex_hull(std::vector<Point> points) {
     auto n = static_cast<int64_t>(points.size());
     std::vector<Point> stk(n + 1);
-    std::sort(points.begin(), points.end(), [](const Point &A, const Point &B) {
-        return A.x == B.x ? A.y < B.y : A.x < B.x;
-    });
+    std::sort(points.begin(), points.end(), [](const Point &A, const Point &B) { return A.x == B.x ? A.y < B.y : A.x < B.x; });
     int64_t top = 0;
     stk[top++] = points[0];
     for (int i = 1; i < n; ++i) {
@@ -302,19 +288,9 @@ auto point_in_convex_polygon(const Point &P, const Polygon &p) {
     auto n = p.size();
     assert(n >= 3);
     if (P.x < p[0].x || (P.x == p[0].x && P.y < p[0].y)) { return outside; }
-    if (side_of_line(P, {p[0], p[1]}) == Side::on) {
-        return sign(dot(p[1] - P, p[0] - P)) <= 0 ? on : outside;
-    }
-    if (side_of_line(P, {p[0], p[n - 1]}) == Side::on) {
-        return sign(dot(p[n - 1] - P, p[0] - P)) <= 0 ? on : outside;
-    }
-    auto i = std::upper_bound(
-                 p.begin() + 1, p.end(), P,
-                 [&](const Point &A, const Point &B) {
-                     return side_of_line(p[0], {A, B}) == Side::left;
-                 }
-             )
-             - p.begin();
+    if (side_of_line(P, {p[0], p[1]}) == Side::on) { return sign(dot(p[1] - P, p[0] - P)) <= 0 ? on : outside; }
+    if (side_of_line(P, {p[0], p[n - 1]}) == Side::on) { return sign(dot(p[n - 1] - P, p[0] - P)) <= 0 ? on : outside; }
+    auto i = std::upper_bound(p.begin() + 1, p.end(), P, [&](const Point &A, const Point &B) { return side_of_line(p[0], {A, B}) == Side::left; }) - p.begin();
     return PointShapeRelation(side_of_line(P, {p[i - 1], p[i]}));
 }
 auto minkowski_sum(const Polygon &a, const Polygon &b) {
@@ -390,4 +366,62 @@ auto half_planes_intersection(std::vector<Line> lines) {
     }
     if (q.size() > 1) { t.emplace_front(line_intersection(q.front(), q.back()).second.value()); }
     return std::pair{std::vector{q.begin(), q.end()}, Polygon{t.begin(), t.end()}};
+}
+auto polygons_union_area(const std::span<Polygon> &polygons) {
+    auto n = polygons.size();
+    std::vector<Line> lines;
+    for (size_t i = 0; i < n; ++i) {
+        for (size_t m = polygons[i].size(), j = 0; j < m; ++j) { lines.emplace_back(polygons[i][j], polygons[i][(j + 1) % m]); }
+    }
+    auto m = lines.size();
+    std::vector<size_t> fa(m);
+    std::vector<std::vector<std::tuple<size_t, Point, Side, Side>>> events(m);
+    std::iota(fa.begin(), fa.end(), 0);
+    std::function<size_t(size_t)> find;
+    find = [&](size_t x) { return fa[x] == x ? x : fa[x] = find(fa[x]); };
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = i + 1; j < m; ++j) {
+            if (auto u = find(i), v = find(j); u != v) {
+                if (auto [relation, _] = line_intersection(lines[i], lines[j]); relation == LineLineRelation::identical) { fa[u] = v; }
+            }
+        }
+    }
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = i + 1; j < m; ++j) {
+            if (auto u = find(i), v = find(j); u != v) {
+                if (auto [relation, I] = line_intersection(lines[u], lines[v]); relation == LineLineRelation::intersecting) {
+                    const auto &[A, B] = lines[i];
+                    const auto &[C, D] = lines[j];
+                    auto sideA = side_of_line(A, {C, D});
+                    auto sideB = side_of_line(B, {C, D});
+                    auto sideC = side_of_line(C, {A, B});
+                    auto sideD = side_of_line(D, {A, B});
+                    if (sideA != sideB) { events[find(j)].emplace_back(i, I.value(), sideA, sideB); }
+                    if (sideC != sideD) { events[find(i)].emplace_back(j, I.value(), sideC, sideD); }
+                }
+            }
+        }
+    }
+    double res = 0;
+    for (size_t i = 0; i < m; ++i) {
+        if (find(i) != i) { continue; }
+        const auto &[a, b] = lines[i];
+        std::sort(events[i].begin(), events[i].end(), [&](const auto &a, const auto &b) { return std::get<0>(a) < std::get<0>(b); });
+        events[i].erase(std::unique(events[i].begin(), events[i].end(), [&](const auto &a, const auto &b) { return std::get<0>(a) == std::get<0>(b); }), events[i].end());
+        events[i].erase(std::remove_if(events[i].begin(), events[i].end(), [&](const auto &a) { return find(std::get<0>(a)) == i; }), events[i].end());
+        std::sort(events[i].begin(), events[i].end(), [&](const auto &p, const auto &q) { return dot(std::get<1>(p) - a, b - a) < dot(std::get<1>(q) - a, b - a); });
+        int cntl = 0, cntr = 0;
+        double last;
+        auto unit = (b - a).unit();
+        for (auto const &[id, o, sideC, sideD]: events[i]) {
+            auto dis = dot(o - a, unit);
+            if (cntl != 0 && cntr == 0) { res += det(a + unit * last, a + unit * dis); }
+            if (sideC == Side::left) { ++cntl; }
+            if (sideD == Side::left) { --cntl; }
+            if (sideC == Side::right) { --cntr; }
+            if (sideD == Side::right) { ++cntr; }
+            last = dis;
+        }
+    }
+    return res / 2;
 }

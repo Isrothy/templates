@@ -9,16 +9,14 @@ class DynamicConvexHull {
     };
     std::set<Point, less_x> lower_;
     std::set<Point, greater_x> upper_;
-    template<typename Set>
-    auto contain(const Set &s, const Point &P) const {
+    template<typename Set> auto contain(const Set &s, const Point &P) const {
         if (s.size() < 2) { return PointShapeRelation::outside; }
         auto it = s.lower_bound(P);
         if (it != s.end() && *it == P) { return PointShapeRelation::on; }
         if (it == s.begin() || it == s.end()) { return PointShapeRelation::outside; }
         return PointShapeRelation(side_of_line(P, {*prev(it), *it}));
     }
-    template<typename Set>
-    auto insert(Set &s, const Point &P) {
+    template<typename Set> auto insert(Set &s, const Point &P) {
         if (contain(s, P) != PointShapeRelation::outside) { return; }
         s.insert(P);
         auto it = s.find(P);
@@ -32,9 +30,7 @@ class DynamicConvexHull {
         }
         if (auto i = (typename Set::reverse_iterator) it; i != s.rend()) {
             auto j = next(i);
-            while (j != s.rend() && side_of_line(P, {*j, *i}) != Side::left) {
-                i = (decltype(i)) s.erase((j++).base());
-            }
+            while (j != s.rend() && side_of_line(P, {*j, *i}) != Side::left) { i = (decltype(i)) s.erase((j++).base()); }
         }
     }
   public:

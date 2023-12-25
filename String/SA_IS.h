@@ -2,11 +2,8 @@
 #include <span>
 #include <string_view>
 #include <vector>
-enum class SuffixType : bool { l,
-                               s };
-bool is_lms_char(std::span<SuffixType> type, int x) {
-    return x > 0 && type[x] == SuffixType::s && type[x - 1] == SuffixType::l;
-}
+enum class SuffixType : bool { l, s };
+bool is_lms_char(std::span<SuffixType> type, int x) { return x > 0 && type[x] == SuffixType::s && type[x - 1] == SuffixType::l; }
 bool substring_equal(std::span<int> s, std::span<SuffixType> type, int x, int y) {
     do {
         if (s[x] != s[y]) { return false; }
@@ -15,10 +12,7 @@ bool substring_equal(std::span<int> s, std::span<SuffixType> type, int x, int y)
     } while (!is_lms_char(type, x) && !is_lms_char(type, y));
     return s[x] == s[y];
 }
-void induce_sort(
-    std::span<int> s, std::vector<int> &sa, std::span<SuffixType> type, std::vector<int> &bucket,
-    std::vector<int> &lbucket, std::vector<int> &sbucket, size_t n, size_t sigma
-) {
+void induce_sort(std::span<int> s, std::vector<int> &sa, std::span<SuffixType> type, std::vector<int> &bucket, std::vector<int> &lbucket, std::vector<int> &sbucket, size_t n, size_t sigma) {
     lbucket[0] = sbucket[0] = 1;
     for (int i = 1; i < sigma; ++i) {
         lbucket[i] = bucket[i - 1];
@@ -38,9 +32,7 @@ std::vector<int> SA_IS(std::span<int> s, size_t sigma) {
     for (int i = 0; i < n; i++) { bucket[s[i]]++; }
     std::partial_sum(bucket.begin(), bucket.end(), bucket.begin());
     type[n - 1] = SuffixType::s;
-    for (int i = static_cast<int>(n) - 2; i >= 0; i--) {
-        type[i] = s[i] < s[i + 1] || (s[i] == s[i + 1] && type[i + 1] == SuffixType::s) ? SuffixType::s : SuffixType::l;
-    }
+    for (int i = static_cast<int>(n) - 2; i >= 0; i--) { type[i] = s[i] < s[i + 1] || (s[i] == s[i + 1] && type[i + 1] == SuffixType::s) ? SuffixType::s : SuffixType::l; }
     std::vector<int> position;
     for (int i = 1; i < n; ++i) {
         if (type[i] == SuffixType::s && type[i - 1] == SuffixType::l) { position.push_back(i); }
